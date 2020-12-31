@@ -36,16 +36,6 @@ if(BUILD_OUT_OF_TREE)
 		src/headers/switcher-data-structs.hpp
 		src/headers/utility.hpp
 		src/headers/curl-helper.hpp
-		src/headers/switch-audio.hpp
-		src/headers/switch-executable.hpp
-		src/headers/switch-file.hpp
-		src/headers/switch-idle.hpp
-		src/headers/switch-media.hpp
-		src/headers/switch-random.hpp
-		src/headers/switch-screen-region.hpp
-		src/headers/switch-time.hpp
-		src/headers/switch-transitions.hpp
-		src/headers/switch-window.hpp
 		src/headers/swtich-sequence.hpp
 		src/headers/switch-generic.hpp
 		)
@@ -205,20 +195,10 @@ else ()
 		src/advanced-scene-switcher-module.c
 		src/switcher-data-structs.cpp
 		src/switch-transitions.cpp
-		src/switch-screen-region.cpp
 		src/switch-priority.cpp
-		src/switch-executable.cpp
-		src/switch-idle.cpp
 		src/switch-sequence.cpp
-		src/switch-file.cpp
-		src/switch-window.cpp
-		src/switch-media.cpp
 		src/hotkey.cpp
 		src/general.cpp
-		src/switch-pause.cpp
-		src/switch-random.cpp
-		src/switch-time.cpp
-		src/switch-audio.cpp
 		src/curl-helper.cpp
 		src/volume-control.cpp
 		src/setup.cpp
