@@ -1,0 +1,8 @@
+!! delante de un elemento
+SwitchIfNotMatch deberia ser un enum, porque se compara con 3 numeros
+Cuando se llama a ~SwitcherData
+Como separar en varias lineas los comentarios.
+for(;;)
+Logica de thread en auto-scene-switcher
+
+--Preguntar a Marco Antonio por practicas

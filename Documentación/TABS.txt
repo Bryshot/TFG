@@ -1,0 +1,7 @@
+ General
+Transition(No tiene visual)
+File
+Sequence
+Ramdon
+Media
+
