@@ -3,8 +3,8 @@
 #include "utility.hpp"
 #include "switch-generic.hpp"
 
-constexpr auto round_trip_func = 1;
-constexpr auto default_priority_1 = round_trip_func;
+constexpr auto round_trip_func = 0;
+constexpr auto default_priority_0 = round_trip_func;
 
 struct SceneSequenceSwitch : SceneSwitcherEntry {
 	OBSWeakSource startScene;

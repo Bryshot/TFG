@@ -182,47 +182,15 @@ void SwitcherData::Thread()
 			autoStartStreamRecording();
 		}
 
-		
-
-		for (int switchFuncName : functionNamesByPriority) {
-			switch (switchFuncName) {
-			case read_file_func:
-				break;
-			case idle_func:
-				
-				break;
-			case exe_func:
-				
-				break;
-
-			case screen_region_func:
-				
-				break;
-			case window_title_func:
-				break;
-			case round_trip_func:
-				checkSceneSequence(match, scene, transition,
-						    lock);
-				if (sceneChangedDuringWait()) //scene might have changed during the sleep
-				{
-					goto startLoop;
-				}
-				break;
-			case media_func:
-				break;
-			case time_func:
-				break;
-			case audio_func:
-				break;
-			}
-
-			if (switcher->stop) {
-				goto endLoop;
-			}
-			if (match) {
-				break;
-			}
+		checkSceneSequence(match, scene, transition,lock);
+		if (sceneChangedDuringWait()) //scene might have changed during the sleep
+		{
+			goto startLoop;
 		}
+
+		if (switcher->stop) {
+			goto endLoop;
+		}	
 
 		if (!match && switchIfNotMatching == SWITCH &&
 		    nonMatchingScene) {
