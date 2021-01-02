@@ -22,7 +22,6 @@ class SceneSwitcher : public QDialog {
 
 public:
 	std::unique_ptr<Ui_SceneSwitcher> ui;
-	VolControl *volMeter = nullptr;
 	bool loading = true;
 
 	SceneSwitcher(QWidget *parent);
