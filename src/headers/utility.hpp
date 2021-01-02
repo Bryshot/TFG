@@ -2,7 +2,13 @@
 #include <obs.hpp>
 #include <QString>
 #include <obs-frontend-api.h>
+//Archivo con funciones de utilidad destinadas a la obtencion de weakTransition y weakSource, y comprobar que estas ultimas son validas.
 
+/// <summary>
+/// Comprueba si valida una weakSource( Si se puede obtener su source)
+/// </summary>
+/// <param name="Weaksource"> que se quiere comprobar</param>
+/// <returns>True si es valida, false en otro caso</returns>
 static inline bool WeakSourceValid(obs_weak_source_t *ws)
 {
 	obs_source_t *source = obs_weak_source_get_source(ws);
@@ -11,6 +17,11 @@ static inline bool WeakSourceValid(obs_weak_source_t *ws)
 	return !!source;
 }
 
+/// <summary>
+/// Recupera el nombre de la weakSource (que coincide con el de su Source)
+/// </summary>
+/// <param name="Weak_source">, de la que se desea obtener el nombre</param>
+/// <returns>Nombre de la escena</returns>
 static inline std::string GetWeakSourceName(obs_weak_source_t *weak_source)
 {
 	std::string name;
@@ -24,6 +35,11 @@ static inline std::string GetWeakSourceName(obs_weak_source_t *weak_source)
 	return name;
 }
 
+/// <summary>
+/// Obtiene la weakSource que coincide con el nombre dado
+/// </summary>
+/// <param name="Name"> de la weakSource que se busca</param>
+/// <returns>La weakSource deseada</returns>
 static inline OBSWeakSource GetWeakSourceByName(const char *name)
 {
 	OBSWeakSource weak;
@@ -37,11 +53,21 @@ static inline OBSWeakSource GetWeakSourceByName(const char *name)
 	return weak;
 }
 
+/// <summary>
+/// Obtiene la weakSource que coincide con el nombre (en formato QString)
+/// </summary>
+/// <param name="Nombre"> de la weakSource en formato QString</param>
+/// <returns>La weakSource deseada</returns>
 static inline OBSWeakSource GetWeakSourceByQString(const QString &name)
 {
 	return GetWeakSourceByName(name.toUtf8().constData());
 }
 
+/// <summary>
+/// Obtiene la weakTransition que coincide con el nombre
+/// </summary>
+/// <param name="Nombre de la transicion"> deseada</param>
+/// <returns>La weakTransition deseada</returns>
 static inline OBSWeakSource GetWeakTransitionByName(const char *transitionName)
 {
 	OBSWeakSource weak;
@@ -78,6 +104,11 @@ static inline OBSWeakSource GetWeakTransitionByName(const char *transitionName)
 	return weak;
 }
 
+/// <summary>
+/// Obtiene la weakTransition que coincide con el nombre (en formato QString)
+/// </summary>
+/// <param name="Nombre"> de la weakTransition</param>
+/// <returns>La weakTransition deseada</returns>
 static inline OBSWeakSource GetWeakTransitionByQString(const QString &name)
 {
 	return GetWeakTransitionByName(name.toUtf8().constData());

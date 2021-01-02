@@ -8,6 +8,7 @@
 #include <QMutex>
 #include <QList>
 
+///QUITAR
 class QPushButton;
 class VolumeMeterTimer;
 
