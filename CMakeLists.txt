@@ -13,7 +13,6 @@ if(BUILD_OUT_OF_TREE)
 	find_package(LibObs REQUIRED)
 	find_package(Qt5Core REQUIRED)
 	find_package(Qt5Widgets REQUIRED)
-	find_package(Libcurl REQUIRED)
 	find_path(LIBOBS_FRONTEND_INCLUDE_DIR HINTS ${LIBOBS_INCLUDE_DIRS})
 	find_file(LIBOBS_FRONTEND_API_LIB NAMES libobs-frontend-api.* HINTS ${LIBOBS_LIB} )
 
@@ -45,20 +44,9 @@ if(BUILD_OUT_OF_TREE)
 		src/advanced-scene-switcher-module.c
 		src/switcher-data-structs.cpp
 		src/switch-transitions.cpp
-		src/switch-screen-region.cpp
-		src/switch-priority.cpp
-		src/switch-executable.cpp
-		src/switch-idle.cpp
 		src/switch-sequence.cpp
-		src/switch-file.cpp
-		src/switch-window.cpp
-		src/switch-media.cpp
 		src/hotkey.cpp
 		src/general.cpp
-		src/switch-pause.cpp
-		src/switch-random.cpp
-		src/switch-time.cpp
-		src/switch-audio.cpp
 		)
 
 	set(advanced-scene-switcher_UI
@@ -101,8 +89,7 @@ if(BUILD_OUT_OF_TREE)
 		"${LIBOBS_INCLUDE_DIRS}"
 		"${LIBOBS_FRONTEND_INCLUDE_DIR}"
 		${Qt5Core_INCLUDES}
-		${Qt5Widgets_INCLUDES}
-		${LIBCURL_INCLUDE_DIRS})
+		${Qt5Widgets_INCLUDES})
 
 	target_link_libraries(advanced-scene-switcher
 		${advanced-scene-switcher_PLATFORM_LIBS}
@@ -170,7 +157,6 @@ else ()
 		src/headers/advanced-scene-switcher.hpp
 		src/headers/switcher-data-structs.hpp
 		src/headers/utility.hpp
-		src/headers/volume-control.hpp
 		src/headers/switch-transitions.hpp
 		src/headers/swtich-sequence.hpp
 		src/headers/switch-generic.hpp
@@ -187,7 +173,6 @@ else ()
 		src/switch-sequence.cpp
 		src/hotkey.cpp
 		src/general.cpp
-		src/volume-control.cpp
 		src/setup.cpp
 		)
 
