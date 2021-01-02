@@ -16,13 +16,13 @@
 #include "headers/switcher-data-structs.hpp"
 #include "headers/advanced-scene-switcher.hpp"
 #include "headers/utility.hpp"
-#include "headers/curl-helper.hpp"
 
 SwitcherData *switcher = nullptr;
 
-/********************************************************************************
- * Create the Advanced Scene Switcher settings window
- ********************************************************************************/
+/// <summary>
+/// Función encargada de inicializar el plugin
+/// </summary>
+/// <param name="parent"></param>
 SceneSwitcher::SceneSwitcher(QWidget *parent)
 	: QDialog(parent), ui(new Ui_SceneSwitcher)
 {
@@ -34,6 +34,11 @@ SceneSwitcher::SceneSwitcher(QWidget *parent)
 	loadUI();
 }
 
+/// <summary>
+/// Añade todas las escenas en sel; si addPrevious es true, tambien se añade la última escena
+/// </summary>
+/// <param name="sel">ComboBox donde estaran todas las escenas</param>
+/// <param name="addPrevious">Booleano de selección</param>
 void SceneSwitcher::populateSceneSelection(QComboBox *sel, bool addPrevious)
 {
 	BPtr<char *> scenes = obs_frontend_get_scene_names();
@@ -48,6 +53,10 @@ void SceneSwitcher::populateSceneSelection(QComboBox *sel, bool addPrevious)
 		sel->addItem(previous_scene_name);
 }
 
+/// <summary>
+/// Añade todas las transiciones en sel
+/// </summary>
+/// <param name="sel">ComboBox donde estaran todas las transiciones</param>
 void SceneSwitcher::populateTransitionSelection(QComboBox *sel)
 {
 	obs_frontend_source_list *transitions = new obs_frontend_source_list();
@@ -62,6 +71,7 @@ void SceneSwitcher::populateTransitionSelection(QComboBox *sel)
 	obs_frontend_source_list_free(transitions);
 }
 
+/* QUITAR
 void SceneSwitcher::populateWindowSelection(QComboBox *sel)
 {
 	std::vector<std::string> windows;
@@ -71,8 +81,11 @@ void SceneSwitcher::populateWindowSelection(QComboBox *sel)
 	for (std::string &window : windows) {
 		sel->addItem(window.c_str());
 	}
-}
+}*/
 
+/// <summary>
+/// Función que llama a las funciones encargadas de la lógica de cada Tab de la config del Plugin
+/// </summary>
 void SceneSwitcher::loadUI()
 {
 #if __APPLE__
@@ -111,13 +124,11 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 	} else {
 		switcher->m.lock();
 
-		obs_data_t *obj =
-			obs_data_get_obj(save_data, "advanced-scene-switcher");
+		obs_data_t *obj = obs_data_get_obj(save_data, "advanced-scene-switcher");
 
 		if (!obj)
 			obj = obs_data_create();
 
-		
 		switcher->loadSceneSequenceSwitches(obj);
 		switcher->loadSceneTransitions(obj);
 		switcher->loadGeneralSettings(obj);
@@ -275,9 +286,6 @@ void SwitcherData::Stop()
  ********************************************************************************/
 extern "C" void FreeSceneSwitcher()
 {
-	if (loaded_curl_lib) {
-	}
-
 	delete switcher;
 	switcher = nullptr;
 }
@@ -303,16 +311,29 @@ void handleSceneChange(SwitcherData *s)
 	s->autoStartedRecently = false;
 }
 
+/// <summary>
+/// Ajusta el contador de tiempo del directo
+/// </summary>
+/// <param name="s"></param>
 void setLiveTime(SwitcherData *s)
 {
 	s->liveTime = QDateTime::currentDateTime();
 }
 
+/// <summary>
+/// Reinicia el contador de tiempo del directo
+/// </summary>
+/// <param name="s"></param>
 void resetLiveTime(SwitcherData *s)
 {
 	s->liveTime = QDateTime();
 }
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name=""></param>
+/// <param name="switcher"></param>
 static void OBSEvent(enum obs_frontend_event event, void *switcher)
 {
 	switch (event) {
@@ -341,9 +362,6 @@ extern "C" void InitSceneSwitcher()
 		"Advanced Scene Switcher");
 
 	switcher = new SwitcherData;
-
-	if (loadCurl() && f_curl_init) {
-	}
 
 	auto cb = []() {
 		QMainWindow *window =

@@ -35,7 +35,6 @@ if(BUILD_OUT_OF_TREE)
 		src/headers/advanced-scene-switcher.hpp
 		src/headers/switcher-data-structs.hpp
 		src/headers/utility.hpp
-		src/headers/curl-helper.hpp
 		src/headers/swtich-sequence.hpp
 		src/headers/switch-generic.hpp
 		)
@@ -60,7 +59,6 @@ if(BUILD_OUT_OF_TREE)
 		src/switch-random.cpp
 		src/switch-time.cpp
 		src/switch-audio.cpp
-		src/curl-helper.cpp
 		)
 
 	set(advanced-scene-switcher_UI
@@ -172,18 +170,8 @@ else ()
 		src/headers/advanced-scene-switcher.hpp
 		src/headers/switcher-data-structs.hpp
 		src/headers/utility.hpp
-		src/headers/curl-helper.hpp
 		src/headers/volume-control.hpp
-		src/headers/switch-audio.hpp
-		src/headers/switch-executable.hpp
-		src/headers/switch-file.hpp
-		src/headers/switch-idle.hpp
-		src/headers/switch-media.hpp
-		src/headers/switch-random.hpp
-		src/headers/switch-screen-region.hpp
-		src/headers/switch-time.hpp
 		src/headers/switch-transitions.hpp
-		src/headers/switch-window.hpp
 		src/headers/swtich-sequence.hpp
 		src/headers/switch-generic.hpp
 		src/headers/setup.h
@@ -199,7 +187,6 @@ else ()
 		src/switch-sequence.cpp
 		src/hotkey.cpp
 		src/general.cpp
-		src/curl-helper.cpp
 		src/volume-control.cpp
 		src/setup.cpp
 		)

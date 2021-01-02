@@ -1,10 +1,11 @@
 #include "headers/switcher-data-structs.hpp"
 #include "headers/utility.hpp"
 
+/// <summary>
+/// Función encargada de reiniciar a cero todas las estructuras del plugin que pudieran contener algun elemento no valido.
+/// </summary>
 void SwitcherData::Prune()
 {
-	
-
 	for (size_t i = 0; i < sceneSequenceSwitches.size(); i++) {
 		SceneSequenceSwitch &s = sceneSequenceSwitches[i];
 		if (!s.valid())

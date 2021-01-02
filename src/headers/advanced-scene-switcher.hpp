@@ -45,16 +45,13 @@ public:
 	void loadUI();
 	void populateSceneSelection(QComboBox *sel, bool addPrevious);
 	void populateTransitionSelection(QComboBox *sel);
-	void populateWindowSelection(QComboBox *sel);
+	//void populateWindowSelection(QComboBox *sel);QUITAR
 	void setupGeneralTab();
 	void setupSequenceTab();
 	void setupTransitionsTab();
 	void setTabOrder();
 
 public slots:
-	//void on_switches_currentRowChanged(int idx);
-	//void on_add_clicked();
-	//void on_remove_clicked();
 	void on_noMatchDontSwitch_clicked();
 	void on_noMatchSwitch_clicked();
 	void on_noMatchRandomSwitch_clicked();

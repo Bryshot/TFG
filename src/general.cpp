@@ -42,13 +42,14 @@ void SceneSwitcher::on_noMatchSwitch_clicked()
 	UpdateNonMatchingScene(ui->noMatchSwitchScene->currentText());
 }
 
+/// QUITAR
 void SceneSwitcher::on_noMatchRandomSwitch_clicked()
 {
 	if (loading)
 		return;
 
 	std::lock_guard<std::mutex> lock(switcher->m);
-	switcher->switchIfNotMatching = RANDOM_SWITCH;
+	switcher->switchIfNotMatching = NO_SWITCH;
 	ui->noMatchSwitchScene->setEnabled(false);
 }
 

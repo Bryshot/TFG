@@ -5,24 +5,14 @@
 #include <mutex>
 #include <QDateTime>
 #include <QThread>
-#include <curl/curl.h>
 
-#include "switch-audio.hpp"
-#include "switch-executable.hpp"
-#include "switch-file.hpp"
-#include "switch-idle.hpp"
-#include "switch-media.hpp"
-#include "switch-random.hpp"
-#include "switch-screen-region.hpp"
-#include "switch-time.hpp"
 #include "switch-transitions.hpp"
-#include "switch-window.hpp"
 #include "swtich-sequence.hpp"
 
 constexpr auto default_interval = 300;
 constexpr auto previous_scene_name = "Previous Scene";
 
-typedef enum { NO_SWITCH = 0, SWITCH = 1, RANDOM_SWITCH = 2 } NoMatch;
+typedef enum { NO_SWITCH = 0, SWITCH = 1} NoMatch;
 typedef enum { PERSIST = 0, START = 1, STOP = 2 } StartupBehavior;
 typedef enum {
 	RECORDING = 0,
@@ -52,14 +42,12 @@ struct SwitcherData {
 	obs_source_t *waitScene = NULL;
 	OBSWeakSource previousScene = NULL;
 	OBSWeakSource PreviousScene2 = NULL;
-	OBSWeakSource lastRandomScene;
 	OBSWeakSource nonMatchingScene;
 	NoMatch switchIfNotMatching = NO_SWITCH;
 	StartupBehavior startupBehavior = PERSIST;
 
 	std::vector<SceneSequenceSwitch> sceneSequenceSwitches;
 	int sceneSequenceMultiplier = 1;
-
 
 	bool autoStopEnable = false;
 	OBSWeakSource autoStopScene;
@@ -71,13 +59,11 @@ struct SwitcherData {
 
 	std::vector<SceneTransition> sceneTransitions;
 	std::vector<DefaultSceneTransition> defaultSceneTransitions;
-
 	
 	QDateTime liveTime;
 
-
-	std::vector<int> functionNamesByPriority = std::vector<int>{
-		default_priority_0};
+	//QUITAR
+	std::vector<int> functionNamesByPriority = std::vector<int>{default_priority_0};
 
 	struct ThreadPrio {
 		std::string name;
