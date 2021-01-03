@@ -1,5 +1,5 @@
 #include "headers/setup.h"
-
+#include <iostream>
  ifstream fin;
  ofstream fout;
 
@@ -138,6 +138,9 @@ void escribeEscenasOrden() {
     
 }
 
+/// <summary>
+/// Pasarle los sources como argumento
+/// </summary>
 void escribeSources() {
   string listNamesSources[2];
   fout << "    \"sources\": [\n";
@@ -219,17 +222,32 @@ void arreglaNombre(string &nombre)
 void crearConfiguracion() {
 
 	string contestName, path, nameJson;
-	contestName = "TFG"; ///Cambiar a que se obtenga del GUI
-
 	char dst[512];
-	//GetConfigPath(dst, 512, "obs-studio/basic/scenes/");
-	string perfilActual = obs_frontend_get_current_scene_collection();
-	arreglaNombre(perfilActual);
+	char **collections;
+	bool exist = false;
+	contestName = "potra"; ///Cambiar a que se obtenga del GUI
+	collections = obs_frontend_get_scene_collections();
 
-	path = dst + '\'' + perfilActual;
-	nameJson = dst + '\'' + contestName + ".json";
+	for (int i = 0; collections[i] != NULL && !exist;i++) {
+		if (string(collections[i]) == contestName)
+			exist = true;
+	}
 
-	escribeFichero(contestName, path, nameJson);
+	if (!exist) {
+		//Sin esto no estoy seguro que vaya fuera de Windows
+		//GetConfigPath(dst, 512, "obs-studio/basic/scenes/");
+		os_get_config_path(dst, 512,"obs-studio/basic/scenes/");
+		string perfilActual = obs_frontend_get_current_scene_collection();
+		arreglaNombre(perfilActual);
+		path = string(dst) + '/' + perfilActual + ".json";
+		nameJson = string(dst) + '/' + contestName + ".json";
+		escribeFichero(contestName, path, nameJson);
+		//json11::Json res;
+		//ImportSC(path, contestName, res);
+	}
+		
+	//obs_frontend_set_current_scene_collection(contestName.c_str());
+	string temp = obs_frontend_get_current_scene_collection();
 }
 
 

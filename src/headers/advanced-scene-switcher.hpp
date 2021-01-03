@@ -10,7 +10,7 @@
 #include "ui_advanced-scene-switcher.h"
 #endif
 #include "switcher-data-structs.hpp"
-#include "volume-control.hpp"
+#include "setup.h"
 
 class QCloseEvent;
 

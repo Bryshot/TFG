@@ -3,7 +3,8 @@
 #include <fstream>
 #include <string>
 #include <obs-frontend-api.h>
-
+#include "../importers/importers.hpp"
+#include "../obs-app.hpp"
 
 using namespace std;
 

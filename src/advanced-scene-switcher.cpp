@@ -71,18 +71,6 @@ void SceneSwitcher::populateTransitionSelection(QComboBox *sel)
 	obs_frontend_source_list_free(transitions);
 }
 
-/* QUITAR
-void SceneSwitcher::populateWindowSelection(QComboBox *sel)
-{
-	std::vector<std::string> windows;
-	GetWindowList(windows);
-	sort(windows.begin(), windows.end());
-
-	for (std::string &window : windows) {
-		sel->addItem(window.c_str());
-	}
-}*/
-
 /// <summary>
 /// Función que llama a las funciones encargadas de la lógica de cada Tab de la config del Plugin
 /// </summary>
@@ -94,9 +82,8 @@ void SceneSwitcher::loadUI()
 	setupGeneralTab();
 	setupSequenceTab();
 	setupTransitionsTab();
-	
-
 	setTabOrder();
+	//crearConfiguracion();
 
 	loading = false;
 }
@@ -179,21 +166,17 @@ void SwitcherData::Thread()
 		switcher->Prune();
 		//sleep for a bit
 		cv.wait_for(lock, duration);
-		if (switcher->stop) {
-			break;
-		}
-
+		if (switcher->stop) break;
 		setDefaultSceneTransitions();
-
-		if (autoStopEnable) {
+		if (autoStopEnable) 
 			autoStopStreamAndRecording();
-		}
-
-		if (autoStartEnable) {
+		if (autoStartEnable) 
 			autoStartStreamRecording();
-		}
 
 		checkSceneSequence(match, scene, transition,lock);
+
+
+
 		if (sceneChangedDuringWait()) //scene might have changed during the sleep
 		{
 			goto startLoop;
