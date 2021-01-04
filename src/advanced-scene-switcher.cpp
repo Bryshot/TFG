@@ -11,7 +11,6 @@
 #include <obs-frontend-api.h>
 #include <obs-module.h>
 #include <obs.hpp>
-#include <obs-scene.h>
 #include <util/util.hpp>
 
 #include "headers/switcher-data-structs.hpp"
@@ -174,12 +173,9 @@ void SwitcherData::Thread()
 		if (autoStartEnable) 
 			autoStartStreamRecording();
 
-		//checkSceneSequence(match, scene, transition,lock);QUITAR
-		obs_source_t *s = obs_frontend_get_current_scene();
-		obs_scene_t *escena = obs_scene_from_source(s);
-		obs_sceneitem_t *item = escena->first_item;
-		//char **lista = obs_frontend_get_scene_names();
-		//obs_data_t *data  = obs_get_source_defaults(lista[0]);
+		checkSceneSequence(match, scene, transition,lock);
+
+
 
 		if (sceneChangedDuringWait()) //scene might have changed during the sleep
 		{
