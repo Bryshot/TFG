@@ -12,6 +12,7 @@
 #include <obs-module.h>
 #include <obs.hpp>
 #include <util/util.hpp>
+#include <obs-scene.h>
 
 #include "headers/switcher-data-structs.hpp"
 #include "headers/advanced-scene-switcher.hpp"
@@ -141,6 +142,11 @@ void SwitcherData::Thread()
 {
 	blog(LOG_INFO, "Advanced Scene Switcher started");
 	int sleep = 0;
+	obs_source_t *source;
+	string nombreEscena;
+	obs_scene_t *escena;
+	obs_sceneitem_t *itemScene;
+	obs_data *data;
 
 	while (true) {
 	startLoop:
@@ -175,6 +181,20 @@ void SwitcherData::Thread()
 
 		checkSceneSequence(match, scene, transition,lock);
 
+		source = obs_frontend_get_current_scene();
+		nombreEscena = obs_source_get_id(source);
+		if (nombreEscena == "Teamview") {
+			escena = obs_scene_from_source(source);
+			itemScene = escena->first_item;
+			data = obs_sceneitem_get_private_settings(itemScene);
+			///Modificar url primer elem
+			itemScene = itemScene->next;
+			data = obs_sceneitem_get_private_settings(itemScene);
+			//Modificar el segundo
+		}
+		else if (nombreEscena == "ClassificationView") {
+			//No hay que hacer cambios de itemScene pero puede que se tenga que hacer un cambio de escena
+		} 
 
 
 		if (sceneChangedDuringWait()) //scene might have changed during the sleep
