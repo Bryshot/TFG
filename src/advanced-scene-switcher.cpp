@@ -331,7 +331,7 @@ void resetLiveTime(SwitcherData *s)
 }
 
 /// <summary>
-/// 
+/// Funcion encargada de gestionar los eventos de obs que puedan ocurrir.
 /// </summary>
 /// <param name=""></param>
 /// <param name="switcher"></param>
