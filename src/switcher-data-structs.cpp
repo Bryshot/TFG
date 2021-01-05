@@ -6,12 +6,6 @@
 /// </summary>
 void SwitcherData::Prune()
 {
-	for (size_t i = 0; i < sceneSequenceSwitches.size(); i++) {
-		SceneSequenceSwitch &s = sceneSequenceSwitches[i];
-		if (!s.valid())
-			sceneSequenceSwitches.erase(
-				sceneSequenceSwitches.begin() + i--);
-	}
 
 	if (!WeakSourceValid(autoStopScene)) {
 		autoStopScene = nullptr;

@@ -244,7 +244,7 @@ void SceneSwitcher::on_verboseLogging_stateChanged(int state)
 void SceneSwitcher::on_exportSettings_clicked()
 {
 	QString directory = QFileDialog::getSaveFileName(
-		this, tr("Export Advanced Scene Switcher settings to file ..."),
+		this, tr("Export AutoProducer settings to file ..."),
 		QDir::currentPath(), tr("Text files (*.txt)"));
 	if (directory.isEmpty())
 		return;
@@ -255,7 +255,6 @@ void SceneSwitcher::on_exportSettings_clicked()
 
 	obs_data_t *obj = obs_data_create();
 
-	switcher->saveSceneSequenceSwitches(obj);
 	switcher->saveSceneTransitions(obj);
 	switcher->saveGeneralSettings(obj);
 	switcher->saveHotkeys(obj);
@@ -271,7 +270,7 @@ void SceneSwitcher::on_importSettings_clicked()
 
 	QString directory = QFileDialog::getOpenFileName(
 		this,
-		tr("Import Advanced Scene Switcher settings from file ..."),
+		tr("Import AutoProducer settings from file ..."),
 		QDir::currentPath(), tr("Text files (*.txt)"));
 	if (directory.isEmpty())
 		return;
@@ -286,12 +285,11 @@ void SceneSwitcher::on_importSettings_clicked()
 	if (!obj) {
 		QMessageBox Msgbox;
 		Msgbox.setText(
-			"Advanced Scene Switcher failed to import settings");
+			"AutoProducer failed to import settings");
 		Msgbox.exec();
 		return;
 	}
 
-	switcher->loadSceneSequenceSwitches(obj);
 	switcher->loadSceneTransitions(obj);
 	switcher->loadGeneralSettings(obj);
 	switcher->loadHotkeys(obj);
@@ -300,7 +298,7 @@ void SceneSwitcher::on_importSettings_clicked()
 
 	QMessageBox Msgbox;
 	Msgbox.setText(
-		"Advanced Scene Switcher settings imported successfully");
+		"AutoProducer settings imported successfully");
 	Msgbox.exec();
 	close();
 }
@@ -317,9 +315,6 @@ int findTabIndex(QTabBar *bar, int pos)
 	case 1:
 		tabName = "Transition";
 		break;
-	case 2:
-		tabName = "Sequence";
-		break;
 	}
 
 	for (int i = 0; i < bar->count(); ++i) {
@@ -329,7 +324,7 @@ int findTabIndex(QTabBar *bar, int pos)
 		}
 	}
 	if (at == -1)
-		blog(LOG_INFO, "Advanced Scene Switcher failed to find tab %s",
+		blog(LOG_INFO, "AutoProducer failed to find tab %s",
 		     tabName.toUtf8().constData());
 
 	return at;
@@ -384,9 +379,6 @@ void SwitcherData::saveGeneralSettings(obs_data_t *obj)
 
 	obs_data_set_bool(obj, "verbose", switcher->verbose);
 
-	obs_data_set_int(obj, "priority0",
-			 switcher->functionNamesByPriority[0]);
-
 	obs_data_set_int(obj, "threadPriority", switcher->threadPriority);
 
 	obs_data_set_int(obj, "generalTabPos", switcher->tabOrder[0]);
@@ -428,13 +420,6 @@ void SwitcherData::loadGeneralSettings(obs_data_t *obj)
 	switcher->autoStartScene = GetWeakSourceByName(autoStartScene.c_str());
 
 	switcher->verbose = obs_data_get_bool(obj, "verbose");
-
-	obs_data_set_default_int(obj, "priority0", default_priority_0);
-
-	switcher->functionNamesByPriority[0] = (obs_data_get_int(obj, "priority0"));
-	if (!switcher->prioFuncsValid()) {
-		switcher->functionNamesByPriority[0] = (default_priority_0);
-	}
 
 	obs_data_set_default_int(obj, "threadPriority",
 				 QThread::NormalPriority);
@@ -504,9 +489,6 @@ void SceneSwitcher::setupGeneralTab()
 	std::string s = "";
 	s = "Scene Sequence";
 	QString text(s.c_str());
-	QListWidgetItem *item =
-	new QListWidgetItem(text, ui->priorityList);
-	item->setData(Qt::UserRole, text);
 
 	for (int i = 0; i < (int)switcher->threadPriorities.size(); ++i) {
 		ui->threadPriority->addItem(

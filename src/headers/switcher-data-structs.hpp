@@ -46,8 +46,8 @@ struct SwitcherData {
 	NoMatch switchIfNotMatching = NO_SWITCH;
 	StartupBehavior startupBehavior = PERSIST;
 
-	std::vector<SceneSequenceSwitch> sceneSequenceSwitches;
-	int sceneSequenceMultiplier = 1;
+	//std::vector<SceneSequenceSwitch> sceneSequenceSwitches;
+	//int sceneSequenceMultiplier = 1;
 
 	bool autoStopEnable = false;
 	OBSWeakSource autoStopScene;
@@ -63,7 +63,7 @@ struct SwitcherData {
 	QDateTime liveTime;
 
 	//QUITAR
-	std::vector<int> functionNamesByPriority = std::vector<int>{default_priority_0};
+	//std::vector<int> functionNamesByPriority = std::vector<int>{default_priority_0};
 
 	struct ThreadPrio {
 		std::string name;
@@ -109,16 +109,16 @@ struct SwitcherData {
 	void setDefaultSceneTransitions();
 	void autoStopStreamAndRecording();
 	void autoStartStreamRecording();
-	void checkSceneSequence(bool &match, OBSWeakSource &scene,
+	/*void checkSceneSequence(bool &match, OBSWeakSource &scene,
 				 OBSWeakSource &transition,
 				 std::unique_lock<std::mutex> &lock);
 	
-	void saveSceneSequenceSwitches(obs_data_t *obj);
+	void saveSceneSequenceSwitches(obs_data_t *obj);*/
 	void saveSceneTransitions(obs_data_t *obj);
 	void saveGeneralSettings(obs_data_t *obj);
 	void saveHotkeys(obs_data_t *obj);
 	
-	void loadSceneSequenceSwitches(obs_data_t *obj);
+	//void loadSceneSequenceSwitches(obs_data_t *obj);
 	void loadSceneTransitions(obs_data_t *obj);
 	void loadGeneralSettings(obs_data_t *obj);
 	void loadHotkeys(obs_data_t *obj);

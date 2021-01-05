@@ -32,7 +32,6 @@ public:
 	void SetStopped();
 
 	int FindByData(const QString &window);
-	int SceneSequenceFindByData(const QString &scene1);
 	int SceneTransitionsFindByData(const QString &scene1,
 				       const QString &scene2);
 	int DefaultTransitionsFindByData(const QString &scene);
@@ -44,9 +43,7 @@ public:
 	void loadUI();
 	void populateSceneSelection(QComboBox *sel, bool addPrevious);
 	void populateTransitionSelection(QComboBox *sel);
-	//void populateWindowSelection(QComboBox *sel);QUITAR
 	void setupGeneralTab();
-	void setupSequenceTab();
 	void setupTransitionsTab();
 	void setTabOrder();
 
@@ -59,15 +56,6 @@ public slots:
 	void on_checkInterval_valueChanged(int value);
 	void on_toggleStartButton_clicked();
 	void on_tabMoved(int from, int to);
-
-	void on_sceneSequences_currentRowChanged(int idx);
-	void on_sceneSequenceAdd_clicked();
-	void on_sceneSequenceRemove_clicked();
-	void on_sceneSequenceSave_clicked();
-	void on_sceneSequenceLoad_clicked();
-	void on_sceneSequenceUp_clicked();
-	void on_sceneSequenceDown_clicked();
-	void on_sceneSequenceDelayUnits_currentIndexChanged(int index);
 
 	void on_autoStopSceneCheckBox_stateChanged(int state);
 	void on_autoStopScenes_currentTextChanged(const QString &text);
@@ -88,11 +76,6 @@ public slots:
 	void on_defaultTransitionsAdd_clicked();
 	void on_defaultTransitionsRemove_clicked();
 	void on_transitionOverridecheckBox_stateChanged(int state);
-
-	void on_priorityUp_clicked();
-	void on_priorityDown_clicked();
-	void on_threadPriority_currentTextChanged(const QString &text);
-
 
 	void on_close_clicked();
 

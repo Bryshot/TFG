@@ -36,7 +36,7 @@ struct SceneSwitcherEntry {
 		const char *sceneName = obs_source_get_name(s);
 		obs_source_release(s);
 		blog(LOG_INFO,
-		     "Advanced Scene Switcher match for '%s' - switch to scene '%s'",
+		     "AutoProducer match for '%s' - switch to scene '%s'",
 		     getType(), sceneName);
 	}
 

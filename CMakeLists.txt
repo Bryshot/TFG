@@ -34,7 +34,6 @@ if(BUILD_OUT_OF_TREE)
 		src/headers/advanced-scene-switcher.hpp
 		src/headers/switcher-data-structs.hpp
 		src/headers/utility.hpp
-		src/headers/swtich-sequence.hpp
 		src/headers/switch-generic.hpp
 		)
 
@@ -44,7 +43,6 @@ if(BUILD_OUT_OF_TREE)
 		src/advanced-scene-switcher-module.c
 		src/switcher-data-structs.cpp
 		src/switch-transitions.cpp
-		src/switch-sequence.cpp
 		src/hotkey.cpp
 		src/general.cpp
 		)
@@ -158,7 +156,6 @@ else ()
 		src/headers/switcher-data-structs.hpp
 		src/headers/utility.hpp
 		src/headers/switch-transitions.hpp
-		src/headers/swtich-sequence.hpp
 		src/headers/switch-generic.hpp
 		src/headers/setup.h
 		)
@@ -169,8 +166,6 @@ else ()
 		src/advanced-scene-switcher-module.c
 		src/switcher-data-structs.cpp
 		src/switch-transitions.cpp
-		src/switch-priority.cpp
-		src/switch-sequence.cpp
 		src/hotkey.cpp
 		src/general.cpp
 		src/setup.cpp

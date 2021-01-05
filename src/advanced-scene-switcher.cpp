@@ -12,7 +12,7 @@
 #include <obs-module.h>
 #include <obs.hpp>
 #include <util/util.hpp>
-#include <obs-scene.h>
+//#include <obs-scene.h>
 
 #include "headers/switcher-data-structs.hpp"
 #include "headers/advanced-scene-switcher.hpp"
@@ -81,7 +81,6 @@ void SceneSwitcher::loadUI()
 	setMinimumHeight(700);
 #endif
 	setupGeneralTab();
-	setupSequenceTab();
 	setupTransitionsTab();
 	setTabOrder();
 	//crearConfiguracion();
@@ -101,7 +100,6 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 
 		obs_data_t *obj = obs_data_create();
 
-		switcher->saveSceneSequenceSwitches(obj);
 		switcher->saveSceneTransitions(obj);
 		switcher->saveGeneralSettings(obj);
 		switcher->saveHotkeys(obj);
@@ -117,7 +115,6 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 		if (!obj)
 			obj = obs_data_create();
 
-		switcher->loadSceneSequenceSwitches(obj);
 		switcher->loadSceneTransitions(obj);
 		switcher->loadGeneralSettings(obj);
 		switcher->loadHotkeys(obj);
@@ -140,7 +137,7 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
  ********************************************************************************/
 void SwitcherData::Thread()
 {
-	blog(LOG_INFO, "Advanced Scene Switcher started");
+	blog(LOG_INFO, "AutoProducer started");
 	int sleep = 0;
 	obs_source_t *source;
 	string nombreEscena;
@@ -155,20 +152,22 @@ void SwitcherData::Thread()
 		OBSWeakSource scene;
 		OBSWeakSource transition;
 		std::chrono::milliseconds duration;
+
 		if (sleep > interval) {
 			duration = std::chrono::milliseconds(sleep);
 			if (verbose)
 				blog(LOG_INFO,
-				     "Advanced Scene Switcher sleep for %d",
+				     "AutoProducer sleep for %d",
 				     sleep);
 		} else {
 			duration = std::chrono::milliseconds(interval);
 			if (verbose)
 				blog(LOG_INFO,
-				     "Advanced Scene Switcher sleep for %d",
+				     "AutoProducer sleep for %d",
 				     interval);
 		}
 		sleep = 0;
+
 		switcher->Prune();
 		//sleep for a bit
 		cv.wait_for(lock, duration);
@@ -179,16 +178,15 @@ void SwitcherData::Thread()
 		if (autoStartEnable) 
 			autoStartStreamRecording();
 
-		checkSceneSequence(match, scene, transition,lock);
 
 		source = obs_frontend_get_current_scene();
 		nombreEscena = obs_source_get_id(source);
 		if (nombreEscena == "Teamview") {
 			escena = obs_scene_from_source(source);
-			itemScene = escena->first_item;
+			//itemScene = escena->first_item;
 			data = obs_sceneitem_get_private_settings(itemScene);
 			///Modificar url primer elem
-			itemScene = itemScene->next;
+			//itemScene = itemScene->next;
 			data = obs_sceneitem_get_private_settings(itemScene);
 			//Modificar el segundo
 		}
@@ -218,7 +216,7 @@ void SwitcherData::Thread()
 		}
 	}
 endLoop:
-	blog(LOG_INFO, "Advanced Scene Switcher stopped");
+	blog(LOG_INFO, "AutoProducer stopped");
 }
 
 void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
@@ -244,7 +242,7 @@ void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
 
 		if (switcher->verbose)
 			blog(LOG_INFO,
-			     "Advanced Scene Switcher switched scene");
+			     "AutoProducer switched scene");
 	}
 	obs_source_release(currentSource);
 	obs_source_release(source);
