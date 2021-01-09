@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AutoProducer</class>
- <widget class="QDialog" name="AutoProducer">
+ <class>SceneSwitcher</class>
+ <widget class="QDialog" name="SceneSwitcher">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>AutoProducer</string>
+   <string>SceneSwitcher</string>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -62,6 +62,43 @@
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>The contest name is:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="ContestName">
+           <property name="maximumSize">
+            <size>
+             <width>300</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Contest</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout_4">
@@ -480,6 +517,9 @@
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_47">
+         <property name="spacing">
+          <number>15</number>
+         </property>
          <item>
           <widget class="QPushButton" name="exportSettings">
            <property name="text">
@@ -488,14 +528,26 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="importSettings">
+          <widget class="QPushButton" name="ExportSetupContest">
+           <property name="minimumSize">
+            <size>
+             <width>129</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>147</width>
+             <height>16777215</height>
+            </size>
+           </property>
            <property name="text">
-            <string>Import settings from file</string>
+            <string>Export setup contest</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_48">
+          <spacer name="horizontalSpacer_3">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -506,6 +558,29 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="importSettings">
+           <property name="text">
+            <string>Import settings from file</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="importSetupContest">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>147</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Import setup contest</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>
