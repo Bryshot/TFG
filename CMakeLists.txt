@@ -158,6 +158,7 @@ else ()
 		src/headers/switch-transitions.hpp
 		src/headers/switch-generic.hpp
 		src/headers/setup.h
+		src/headers/importUrl.h
 		)
 
 	set(advanced-scene-switcher_SOURCES
@@ -169,6 +170,7 @@ else ()
 		src/hotkey.cpp
 		src/general.cpp
 		src/setup.cpp
+		src/importUrl.cpp
 		)
 
 	set(advanced-scene-switcher_UI

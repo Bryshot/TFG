@@ -73,7 +73,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="ContestName">
+          <widget class="QLineEdit" name="contestName">
            <property name="maximumSize">
             <size>
              <width>300</width>
@@ -528,26 +528,27 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="ExportSetupContest">
-           <property name="minimumSize">
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
             <size>
-             <width>129</width>
-             <height>0</height>
+             <width>40</width>
+             <height>20</height>
             </size>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>147</width>
-             <height>16777215</height>
-            </size>
-           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="importUrls">
            <property name="text">
-            <string>Export setup contest</string>
+            <string>Import url List</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_3">
+          <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -563,22 +564,6 @@
           <widget class="QPushButton" name="importSettings">
            <property name="text">
             <string>Import settings from file</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="importSetupContest">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>147</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="text">
-            <string>Import setup contest</string>
            </property>
           </widget>
          </item>

@@ -4,6 +4,7 @@
 #include <QMessageBox>
 
 #include "headers/advanced-scene-switcher.hpp"
+#include "headers/importUrl.h"
 
 void SceneSwitcher::on_close_clicked()
 {
@@ -301,6 +302,36 @@ void SceneSwitcher::on_importSettings_clicked()
 		"AutoProducer settings imported successfully");
 	Msgbox.exec();
 	close();
+}
+
+void SceneSwitcher::on_importUrls_clicked() {
+
+	std::lock_guard<std::mutex> lock(switcher->m);
+
+	QString directory = QFileDialog::getOpenFileName(
+		this, tr("Import AutoProducer settings from file ..."),
+		QDir::currentPath(), tr("Text files (*.txt)"));
+	if (directory.isEmpty())
+		return;
+	
+	switcher->urlsContest =
+			importUrlContest(directory.toStdString());
+	if (switcher->urlsContest.numTeams == -1)
+	{
+		QMessageBox Msgbox;
+		Msgbox.setText("AutoProducer failed to import urls");
+		Msgbox.exec();
+		return;
+	}
+	QMessageBox Msgbox;
+	Msgbox.setText("AutoProducer urls imported successfully");
+	Msgbox.exec();
+	switcher->importedUrls = true;
+	close();
+}
+
+void SceneSwitcher::on_contestName_textChanged(const QString &text) {
+	contestName = text.toStdString();
 }
 
 int findTabIndex(QTabBar *bar, int pos)

@@ -1,5 +1,4 @@
 #include "headers/setup.h"
-#include <iostream>
  ifstream fin;
  ofstream fout;
 
@@ -151,7 +150,7 @@ void escribeSources() {
                     "https://player.twitch.tv/"
                     "?channel=snoodyboo&enableExtensions=true&muted=false&"
                     "parent=twitch.tv&player=popfout&volume=0.46000000834465027",
-                    fullscreenHeight, fullscreenWidth,false);
+                    fullscreenHeight, fullscreenWidth,false);//Sustituir por team0
   escribirFuenteURL("camTeam",
                     "https://player.twitch.tv/"
                     "?channel=snoodyboo&enableExtensions=true&muted=false&"
@@ -219,13 +218,12 @@ void arreglaNombre(string &nombre)
 	}
 }
 
-void crearConfiguracion() {
+void crearConfiguracion(string contestName) {
 
-	string contestName, path, nameJson;
+	string path, nameJson;
 	char dst[512];
 	char **collections;
 	bool exist = false;
-	contestName = "potra"; ///Cambiar a que se obtenga del GUI
 	collections = obs_frontend_get_scene_collections();
 
 	for (int i = 0; collections[i] != NULL && !exist;i++) {
@@ -249,5 +247,4 @@ void crearConfiguracion() {
 	//obs_frontend_set_current_scene_collection(contestName.c_str());
 	string temp = obs_frontend_get_current_scene_collection();
 }
-
 

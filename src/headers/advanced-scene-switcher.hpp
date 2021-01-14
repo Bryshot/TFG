@@ -23,7 +23,7 @@ class SceneSwitcher : public QDialog {
 public:
 	std::unique_ptr<Ui_SceneSwitcher> ui;
 	bool loading = true;
-
+	string contestName;
 	SceneSwitcher(QWidget *parent);
 
 	void closeEvent(QCloseEvent *event) override;
@@ -68,6 +68,10 @@ public slots:
 
 	void on_exportSettings_clicked();
 	void on_importSettings_clicked();
+
+	void on_importUrls_clicked();
+
+	void on_contestName_textChanged(const QString &text);
 
 	void on_sceneTransitions_currentRowChanged(int idx);
 	void on_transitionsAdd_clicked();

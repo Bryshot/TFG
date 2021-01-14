@@ -7,7 +7,7 @@
 #include <QThread>
 
 #include "switch-transitions.hpp"
-#include "swtich-sequence.hpp"
+#include "importUrl.h"
 
 constexpr auto default_interval = 300;
 constexpr auto previous_scene_name = "Previous Scene";
@@ -36,6 +36,7 @@ struct SwitcherData {
 	bool stop = false;
 	bool verbose = false;
 	bool tansitionOverrideOverride = false;
+	bool importedUrls = false;
 
 	int interval = default_interval;
 
@@ -46,8 +47,7 @@ struct SwitcherData {
 	NoMatch switchIfNotMatching = NO_SWITCH;
 	StartupBehavior startupBehavior = PERSIST;
 
-	//std::vector<SceneSequenceSwitch> sceneSequenceSwitches;
-	//int sceneSequenceMultiplier = 1;
+	UrlsContest urlsContest;
 
 	bool autoStopEnable = false;
 	OBSWeakSource autoStopScene;
@@ -61,9 +61,6 @@ struct SwitcherData {
 	std::vector<DefaultSceneTransition> defaultSceneTransitions;
 	
 	QDateTime liveTime;
-
-	//QUITAR
-	//std::vector<int> functionNamesByPriority = std::vector<int>{default_priority_0};
 
 	struct ThreadPrio {
 		std::string name;
