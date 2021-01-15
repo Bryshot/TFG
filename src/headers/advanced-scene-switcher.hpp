@@ -23,7 +23,6 @@ class SceneSwitcher : public QDialog {
 public:
 	std::unique_ptr<Ui_SceneSwitcher> ui;
 	bool loading = true;
-	string contestName;
 	SceneSwitcher(QWidget *parent);
 
 	void closeEvent(QCloseEvent *event) override;

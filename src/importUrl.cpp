@@ -2,13 +2,22 @@
 
 ifstream FicheroUrls;
 
+bool isNumber(const string &str)
+{
+	for (char const &c : str) {
+		if (std::isdigit(c) == 0)
+			return false;
+	}
+	return true;
+}
+
 UrlsContest importUrlContest(string path)
 {
   UrlsContest contest;
   string buffer;
   FicheroUrls.open(path, ios::in);
   getline(FicheroUrls, buffer);
-  if (!isdigit(std::stoi(buffer)))
+  if (!isNumber(buffer))
   {
 	  contest.numTeams = -1;
 	  return contest;
@@ -20,6 +29,7 @@ UrlsContest importUrlContest(string path)
     asignaPantallaEquipo(contest.urlsTeams, i);
     asignaLogoEquipo(contest.urlsTeams, i);
   }
+  FicheroUrls.close();
   return contest;
 }
 

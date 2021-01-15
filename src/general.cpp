@@ -98,9 +98,15 @@ void SceneSwitcher::on_toggleStartButton_clicked()
 	if (switcher->th && switcher->th->isRunning()) {
 		switcher->Stop();
 		SetStopped();
-	} else {
+	} else if(switcher->importedUrls){
 		switcher->Start();
 		SetStarted();
+	}
+	else{
+		QMessageBox Msgbox;
+		Msgbox.setText("Import the url before start the plugin");
+		Msgbox.exec();
+		return;
 	}
 }
 
@@ -331,7 +337,7 @@ void SceneSwitcher::on_importUrls_clicked() {
 }
 
 void SceneSwitcher::on_contestName_textChanged(const QString &text) {
-	contestName = text.toStdString();
+	switcher->contestName = text.toStdString();
 }
 
 int findTabIndex(QTabBar *bar, int pos)

@@ -38,6 +38,7 @@ struct SwitcherData {
 	bool tansitionOverrideOverride = false;
 	bool importedUrls = false;
 
+	string contestName;
 	int interval = default_interval;
 
 	obs_source_t *waitScene = NULL;
@@ -101,21 +102,15 @@ struct SwitcherData {
 	void Stop();
 
 	bool sceneChangedDuringWait();
-	bool prioFuncsValid();
 	
 	void setDefaultSceneTransitions();
 	void autoStopStreamAndRecording();
 	void autoStartStreamRecording();
-	/*void checkSceneSequence(bool &match, OBSWeakSource &scene,
-				 OBSWeakSource &transition,
-				 std::unique_lock<std::mutex> &lock);
 	
-	void saveSceneSequenceSwitches(obs_data_t *obj);*/
 	void saveSceneTransitions(obs_data_t *obj);
 	void saveGeneralSettings(obs_data_t *obj);
 	void saveHotkeys(obs_data_t *obj);
 	
-	//void loadSceneSequenceSwitches(obs_data_t *obj);
 	void loadSceneTransitions(obs_data_t *obj);
 	void loadGeneralSettings(obs_data_t *obj);
 	void loadHotkeys(obs_data_t *obj);

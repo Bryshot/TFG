@@ -12,7 +12,6 @@
 #include <obs-module.h>
 #include <obs.hpp>
 #include <util/util.hpp>
-//#include <obs-scene.h>
 
 #include "headers/switcher-data-structs.hpp"
 #include "headers/advanced-scene-switcher.hpp"
@@ -89,7 +88,7 @@ void SceneSwitcher::loadUI()
 }
 
 /********************************************************************************
- * Saving and loading
+ * Saving and loading the settings
  ********************************************************************************/
 static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 {
@@ -153,24 +152,15 @@ void SwitcherData::Thread()
 		OBSWeakSource transition;
 		std::chrono::milliseconds duration;
 
-		if (sleep > interval) {
-			duration = std::chrono::milliseconds(sleep);
-			if (verbose)
-				blog(LOG_INFO,
-				     "AutoProducer sleep for %d",
-				     sleep);
-		} else {
-			duration = std::chrono::milliseconds(interval);
-			if (verbose)
-				blog(LOG_INFO,
-				     "AutoProducer sleep for %d",
-				     interval);
-		}
-		sleep = 0;
-
+		
+		duration = std::chrono::milliseconds(sleep);
+		if (verbose)
+			blog(LOG_INFO,"AutoProducer sleep for %d",sleep);
 		switcher->Prune();
 		//sleep for a bit
 		cv.wait_for(lock, duration);
+
+		//Comprueba si se ha detenido el programa durante el sleep o si se ha activado/puesto en alguna escena que afecte autoStop/autoStart
 		if (switcher->stop) break;
 		setDefaultSceneTransitions();
 		if (autoStopEnable) 
@@ -181,6 +171,7 @@ void SwitcherData::Thread()
 
 		source = obs_frontend_get_current_scene();
 		nombreEscena = obs_source_get_id(source);
+
 		if (nombreEscena == "Teamview") {
 			escena = obs_scene_from_source(source);
 			//itemScene = escena->first_item;
