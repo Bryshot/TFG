@@ -11,6 +11,7 @@
 #include <obs-frontend-api.h>
 #include <obs-module.h>
 #include <obs.hpp>
+#include <obs.h>
 #include <util/util.hpp>
 
 #include "headers/switcher-data-structs.hpp"
@@ -87,12 +88,30 @@ void SceneSwitcher::loadUI()
 	loading = false;
 }
 
+
+bool EnumSources(void *param, obs_source_t *source)
+{
+	string temp = obs_source_get_name(source);
+	if (temp == "screenTeam")
+		switcher->screenTeam = source;
+	else if (temp == "camTeam")
+		switcher->camTeam = source;
+	else if (temp == "screenClassification")
+		switcher->screenClassification = source;
+	else if (temp == "ClassificationView")
+		switcher->ClassificationView = source;
+	
+	obs_source_addref(source);
+	return true;
+}
+
 /********************************************************************************
  * Saving and loading the settings
  ********************************************************************************/
 static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 {
 	if (saving) {
+		switcher->Stop();
 		std::lock_guard<std::mutex> lock(switcher->m);
 
 		switcher->Prune();
@@ -144,6 +163,7 @@ void SwitcherData::Thread()
 	obs_sceneitem_t *itemScene;
 	obs_data *data;
 
+	obs_enum_sources(EnumSources, nullptr);
 	while (true) {
 	startLoop:
 		std::unique_lock<std::mutex> lock(m);
@@ -168,21 +188,22 @@ void SwitcherData::Thread()
 		if (autoStartEnable) 
 			autoStartStreamRecording();
 
-
 		source = obs_frontend_get_current_scene();
-		nombreEscena = obs_source_get_id(source);
+		nombreEscena = obs_source_get_name(source);
+		
+		if (nombreEscena == "TeamView") {
+			obs_data_t *dataScreen = obs_source_get_settings(switcher->screenTeam);
+			obs_data_t *dataCam = obs_source_get_settings(switcher->camTeam);
 
-		if (nombreEscena == "Teamview") {
-			escena = obs_scene_from_source(source);
-			//itemScene = escena->first_item;
-			data = obs_sceneitem_get_private_settings(itemScene);
-			///Modificar url primer elem
-			//itemScene = itemScene->next;
-			data = obs_sceneitem_get_private_settings(itemScene);
-			//Modificar el segundo
+			obs_data_set_string(dataScreen, "url", "https://obsproject.com/browser-source");
+			obs_data_set_string(dataCam, "url", "https://obsproject.com/browser-source");
+
+			obs_source_update(switcher->screenTeam, dataScreen);
+			obs_source_update(switcher->camTeam,dataScreen);
 		}
 		else if (nombreEscena == "ClassificationView") {
 			//No hay que hacer cambios de itemScene pero puede que se tenga que hacer un cambio de escena
+		
 		} 
 
 
@@ -237,6 +258,27 @@ void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
 	}
 	obs_source_release(currentSource);
 	obs_source_release(source);
+}
+
+void switchUrl() {
+	obs_source_t *currentSource = obs_frontend_get_current_scene();
+	string nombreEscena = obs_source_get_name(currentSource);
+
+	if (nombreEscena == "TeamView") {
+		obs_data_t *dataScreen =
+			obs_source_get_settings(switcher->screenTeam);
+		obs_data_t *dataCam =
+			obs_source_get_settings(switcher->camTeam);
+
+		obs_data_set_string(dataScreen, "url",
+				    "https://obsproject.com/browser-source");
+		obs_data_set_string(dataCam, "url",
+				    "https://obsproject.com/browser-source");
+
+		obs_source_update(switcher->screenTeam, dataScreen);
+		obs_source_update(switcher->camTeam, dataScreen);
+	} else if (nombreEscena == "ClassificationView") {
+	}
 }
 
 bool SwitcherData::sceneChangedDuringWait()

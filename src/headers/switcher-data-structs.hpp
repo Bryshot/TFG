@@ -49,6 +49,10 @@ struct SwitcherData {
 	StartupBehavior startupBehavior = PERSIST;
 
 	UrlsContest urlsContest;
+	OBSSource screenTeam;
+	OBSSource camTeam;
+	OBSSource screenClassification;
+	OBSSource ClassificationView;
 
 	bool autoStopEnable = false;
 	OBSWeakSource autoStopScene;
