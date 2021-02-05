@@ -3,13 +3,8 @@
 #include <fstream>
 #include <string>
 #include <obs-frontend-api.h>
-#include <set>
-#include <sstream>
-#include <util/platform.h>
-#include <filesystem>
-#include "../headers/advanced-scene-switcher.hpp"
-//#include "../importers/importers.hpp"
-//#include "../obs-app.hpp"
+#include "../importers/importers.hpp"
+#include "../obs-app.hpp"
 
 using namespace std;
 
@@ -80,18 +75,4 @@ void escribeFichero(string ContestName, string path, string nameJson);
 /// <summary>
 /// Función encargada de obtener los parametros necesarios para crear el JSon de configuración.
 /// </summary>
-void crearConfiguracion(string contestName);
-
-
-/// <summary>
-/// Función encargada de comprobar si existe una Scene 
-/// </summary>
-/// <param name="collectionName">Nombre de la colección</param>
-/// <returns>True si existe la coleccion, False en otro caso</returns>
-bool existeSceneCollection(string collectionName);
-
-
-
-string constestNameUnique(string contestName);
-string adaptaNombreFichero(string name);
-string nameJsonUnique(string name, string collection_path);
+void crearConfiguracion();
