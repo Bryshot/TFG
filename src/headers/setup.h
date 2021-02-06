@@ -2,9 +2,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <set>
+#include <sstream>
+#include <filesystem>
 #include <obs-frontend-api.h>
-#include "../importers/importers.hpp"
-#include "../obs-app.hpp"
+#include <util/platform.h>
+
 
 using namespace std;
 
@@ -75,4 +78,11 @@ void escribeFichero(string ContestName, string path, string nameJson);
 /// <summary>
 /// Función encargada de obtener los parametros necesarios para crear el JSon de configuración.
 /// </summary>
-void crearConfiguracion();
+void crearConfiguracion(string contestName);
+
+
+string makeUniqueName(string name);
+
+string makeUniqueFileName(string name,string path);
+
+string makeFileName(string name);

@@ -312,8 +312,6 @@ void SceneSwitcher::on_importSettings_clicked()
 
 void SceneSwitcher::on_importUrls_clicked() {
 
-	std::lock_guard<std::mutex> lock(switcher->m);
-
 	QString directory = QFileDialog::getOpenFileName(
 		this, tr("Import AutoProducer settings from file ..."),
 		QDir::currentPath(), tr("Text files (*.txt)"));
@@ -334,6 +332,12 @@ void SceneSwitcher::on_importUrls_clicked() {
 	Msgbox.exec();
 	switcher->importedUrls = true;
 	close();
+}
+
+void SceneSwitcher::on_createSetup_clicked() {
+	//std::lock_guard<std::mutex> lock(switcher->m);
+
+	crearConfiguracion(switcher->contestName);
 }
 
 void SceneSwitcher::on_contestName_textChanged(const QString &text) {

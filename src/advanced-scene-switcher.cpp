@@ -188,24 +188,9 @@ void SwitcherData::Thread()
 		if (autoStartEnable) 
 			autoStartStreamRecording();
 
-		source = obs_frontend_get_current_scene();
-		nombreEscena = obs_source_get_name(source);
-		
-		if (nombreEscena == "TeamView") {
-			obs_data_t *dataScreen = obs_source_get_settings(switcher->screenTeam);
-			obs_data_t *dataCam = obs_source_get_settings(switcher->camTeam);
-
-			obs_data_set_string(dataScreen, "url", "https://obsproject.com/browser-source");
-			obs_data_set_string(dataCam, "url", "https://obsproject.com/browser-source");
-
-			obs_source_update(switcher->screenTeam, dataScreen);
-			obs_source_update(switcher->camTeam,dataScreen);
-		}
-		else if (nombreEscena == "ClassificationView") {
-			//No hay que hacer cambios de itemScene pero puede que se tenga que hacer un cambio de escena
-		
-		} 
-
+		/// <summary>
+		/// Decisor
+		/// </summary>
 
 		if (sceneChangedDuringWait()) //scene might have changed during the sleep
 		{
@@ -260,7 +245,7 @@ void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
 	obs_source_release(source);
 }
 
-void switchUrl() {
+void switchUrl(string urlScreen, string urlCam) {
 	obs_source_t *currentSource = obs_frontend_get_current_scene();
 	string nombreEscena = obs_source_get_name(currentSource);
 
@@ -271,13 +256,12 @@ void switchUrl() {
 			obs_source_get_settings(switcher->camTeam);
 
 		obs_data_set_string(dataScreen, "url",
-				    "https://obsproject.com/browser-source");
+				    urlScreen.c_str());
 		obs_data_set_string(dataCam, "url",
-				    "https://obsproject.com/browser-source");
+				    urlCam.c_str());
 
 		obs_source_update(switcher->screenTeam, dataScreen);
 		obs_source_update(switcher->camTeam, dataScreen);
-	} else if (nombreEscena == "ClassificationView") {
 	}
 }
 

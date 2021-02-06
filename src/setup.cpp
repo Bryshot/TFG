@@ -222,7 +222,10 @@ void crearConfiguracion(string contestName) {
 
 	string path, nameJson;
 	char dst[512];
-	char **collections;
+	os_get_config_path(dst, 512, "obs-studio/basic/scenes/");
+	string perfilActual = obs_frontend_get_current_scene_collection();
+	path = string(dst) + '/' + perfilActual + ".json";
+	/*char **collections;
 	bool exist = false;
 	collections = obs_frontend_get_scene_collections();
 
@@ -245,6 +248,139 @@ void crearConfiguracion(string contestName) {
 	}
 		
 	//obs_frontend_set_current_scene_collection(contestName.c_str());
-	string temp = obs_frontend_get_current_scene_collection();
+	string temp = obs_frontend_get_current_scene_collection();*/
+
+	string name = makeUniqueName(contestName);
+	string fileName = makeUniqueFileName(contestName, dst);
+	obs_frontend_add_scene_collection(name.c_str());
+	//escribeFichero(name, path, fileName);
+	obs_frontend_set_current_scene_collection(name.c_str());
 }
 
+string makeUniqueName(string name)
+{
+	std::set<std::string> names;
+	char **names_raw = obs_frontend_get_scene_collections();
+
+	for (char **ptr = names_raw; *ptr != nullptr; ptr++) {
+		names.emplace(*ptr);
+	}
+
+	bfree(names_raw);
+
+	if (names.find(name) != names.end()) {
+		std::stringstream sstr;
+
+		// Name already exists, make it unique.
+		for (size_t idx = 1; true; idx++) {
+			sstr.str(std::string());
+			sstr << name;
+			sstr << " (" << idx << ")";
+			std::string test = sstr.str();
+			if (names.find(test) == names.end())
+				return test;
+		}
+	}
+	return name;
+}
+
+string makeUniqueFileName(string name,string path)
+{
+	string file_name = makeFileName(name);
+	filesystem::path file_path = std::filesystem::path(path)
+			    .append(file_name)
+			    .concat(".json");
+
+	if (std::filesystem::exists(file_path)) {
+		std::stringstream sstr;
+
+		// Name already exists, make it unique.
+		for (size_t idx = 1; true; idx++) {
+			sstr.str(std::string());
+			sstr << idx << ".json";
+			file_path = std::filesystem::path(path)
+					    .append(file_name)
+					    .concat(sstr.str());
+			if (!std::filesystem::exists(file_path)) {
+				break;
+			}
+		}
+	}
+	return file_path.string();
+}
+
+
+string makeFileName(string name)
+{
+	size_t base_len = name.length();
+	size_t len = os_utf8_to_wcs(name.data(), base_len, nullptr, 0);
+	std::wstring wfile;
+
+	if (!len)
+		return name;
+
+	wfile.resize(len);
+	os_utf8_to_wcs(name.data(), base_len, &wfile[0], len + 1);
+
+	for (size_t i = wfile.size(); i > 0; i--) {
+		size_t im1 = i - 1;
+
+		if (iswspace(wfile[im1])) {
+			wfile[im1] = '_';
+		} else if (wfile[im1] != '_' && !iswalnum(wfile[im1])) {
+			wfile.erase(im1, 1);
+		}
+	}
+
+	if (wfile.size() == 0)
+		wfile = L"characters_only";
+
+	len = os_wcs_to_utf8(wfile.c_str(), wfile.size(), nullptr, 0);
+	if (!len)
+		return name;
+
+	name.resize(len);
+	os_wcs_to_utf8(wfile.c_str(), wfile.size(), name.data(), len + 1);
+
+	return name;
+}
+
+
+void make_sceneOrder(obs_data_t *data) {
+
+	obs_data_array_t *sceneOrder =
+		obs_data_array_create();
+
+	obs_data_array_erase(sceneOrder, 0);
+
+	obs_data_t *obj = obs_data_create();
+	obs_data_set_string(obj, "name", "TeamView");
+	obs_data_t *obj2 = obs_data_create();
+	obs_data_set_string(obj, "name", "ProblemResolutionView");
+	obs_data_t *obj3 = obs_data_create();
+	obs_data_set_string(obj, "name", "ClassificationView");
+
+
+	obs_data_array_push_back(sceneOrder, obj);
+	obs_data_array_push_back(sceneOrder, obj2);
+	obs_data_array_push_back(sceneOrder, obj3);
+
+	obs_data_set_array(data, "scene_order", sceneOrder);
+}
+
+void make_sources_obj(){
+
+
+}
+
+
+
+
+void make_source_settings(obs_data_t* data ,string url, int height, int width) {
+	obs_data_t *setting = obs_data_create();
+	obs_data_set_int(setting, "height", height);
+	obs_data_set_string(setting, "url", "ProblemResolutionView");
+	obs_data_set_int(setting, "width", width);
+
+	obs_data_set_obj(data, "settings", setting);
+}

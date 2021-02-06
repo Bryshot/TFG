@@ -70,6 +70,8 @@ public slots:
 
 	void on_importUrls_clicked();
 
+	void on_createSetup_clicked();
+
 	void on_contestName_textChanged(const QString &text);
 
 	void on_sceneTransitions_currentRowChanged(int idx);

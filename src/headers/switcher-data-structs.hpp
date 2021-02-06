@@ -38,7 +38,7 @@ struct SwitcherData {
 	bool tansitionOverrideOverride = false;
 	bool importedUrls = false;
 
-	string contestName;
+	string contestName = "Contest";
 	int interval = default_interval;
 
 	obs_source_t *waitScene = NULL;
