@@ -335,7 +335,6 @@ void SceneSwitcher::on_importUrls_clicked() {
 }
 
 void SceneSwitcher::on_createSetup_clicked() {
-	//std::lock_guard<std::mutex> lock(switcher->m);
 
 	crearConfiguracion(switcher->contestName);
 }

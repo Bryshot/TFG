@@ -1,13 +1,10 @@
 #pragma once
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <set>
 #include <sstream>
 #include <filesystem>
 #include <obs-frontend-api.h>
 #include <util/platform.h>
-
 
 using namespace std;
 
@@ -17,72 +14,39 @@ const int camHeight = 400;
 const int camWidth = 600;
 
 /// <summary>
-/// Función encargada de crear la sección correspondiente a los itemsScene en Json
-/// </summary>
-/// <param name="numItemsScene">, número de itemsScenes</param>
-/// <param name="nameSources">, lista de nombres de los itemsScene</param>
-void escribirItemScenes(int numItemsScene, string nameItemsScenes[]);
-
-/// <summary>
-///  Función encargada de crear la sección correspondiente a las escenas en el Json
-/// </summary>
-/// <param name="numSceneItems">, número de itemsScenes</param>
-/// <param name="namesSources">, la lista de nombres de los itemsScene</param>
-/// <param name="nameScene">, nombre de la escena</param>
-void escribirEscena(int numSceneItems, string namesSources[], string nameScene);
-
-/// <summary>
-/// Función encargada de crear las fuentes (de tipo URL) en el Json
-/// </summary>
-/// <param name="name">, nombre de la fuente</param>
-/// <param name="url">, direccion url a la que apunta</param>
-/// <param name="height">, alto de la fuente</param>
-/// <param name="width">, ancho de la fuente</param>
-/// <param name="ultimo">, si es la ultima fuente del Json</param>
-void escribirFuenteURL(string name, string url, int height, int width,
-                       bool ultimo);
-
-/// <summary>
-/// Función encargada de escribir la seccion de sceneOrden en el Json
-/// </summary>
-void escribeEscenasOrden();
-
-/// <summary>
-/// Funcion general encargada de escribir la sección de sources del Json
-/// </summary>
-void escribeSources();
-
-/// <summary>
-/// Función que adelanta una linea del fichero de entrada ignorando la entrada
-/// </summary>
-void saltarLinea();
-
-/// <summary>
-///  Función encargada de avanzar en el fichero de entrada hasta encontrar el token, que si escribe lo indica, se escribe en el fichero de salida
-/// </summary>
-/// <param name="token">, cadena hasta la que avanzar</param>
-/// <param name="escribe">, si se debe escribir o no lo que se avance en el fichero de entrada</param>
-/// <returns></returns>
-string continuarHastaToken(string token, bool escribe);
-
-
-/// <summary>
-/// Función general que se encarga de escribir un Json adecuado para la realización del torneo
-/// </summary>
-/// <param name="ContestName">, nombre de la colección de escenas dentro del OBS</param>
-/// <param name="path">, dirección del Json que representa a la colección previa de escenas</param>
-/// <param name="nameJson">, nombre del archivo Json que se va a crear</param>
-void escribeFichero(string ContestName, string path, string nameJson);
-
-
-/// <summary>
 /// Función encargada de obtener los parametros necesarios para crear el JSon de configuración.
 /// </summary>
 void crearConfiguracion(string contestName);
 
-
+/// <summary>
+/// Función de utilidad encargada de crear un nombre de sceneCollection único.
+/// </summary>
+/// <param name="name">Nombre original</param>
+/// <returns>Nombre original, o en caso de no ser único, una versión modificada de este</returns>
 string makeUniqueName(string name);
 
+/// <summary>
+/// Función de utilidad encargada de crear un nombre de fichero para la sceneCollection único.
+/// </summary>
+/// <param name="name">Nombre original</param>
+/// <param name="path">Ruta donde se guardan por defecto las sceneCollection</param>
+/// <returns>Nombre original, o en caso de no ser único, una versión modificada de este</returns>
 string makeUniqueFileName(string name,string path);
 
+
+/// <summary>
+/// Función de utilidad que convierte el nombre de una sceneCollection a su equivalente en fichero.
+/// </summary>
+/// <param name="name">Nombre de la sceneCollection</param>
+/// <returns>Nombre del fichero</returns>
 string makeFileName(string name);
+
+
+/// <summary>
+/// Función encargada de añadir las settings a una fuente
+/// </summary>
+/// <param name="data">, donde se añade</param>
+/// <param name="url"> de la fuente</param>
+/// <param name="height"> de la fuente</param>
+/// <param name="width"> de la fuente</param>
+void make_source_settings(obs_data_t *data, string url, int height, int width);
