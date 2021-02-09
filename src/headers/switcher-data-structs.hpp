@@ -38,6 +38,10 @@ struct SwitcherData {
 	bool tansitionOverrideOverride = false;
 	bool importedUrls = false;
 
+	string urlCam = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
+	string urlScreen = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
+	string urlClassification = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
+
 	string contestName = "Contest";
 	int interval = default_interval;
 

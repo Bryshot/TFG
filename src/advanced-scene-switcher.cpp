@@ -89,7 +89,7 @@ void SceneSwitcher::loadUI()
 }
 
 
-bool EnumSources(void *param, obs_source_t *source)
+/*bool EnumSources(void *param, obs_source_t *source)
 {
 	string temp = obs_source_get_name(source);
 	if (temp == "screenTeam")
@@ -100,10 +100,13 @@ bool EnumSources(void *param, obs_source_t *source)
 		switcher->screenClassification = source;
 	else if (temp == "ClassificationView")
 		switcher->ClassificationView = source;
-	
+	else if (temp == "Escena") {
+		obs_source_remove(source);
+		return false;
+	}
 	obs_source_addref(source);
 	return true;
-}
+}*/
 
 /********************************************************************************
  * Saving and loading the settings
@@ -163,7 +166,10 @@ void SwitcherData::Thread()
 	obs_sceneitem_t *itemScene;
 	obs_data *data;
 
-	obs_enum_sources(EnumSources, nullptr);
+	obs_source *escen = obs_frontend_get_current_scene();
+	obs_source_remove(escen);
+	//obs_enum_sources(EnumSources, nullptr);
+	
 	while (true) {
 	startLoop:
 		std::unique_lock<std::mutex> lock(m);
@@ -261,7 +267,7 @@ void switchUrl(string urlScreen, string urlCam) {
 				    urlCam.c_str());
 
 		obs_source_update(switcher->screenTeam, dataScreen);
-		obs_source_update(switcher->camTeam, dataScreen);
+		obs_source_update(switcher->camTeam, dataCam);
 	}
 }
 

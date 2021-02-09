@@ -330,13 +330,30 @@ void SceneSwitcher::on_importUrls_clicked() {
 	QMessageBox Msgbox;
 	Msgbox.setText("AutoProducer urls imported successfully");
 	Msgbox.exec();
+
+	switcher->urlScreen = switcher->urlsContest.urlsTeams[0].urlScreen;
+	switcher->urlCam = switcher->urlsContest.urlsTeams[0].urlCamara;
+	switcher->urlClassification = switcher->urlsContest.urlClassification;
+
 	switcher->importedUrls = true;
+
+	obs_data_t *dataScreen = obs_source_get_settings(switcher->screenTeam);
+	obs_data_t *dataCam = obs_source_get_settings(switcher->camTeam);
+	obs_data_t *dataClassification = obs_source_get_settings(switcher->screenClassification);
+
+	obs_data_set_string(dataScreen, "url", switcher->urlScreen.c_str());
+	obs_data_set_string(dataCam, "url", switcher->urlCam.c_str());
+	obs_data_set_string(dataClassification, "url",switcher->urlClassification.c_str());
+
+	obs_source_update(switcher->screenTeam, dataScreen);
+	obs_source_update(switcher->camTeam, dataCam);
+	obs_source_update(switcher->screenClassification, dataCam);
 	close();
 }
 
 void SceneSwitcher::on_createSetup_clicked() {
-
-	crearConfiguracion(switcher->contestName);
+	crearConfiguracion(switcher->contestName,switcher);
+        
 }
 
 void SceneSwitcher::on_contestName_textChanged(const QString &text) {

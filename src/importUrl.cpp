@@ -22,7 +22,9 @@ UrlsContest importUrlContest(string path)
 	  contest.numTeams = -1;
 	  return contest;
   }
-  contest.numTeams = std::stoi(buffer); // Obtener del archivo
+  contest.numTeams = std::stoi(buffer); 
+  getline(FicheroUrls, buffer);
+  contest.urlClassification = buffer;
   for (int i = 0; i < contest.numTeams; i++) {
     asignaNombreEquipo(contest.urlsTeams, i);
     asignaCamaraEquipo(contest.urlsTeams, i);

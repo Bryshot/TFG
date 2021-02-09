@@ -1,12 +1,12 @@
 #include "headers/setup.h"
 
-void crearConfiguracion(string contestName) {
+#include <obs-frontend-api.h>
 
+void crearConfiguracion(string contestName, SwitcherData *switcher)
+{
 	string path, nameJson;
-	string url = "https://player.twitch.tv/"
-		"?channel=snoodyboo&enableExtensions=true&muted=false&"
-		"parent=twitch.tv&player=popfout&volume=0.46000000834465027";
 	char dst[512];
+
 	os_get_config_path(dst, 512, "obs-studio/basic/scenes/");
 
 	string name = makeUniqueName(contestName);
@@ -18,28 +18,40 @@ void crearConfiguracion(string contestName) {
 	fileName = makeUniqueFileName(name, dst);
 	obs_frontend_set_current_scene_collection(name.c_str());
 
-	obs_scene *teamViewer = obs_scene_create("TeamViewer");
+	struct obs_frontend_source_list scenes = {};
+	obs_frontend_get_scenes(&scenes);
+
+	for (size_t i = 0; i < scenes.sources.num; i++) {
+		obs_source_t *source = scenes.sources.array[i];
+		string temp = obs_source_get_name(source);
+		if (temp == "Escena") {
+			obs_source_set_name(source, "ProblemResolutionView");
+		}
+	}
+
+	obs_frontend_source_list_free(&scenes);
+
+	obs_scene *teamViewer = obs_scene_create("TeamView");
 	obs_scene *classificationView = obs_scene_create("ClassificationView");
-	obs_scene *problemResolutionView = obs_scene_create("ProblemResolutionView");
 
 	obs_data_t *settingsCam = obs_data_create();
-	make_source_settings(settingsCam, url, camHeight, camWidth);
-	obs_source *camTeam = obs_source_create("browser_source","camTeam",settingsCam,NULL);
+	make_source_settings(settingsCam, switcher->urlCam, camHeight, camWidth);
+	switcher->camTeam = obs_source_create("browser_source","camTeam",settingsCam,NULL);
 
 	obs_data_t *settingsScreen = obs_data_create();
-	make_source_settings(settingsScreen, url, fullscreenHeight, fullscreenWidth);
-	obs_source *screenTeam = obs_source_create("browser_source", "screenTeam",
-						settingsScreen, NULL);
+	make_source_settings(settingsScreen, switcher->urlScreen, fullscreenHeight, fullscreenWidth);
+	switcher->screenTeam = obs_source_create("browser_source", "screenTeam",settingsScreen, NULL);
 
 	obs_data_t *settingsClassification = obs_data_create();
-	make_source_settings(settingsClassification, url, fullscreenHeight, fullscreenWidth);
-	obs_source *screenClassification = obs_source_create("browser_source", "screenClassification", settingsClassification, NULL);
+	make_source_settings(settingsClassification, switcher->urlClassification, fullscreenHeight, fullscreenWidth);
+	switcher->screenClassification = obs_source_create("browser_source", "screenClassification", settingsClassification, NULL);
 
-	obs_scene_add(teamViewer, camTeam);
-	obs_scene_add(teamViewer, screenTeam);
-	obs_scene_add(classificationView, screenClassification);
-
-	//obs_data_save_json(contest, fileName.c_str());
+	obs_scene_add(teamViewer, switcher->screenTeam);
+	obs_scene_add(teamViewer, switcher->camTeam);
+	
+	obs_scene_add(classificationView, switcher->screenClassification);
+	
+	obs_frontend_set_current_preview_scene(obs_scene_get_source(teamViewer));
 }
 
 string makeUniqueName(string name)
@@ -131,11 +143,15 @@ string makeFileName(string name)
 
 void make_source_settings(obs_data_t* data ,string url, int height, int width) {
 
-	obs_data_t *setting = obs_data_create();
+	/*obs_data_t *setting = obs_data_create();
 
 	obs_data_set_int(setting, "height", height);
 	obs_data_set_string(setting, "url", url.c_str());
-	obs_data_set_int(setting, "width", width);
+	obs_data_set_int(setting, "width", width);*/
 
-	obs_data_set_obj(data, "settings", setting);
+	obs_data_set_int(data, "height", height);
+	obs_data_set_string(data, "url", url.c_str());
+	obs_data_set_int(data, "width", width);
+
+	//obs_data_set_obj(data, "settings", setting);
 }

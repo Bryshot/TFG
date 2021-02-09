@@ -18,6 +18,7 @@ typedef struct{
 typedef struct  {
  UrlsTeam urlsTeams[MAX_NUM_TEAMS];
  int numTeams;
+ string urlClassification;
 } UrlsContest;
 
 void asignaNombreEquipo(UrlsTeam teams[], int i);

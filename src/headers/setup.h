@@ -5,6 +5,9 @@
 #include <filesystem>
 #include <obs-frontend-api.h>
 #include <util/platform.h>
+#include <src/headers/switcher-data-structs.hpp>
+
+
 
 using namespace std;
 
@@ -16,7 +19,7 @@ const int camWidth = 600;
 /// <summary>
 /// Función encargada de obtener los parametros necesarios para crear el JSon de configuración.
 /// </summary>
-void crearConfiguracion(string contestName);
+void crearConfiguracion(string contestName,SwitcherData* switcher);
 
 /// <summary>
 /// Función de utilidad encargada de crear un nombre de sceneCollection único.
