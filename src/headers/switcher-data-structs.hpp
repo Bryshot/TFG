@@ -60,7 +60,8 @@ struct SwitcherData {
 	OBSSource screenTeamDummy;
 	OBSSource camTeamDummy;
 	OBSSource screenClassification;
-	OBSSource ClassificationView;
+	OBSSource textRotative;
+	OBSSource filter;
 
 	obs_sceneitem_t *camTeamDummyItem;
 	obs_sceneitem_t *screenTeamDummyItem;

@@ -15,6 +15,7 @@ const int fullscreenWidth = 1920;
 const int fullscreenHeight = 1080;
 const int camHeight = 400;
 const int camWidth = 600;
+const string fuente = "Arial";
 
 /// <summary>
 /// Función encargada de obtener los parametros necesarios para crear el JSon de configuración.
@@ -46,10 +47,26 @@ string makeFileName(string name);
 
 
 /// <summary>
-/// Función encargada de añadir las settings a una fuente
+/// Función encargada de crear las settings de una browser source
 /// </summary>
 /// <param name="data">, donde se añade</param>
 /// <param name="url"> de la fuente</param>
 /// <param name="height"> de la fuente</param>
 /// <param name="width"> de la fuente</param>
 void make_source_settings(obs_data_t *data, string url, int height, int width);
+
+/// <summary>
+/// Función encargada de añadir las settings de una text source
+/// </summary>
+/// <param name="data">, donde se añade</param>
+/// <param name="text"> de la fuente</param>
+/// <param name="size">  altura de la fuente</param>
+/// <param name="valign"> a donde esta alinineada la fuente</param>
+void make_text_settings(obs_data_t *data, string text, int size, string valign);
+
+/// <summary>
+///  Función encargada de añadir las settings de un scroll filter
+/// </summary>
+/// <param name="data">, donde se añade</param>
+/// <param name="rotationSpeed">, la velocidad de rotación en el eje X</param>
+void make_filter_settings(obs_data_t *data, int rotationSpeed);

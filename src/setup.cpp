@@ -7,6 +7,8 @@ void crearConfiguracion(string contestName, SwitcherData *switcher)
 	//Declaración de variables
 	string path, nameJson;
 	char dst[512];
+	struct vec2 pos = vec2();
+	vec2_set(&pos, 0.0, fullscreenHeight - 48); //Cambiar por size
 
 	//Ruta absoluta
 	os_get_config_path(dst, 512, "obs-studio/basic/scenes/");
@@ -35,7 +37,6 @@ void crearConfiguracion(string contestName, SwitcherData *switcher)
 	obs_scene *teamViewer = obs_scene_create("TeamView");
 	obs_scene *classificationView = obs_scene_create("ClassificationView");
 
-
 	obs_data_t *settingsCam = obs_data_create();
 	make_source_settings(settingsCam, switcher->urlCam, camHeight, camWidth);
 	switcher->camTeam = obs_source_create("browser_source","camTeam",settingsCam,NULL);
@@ -56,14 +57,28 @@ void crearConfiguracion(string contestName, SwitcherData *switcher)
 	make_source_settings(settingsClassification, switcher->urlClassification, fullscreenHeight, fullscreenWidth);
 	switcher->screenClassification = obs_source_create("browser_source", "screenClassification", settingsClassification, NULL);
 
+	obs_data_t *settingsText = obs_data_create();
+	make_text_settings(settingsText, "Hola soy un texto rotativo", 48,"bottom");//Sustituir por texto y tamaño por parametros;
+	switcher->textRotative = obs_source_create("text_gdiplus", "textRotative", settingsText,NULL);
+
+	obs_data_t *settingsFilter = obs_data_create();
+	make_filter_settings(settingsFilter, 100);//Sustituir por parametro
+	switcher->filter = obs_source_create("scroll_filter", "filter", settingsFilter, NULL);
+
+	obs_source_filter_add(switcher->textRotative, switcher->filter);
+
 	//Adicción de las escenas y fuentes a la configuración
-	switcher->screenTeamItem = obs_scene_add(teamViewer,switcher->screenTeam);
-	switcher->camTeamItem = obs_scene_add(teamViewer, switcher->camTeam);
 
 	switcher->screenTeamDummyItem = obs_scene_add(teamViewer, switcher->screenTeamDummy);
 	switcher->camTeamDummyItem = obs_scene_add(teamViewer, switcher->camTeamDummy);
-	
+	switcher->screenTeamItem = obs_scene_add(teamViewer, switcher->screenTeam);
+	switcher->camTeamItem = obs_scene_add(teamViewer, switcher->camTeam);
+	obs_sceneitem_t *item = obs_scene_add(teamViewer, switcher->textRotative);
+	obs_sceneitem_set_pos(item, &pos);
+
 	obs_scene_add(classificationView, switcher->screenClassification);
+	item = obs_scene_add(classificationView, switcher->textRotative);
+	obs_sceneitem_set_pos(item, &pos);
 
 	//Parametros adicionales de la configuración
 	obs_source_set_muted(switcher->screenClassification, true);
@@ -166,4 +181,29 @@ void make_source_settings(obs_data_t* data ,string url, int height, int width) {
 	obs_data_set_string(data, "url", url.c_str());
 	obs_data_set_int(data, "width", width);
 	obs_data_set_bool(data, "reroute_audio", true);
+}
+
+
+void make_text_settings(obs_data_t* data, string text, int size,string valign)
+{
+	obs_data_set_int(data, "bk_opacity",100);
+	obs_data_set_bool(data, "extents", true);
+	obs_data_set_int(data, "extents_cx", fullscreenWidth);
+	obs_data_set_int(data, "extents_cy",size);
+
+	obs_data_t *font = obs_data_create();
+	obs_data_set_string(font, "face", fuente.c_str()); 
+	obs_data_set_int(font, "flags", 0);		
+	obs_data_set_int(font, "size", size);
+	obs_data_set_string(font, "style", "Normal"); 
+
+	obs_data_set_obj(data, "font", font);
+	obs_data_set_string(data, "text", text.c_str());
+	obs_data_set_string(data, "valign", valign.c_str());
+}
+
+
+void make_filter_settings(obs_data_t* data, int rotationSpeed) {
+
+	obs_data_set_int(data, "speed_x", rotationSpeed);
 }
