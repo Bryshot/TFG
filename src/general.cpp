@@ -352,8 +352,7 @@ void SceneSwitcher::on_importUrls_clicked() {
 }
 
 void SceneSwitcher::on_createSetup_clicked() {
-	crearConfiguracion(switcher->contestName,switcher);
-        
+	crearConfiguracion(switcher->contestName, switcher);
 }
 
 void SceneSwitcher::on_contestName_textChanged(const QString &text) {
@@ -440,7 +439,6 @@ void SwitcherData::saveGeneralSettings(obs_data_t *obj)
 
 	obs_data_set_int(obj, "generalTabPos", switcher->tabOrder[0]);
 	obs_data_set_int(obj, "transitionTabPos", switcher->tabOrder[1]);
-	obs_data_set_int(obj, "sequenceTabPos", switcher->tabOrder[2]);
 }
 
 void SwitcherData::loadGeneralSettings(obs_data_t *obj)
@@ -484,14 +482,11 @@ void SwitcherData::loadGeneralSettings(obs_data_t *obj)
 
 	obs_data_set_default_int(obj, "generalTabPos", 0);
 	obs_data_set_default_int(obj, "transitionTabPos", 1);
-	obs_data_set_default_int(obj, "sequenceTabPos", 2);
 
 	switcher->tabOrder.emplace_back(
 		(int)(obs_data_get_int(obj, "generalTabPos")));
 	switcher->tabOrder.emplace_back(
 		(int)(obs_data_get_int(obj, "transitionTabPos")));
-	switcher->tabOrder.emplace_back(
-		(int)(obs_data_get_int(obj, "sequenceTabPos")));
 }
 
 void SceneSwitcher::setupGeneralTab()

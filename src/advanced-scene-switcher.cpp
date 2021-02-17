@@ -83,30 +83,10 @@ void SceneSwitcher::loadUI()
 	setupGeneralTab();
 	setupTransitionsTab();
 	setTabOrder();
-	//crearConfiguracion();
 
 	loading = false;
 }
 
-
-/*bool EnumSources(void *param, obs_source_t *source)
-{
-	string temp = obs_source_get_name(source);
-	if (temp == "screenTeam")
-		switcher->screenTeam = source;
-	else if (temp == "camTeam")
-		switcher->camTeam = source;
-	else if (temp == "screenClassification")
-		switcher->screenClassification = source;
-	else if (temp == "ClassificationView")
-		switcher->ClassificationView = source;
-	else if (temp == "Escena") {
-		obs_source_remove(source);
-		return false;
-	}
-	obs_source_addref(source);
-	return true;
-}*/
 
 /********************************************************************************
  * Saving and loading the settings
@@ -160,19 +140,13 @@ void SwitcherData::Thread()
 {
 	blog(LOG_INFO, "AutoProducer started");
 	int sleep = 0;
-	obs_source_t *source;
-	string nombreEscena;
-	obs_scene_t *escena;
-	obs_sceneitem_t *itemScene;
-	obs_data *data;
+	std::unique_lock<std::mutex> lock(m);
+	switchUrl(
+		"https://player.twitch.tv/?channel=akawonder&enableExtensions=true&muted=true&parent=twitch.tv&player=popout&volume=0.50",
+		"https://player.twitch.tv/?channel=akawonder&enableExtensions=true&muted=true&parent=twitch.tv&player=popout&volume=0.50", lock);
 
-	obs_source *escen = obs_frontend_get_current_scene();
-	obs_source_remove(escen);
-	//obs_enum_sources(EnumSources, nullptr);
-	
 	while (true) {
 	startLoop:
-		std::unique_lock<std::mutex> lock(m);
 		bool match = false;
 		OBSWeakSource scene;
 		OBSWeakSource transition;
@@ -251,23 +225,52 @@ void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
 	obs_source_release(source);
 }
 
-void switchUrl(string urlScreen, string urlCam) {
-	obs_source_t *currentSource = obs_frontend_get_current_scene();
+void SwitcherData::switchUrl(string urlScreen, string urlCam,
+	       unique_lock<mutex> &lock)
+{
+	obs_source_t *currentSource = obs_frontend_get_current_preview_scene();
 	string nombreEscena = obs_source_get_name(currentSource);
 
 	if (nombreEscena == "TeamView") {
-		obs_data_t *dataScreen =
-			obs_source_get_settings(switcher->screenTeam);
-		obs_data_t *dataCam =
-			obs_source_get_settings(switcher->camTeam);
 
-		obs_data_set_string(dataScreen, "url",
-				    urlScreen.c_str());
-		obs_data_set_string(dataCam, "url",
-				    urlCam.c_str());
+		obs_source_t *screen;
+		obs_source_t *cam;
 
-		obs_source_update(switcher->screenTeam, dataScreen);
-		obs_source_update(switcher->camTeam, dataCam);
+		if (switcher->usingDummy) {
+			screen = switcher->screenTeam;
+			cam = switcher->camTeam;
+		}
+		else
+		{
+			screen = switcher->screenTeamDummy;
+			cam = switcher->camTeamDummy;
+		}
+		obs_data_t *dataScreen = obs_source_get_settings(screen);
+		obs_data_t *dataCam = obs_source_get_settings(cam);
+
+		obs_data_set_string(dataScreen, "url", urlScreen.c_str());
+		obs_data_set_string(dataCam, "url",urlCam.c_str());
+
+		obs_source_update(screen, dataScreen);
+		obs_source_update(cam, dataCam);
+
+		cv.wait_for(lock, chrono::milliseconds(5000));
+
+		if (switcher->usingDummy)
+		{
+			obs_sceneitem_set_visible(switcher->screenTeamDummyItem,false);
+			obs_sceneitem_set_visible(switcher->camTeamDummyItem, false);
+			obs_sceneitem_set_visible(switcher->screenTeamItem,true);
+			obs_sceneitem_set_visible(switcher->camTeamItem, true);
+		}
+		else
+		{
+			obs_sceneitem_set_visible(switcher->screenTeamDummyItem,true);
+			obs_sceneitem_set_visible(switcher->camTeamDummyItem, true);
+			obs_sceneitem_set_visible(switcher->screenTeamItem, false);
+			obs_sceneitem_set_visible(switcher->camTeamItem, false);
+		}
+		switcher->usingDummy = !switcher->usingDummy;
 	}
 }
 

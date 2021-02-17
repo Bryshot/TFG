@@ -4,7 +4,10 @@
 #include <TlHelp32.h>
 #include <Psapi.h>
 
+///La funcionalidad de este fichero es implementar las funciones dependientes del SO, en concreto en este caso, las de Windows
+
 using namespace std;
+
 
 static bool GetWindowTitle(HWND window, string &title)
 {
@@ -59,6 +62,7 @@ void GetWindowList(vector<string> &windows)
 	}
 }
 
+
 // Overloaded
 void GetWindowList(QStringList &windows)
 {
@@ -91,7 +95,7 @@ void GetCurrentWindowTitle(string &title)
 	GetWindowTitle(window, title);
 }
 
-std::pair<int, int> getCursorPos()
+/*std::pair<int, int> getCursorPos()
 {
 	std::pair<int, int> pos(0, 0);
 	POINT cursorPos;
@@ -100,9 +104,9 @@ std::pair<int, int> getCursorPos()
 		pos.second = cursorPos.y;
 	}
 	return pos;
-}
+}*/
 
-bool isMaximized(std::string &title)
+/*bool isMaximized(std::string &title)
 {
 	RECT appBounds;
 	MONITORINFO monitorInfo = {0};
@@ -136,7 +140,7 @@ bool isMaximized(std::string &title)
 		}
 	}
 	return false;
-}
+}*/
 
 bool isFullscreen(std::string &title)
 {

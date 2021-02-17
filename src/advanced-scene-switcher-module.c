@@ -1,5 +1,7 @@
 #include <obs-module.h>
 
+///La funcionalidad de este fichero es conectar/desconectar el módulo del  plugin al obs.
+
 OBS_DECLARE_MODULE()
 
 void InitSceneSwitcher();

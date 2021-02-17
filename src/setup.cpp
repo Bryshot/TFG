@@ -4,20 +4,19 @@
 
 void crearConfiguracion(string contestName, SwitcherData *switcher)
 {
+	//Declaración de variables
 	string path, nameJson;
 	char dst[512];
 
+	//Ruta absoluta
 	os_get_config_path(dst, 512, "obs-studio/basic/scenes/");
 
+	//Nombre unico de fichero y de colección
 	string name = makeUniqueName(contestName);
 	string fileName = makeUniqueFileName(name, dst);
 	obs_frontend_add_scene_collection(name.c_str());
 
-	obs_data_t *contest = obs_data_create_from_json_file(fileName.c_str());
-	name = makeUniqueName(contestName);
-	fileName = makeUniqueFileName(name, dst);
-	obs_frontend_set_current_scene_collection(name.c_str());
-
+	//Cambio de nombre a la escena creada por default
 	struct obs_frontend_source_list scenes = {};
 	obs_frontend_get_scenes(&scenes);
 
@@ -26,13 +25,16 @@ void crearConfiguracion(string contestName, SwitcherData *switcher)
 		string temp = obs_source_get_name(source);
 		if (temp == "Escena") {
 			obs_source_set_name(source, "ProblemResolutionView");
+			break;
 		}
 	}
 
 	obs_frontend_source_list_free(&scenes);
 
+	//Creacion de las escenas y fuentes necesarias para la configuración
 	obs_scene *teamViewer = obs_scene_create("TeamView");
 	obs_scene *classificationView = obs_scene_create("ClassificationView");
+
 
 	obs_data_t *settingsCam = obs_data_create();
 	make_source_settings(settingsCam, switcher->urlCam, camHeight, camWidth);
@@ -42,15 +44,33 @@ void crearConfiguracion(string contestName, SwitcherData *switcher)
 	make_source_settings(settingsScreen, switcher->urlScreen, fullscreenHeight, fullscreenWidth);
 	switcher->screenTeam = obs_source_create("browser_source", "screenTeam",settingsScreen, NULL);
 
+	obs_data_t *settingsCamDummy = obs_data_create();
+	make_source_settings(settingsCamDummy, "", camHeight, camWidth);
+	switcher->camTeamDummy = obs_source_create("browser_source", "camTeamDummy", settingsCamDummy, NULL);
+
+	obs_data_t *settingsScreenDummy = obs_data_create();
+	make_source_settings(settingsScreenDummy, "", fullscreenHeight,fullscreenWidth);
+	switcher->screenTeamDummy = obs_source_create("browser_source", "screenTeamDummy", settingsScreenDummy, NULL);
+
 	obs_data_t *settingsClassification = obs_data_create();
 	make_source_settings(settingsClassification, switcher->urlClassification, fullscreenHeight, fullscreenWidth);
 	switcher->screenClassification = obs_source_create("browser_source", "screenClassification", settingsClassification, NULL);
 
-	obs_scene_add(teamViewer, switcher->screenTeam);
-	obs_scene_add(teamViewer, switcher->camTeam);
+	//Adicción de las escenas y fuentes a la configuración
+	switcher->screenTeamItem = obs_scene_add(teamViewer,switcher->screenTeam);
+	switcher->camTeamItem = obs_scene_add(teamViewer, switcher->camTeam);
+
+	switcher->screenTeamDummyItem = obs_scene_add(teamViewer, switcher->screenTeamDummy);
+	switcher->camTeamDummyItem = obs_scene_add(teamViewer, switcher->camTeamDummy);
 	
 	obs_scene_add(classificationView, switcher->screenClassification);
-	
+
+	//Parametros adicionales de la configuración
+	obs_source_set_muted(switcher->screenClassification, true);
+	obs_sceneitem_set_visible(switcher->screenTeamDummyItem, false);
+	obs_sceneitem_set_visible(switcher->camTeamDummyItem, false);
+
+	//Establecimiento de escena inicial
 	obs_frontend_set_current_preview_scene(obs_scene_get_source(teamViewer));
 }
 
@@ -142,16 +162,8 @@ string makeFileName(string name)
 }
 
 void make_source_settings(obs_data_t* data ,string url, int height, int width) {
-
-	/*obs_data_t *setting = obs_data_create();
-
-	obs_data_set_int(setting, "height", height);
-	obs_data_set_string(setting, "url", url.c_str());
-	obs_data_set_int(setting, "width", width);*/
-
 	obs_data_set_int(data, "height", height);
 	obs_data_set_string(data, "url", url.c_str());
 	obs_data_set_int(data, "width", width);
-
-	//obs_data_set_obj(data, "settings", setting);
+	obs_data_set_bool(data, "reroute_audio", true);
 }

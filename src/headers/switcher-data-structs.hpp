@@ -37,12 +37,14 @@ struct SwitcherData {
 	bool verbose = false;
 	bool tansitionOverrideOverride = false;
 	bool importedUrls = false;
+	bool usingDummy = false;
 
 	string urlCam = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
 	string urlScreen = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
 	string urlClassification = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
 
 	string contestName = "Contest";
+
 	int interval = default_interval;
 
 	obs_source_t *waitScene = NULL;
@@ -55,8 +57,15 @@ struct SwitcherData {
 	UrlsContest urlsContest;
 	OBSSource screenTeam;
 	OBSSource camTeam;
+	OBSSource screenTeamDummy;
+	OBSSource camTeamDummy;
 	OBSSource screenClassification;
 	OBSSource ClassificationView;
+
+	obs_sceneitem_t *camTeamDummyItem;
+	obs_sceneitem_t *screenTeamDummyItem;
+	obs_sceneitem_t *camTeamItem;
+	obs_sceneitem_t *screenTeamItem;
 
 	bool autoStopEnable = false;
 	OBSWeakSource autoStopScene;
@@ -108,6 +117,9 @@ struct SwitcherData {
 	void Thread();
 	void Start();
 	void Stop();
+
+	void switchUrl(string urlScreen, string urlCam,
+		       unique_lock<mutex> &lock);
 
 	bool sceneChangedDuringWait();
 	
