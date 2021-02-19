@@ -34,10 +34,6 @@ public:
 	int SceneTransitionsFindByData(const QString &scene1,
 				       const QString &scene2);
 	int DefaultTransitionsFindByData(const QString &scene);
-
-	void UpdateNonMatchingScene(const QString &name);
-	void UpdateAutoStopScene(const QString &name);
-	void UpdateAutoStartScene(const QString &name);
 	
 	void loadUI();
 	void populateSceneSelection(QComboBox *sel, bool addPrevious);
@@ -47,21 +43,14 @@ public:
 	void setTabOrder();
 
 public slots:
-	void on_noMatchDontSwitch_clicked();
-	void on_noMatchSwitch_clicked();
-	void on_noMatchRandomSwitch_clicked();
-	void on_startupBehavior_currentIndexChanged(int index);
-	void on_noMatchSwitchScene_currentTextChanged(const QString &text);
+
 	void on_checkInterval_valueChanged(int value);
+	void on_sizeRotativeText_valueChanged(int value);
+	void on_SpeedRotation_valueChanged(int value);
+
 	void on_toggleStartButton_clicked();
 	void on_tabMoved(int from, int to);
 
-	void on_autoStopSceneCheckBox_stateChanged(int state);
-	void on_autoStopScenes_currentTextChanged(const QString &text);
-
-	void on_autoStartSceneCheckBox_stateChanged(int state);
-	void on_autoStartType_currentIndexChanged(int index);
-	void on_autoStartScenes_currentTextChanged(const QString &text);
 
 	void on_verboseLogging_stateChanged(int state);
 
@@ -73,6 +62,7 @@ public slots:
 	void on_createSetup_clicked();
 
 	void on_contestName_textChanged(const QString &text);
+	void on_rotativeText_textChanged(const QString &text);
 
 	void on_sceneTransitions_currentRowChanged(int idx);
 	void on_transitionsAdd_clicked();
@@ -94,7 +84,6 @@ void GetWindowList(std::vector<std::string> &windows);
 void GetWindowList(QStringList &windows); // Overloaded
 void GetCurrentWindowTitle(std::string &title);
 bool isFullscreen(std::string &title);
-bool isMaximized(std::string &title);
 
 /********************************************************************************
  * Screenregion helper

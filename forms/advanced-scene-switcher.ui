@@ -119,32 +119,6 @@
           </spacer>
          </item>
          <item>
-          <spacer name="horizontalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
           <spacer name="horizontalSpacer_8">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -161,42 +135,6 @@
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout_4">
-         <item row="0" column="2">
-          <widget class="Line" name="line_13">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="10">
-          <spacer name="horizontalSpacer_47">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="5">
-          <spacer name="horizontalSpacer_52">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>10</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
          <item row="0" column="0">
           <layout class="QGridLayout" name="gridLayout_2">
            <item row="1" column="1">
@@ -251,156 +189,6 @@
            </item>
           </layout>
          </item>
-         <item row="0" column="4">
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_43">
-             <item>
-              <widget class="QRadioButton" name="noMatchDontSwitch">
-               <property name="text">
-                <string>Don't switch</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="2" column="2">
-            <layout class="QHBoxLayout" name="horizontalLayout_45">
-             <item>
-              <widget class="QRadioButton" name="noMatchRandomSwitch">
-               <property name="text">
-                <string>Switch to any scene in Random tab</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="1" column="2">
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QRadioButton" name="noMatchSwitch">
-               <property name="text">
-                <string>Switch to:</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QComboBox" name="noMatchSwitchScene">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>100</width>
-                 <height>0</height>
-                </size>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item row="1" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout_46">
-             <item>
-              <widget class="QLabel" name="label_2">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>If no switch condition is met</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="3">
-          <spacer name="horizontalSpacer_46">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>10</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="9">
-          <widget class="QComboBox" name="startupBehavior"/>
-         </item>
-         <item row="0" column="1">
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>10</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="7">
-          <spacer name="horizontalSpacer_53">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeType">
-            <enum>QSizePolicy::Fixed</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>10</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item row="0" column="6">
-          <widget class="Line" name="line_18">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="8">
-          <widget class="QLabel" name="label_64">
-           <property name="text">
-            <string>On startup:</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item>
@@ -413,25 +201,17 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_33">
          <item>
-          <widget class="QCheckBox" name="autoStopSceneCheckBox">
+          <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Automatically stop streaming/recording on scene</string>
+            <string>
+Rotating text content:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="autoStopScenes">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
+          <widget class="QLineEdit" name="rotativeText">
+           <property name="text">
+            <string>Default rotating text </string>
            </property>
           </widget>
          </item>
@@ -448,6 +228,10 @@
            </property>
           </spacer>
          </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_50">
          <item>
           <widget class="QLabel" name="label_3">
            <property name="text">
@@ -465,58 +249,93 @@
            </property>
           </widget>
          </item>
-        </layout>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_50">
-         <item>
-          <widget class="QCheckBox" name="autoStartSceneCheckBox">
-           <property name="text">
-            <string>Automatically start</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="autoStartType">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="label_65">
-           <property name="text">
-            <string>on scene</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="autoStartScenes">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>100</width>
-             <height>0</height>
-            </size>
-           </property>
-          </widget>
-         </item>
          <item>
           <spacer name="horizontalSpacer_55">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_6">
+           <property name="text">
+            <string>Speed of the rotation:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="SpeedRotation">
+           <property name="maximum">
+            <number>500</number>
+           </property>
+           <property name="singleStep">
+            <number>5</number>
+           </property>
+           <property name="value">
+            <number>100</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_6">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_10">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_9">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_7">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>

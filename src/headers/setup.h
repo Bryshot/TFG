@@ -7,8 +7,6 @@
 #include <util/platform.h>
 #include <src/headers/switcher-data-structs.hpp>
 
-
-
 using namespace std;
 
 const int fullscreenWidth = 1920;
@@ -20,7 +18,8 @@ const string fuente = "Arial";
 /// <summary>
 /// Función encargada de obtener los parametros necesarios para crear el JSon de configuración.
 /// </summary>
-void crearConfiguracion(string contestName,SwitcherData* switcher);
+/// <param name="switcher">Core del plugin</param>
+void crearConfiguracion(SwitcherData *switcher);
 
 /// <summary>
 /// Función de utilidad encargada de crear un nombre de sceneCollection único.

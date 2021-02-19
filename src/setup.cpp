@@ -2,19 +2,19 @@
 
 #include <obs-frontend-api.h>
 
-void crearConfiguracion(string contestName, SwitcherData *switcher)
+void crearConfiguracion( SwitcherData *switcher)
 {
 	//Declaración de variables
 	string path, nameJson;
 	char dst[512];
 	struct vec2 pos = vec2();
-	vec2_set(&pos, 0.0, fullscreenHeight - 48); //Cambiar por size
+	vec2_set(&pos, 0.0, fullscreenHeight - switcher->sizeRotativeText); //Cambiar por size
 
 	//Ruta absoluta
 	os_get_config_path(dst, 512, "obs-studio/basic/scenes/");
 
 	//Nombre unico de fichero y de colección
-	string name = makeUniqueName(contestName);
+	string name = makeUniqueName(switcher->contestName);
 	string fileName = makeUniqueFileName(name, dst);
 	obs_frontend_add_scene_collection(name.c_str());
 
@@ -42,7 +42,7 @@ void crearConfiguracion(string contestName, SwitcherData *switcher)
 	switcher->camTeam = obs_source_create("browser_source","camTeam",settingsCam,NULL);
 
 	obs_data_t *settingsScreen = obs_data_create();
-	make_source_settings(settingsScreen, switcher->urlScreen, fullscreenHeight, fullscreenWidth);
+	make_source_settings(settingsScreen, switcher->urlScreen, fullscreenHeight- switcher->sizeRotativeText, fullscreenWidth);
 	switcher->screenTeam = obs_source_create("browser_source", "screenTeam",settingsScreen, NULL);
 
 	obs_data_t *settingsCamDummy = obs_data_create();
@@ -50,19 +50,19 @@ void crearConfiguracion(string contestName, SwitcherData *switcher)
 	switcher->camTeamDummy = obs_source_create("browser_source", "camTeamDummy", settingsCamDummy, NULL);
 
 	obs_data_t *settingsScreenDummy = obs_data_create();
-	make_source_settings(settingsScreenDummy, "", fullscreenHeight,fullscreenWidth);
+	make_source_settings(settingsScreenDummy, "", fullscreenHeight - switcher->sizeRotativeText,fullscreenWidth);
 	switcher->screenTeamDummy = obs_source_create("browser_source", "screenTeamDummy", settingsScreenDummy, NULL);
 
 	obs_data_t *settingsClassification = obs_data_create();
-	make_source_settings(settingsClassification, switcher->urlClassification, fullscreenHeight, fullscreenWidth);
+	make_source_settings(settingsClassification,switcher->urlClassification,fullscreenHeight - switcher->sizeRotativeText,fullscreenWidth);
 	switcher->screenClassification = obs_source_create("browser_source", "screenClassification", settingsClassification, NULL);
 
 	obs_data_t *settingsText = obs_data_create();
-	make_text_settings(settingsText, "Hola soy un texto rotativo", 48,"bottom");//Sustituir por texto y tamaño por parametros;
+	make_text_settings(settingsText, switcher->textRotativeContent, switcher->sizeRotativeText, "bottom"); 
 	switcher->textRotative = obs_source_create("text_gdiplus", "textRotative", settingsText,NULL);
 
 	obs_data_t *settingsFilter = obs_data_create();
-	make_filter_settings(settingsFilter, 100);//Sustituir por parametro
+	make_filter_settings(settingsFilter, switcher->speedRotativeText);
 	switcher->filter = obs_source_create("scroll_filter", "filter", settingsFilter, NULL);
 
 	obs_source_filter_add(switcher->textRotative, switcher->filter);
@@ -87,6 +87,8 @@ void crearConfiguracion(string contestName, SwitcherData *switcher)
 
 	//Establecimiento de escena inicial
 	obs_frontend_set_current_preview_scene(obs_scene_get_source(teamViewer));
+
+	switcher->created = true;
 }
 
 string makeUniqueName(string name)

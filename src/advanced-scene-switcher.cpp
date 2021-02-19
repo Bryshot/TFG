@@ -163,11 +163,7 @@ void SwitcherData::Thread()
 		//Comprueba si se ha detenido el programa durante el sleep o si se ha activado/puesto en alguna escena que afecte autoStop/autoStart
 		if (switcher->stop) break;
 		setDefaultSceneTransitions();
-		if (autoStopEnable) 
-			autoStopStreamAndRecording();
-		if (autoStartEnable) 
-			autoStartStreamRecording();
-
+		
 		/// <summary>
 		/// Decisor
 		/// </summary>
@@ -181,12 +177,6 @@ void SwitcherData::Thread()
 			goto endLoop;
 		}	
 
-		if (!match && switchIfNotMatching == SWITCH &&
-		    nonMatchingScene) {
-			match = true;
-			scene = nonMatchingScene;
-			transition = nullptr;
-		}
 		if (match) {
 			switchScene(scene, transition,
 				    tansitionOverrideOverride, lock);
@@ -333,9 +323,6 @@ void handleSceneChange(SwitcherData *s)
 		s->previousScene = s->PreviousScene2;
 		s->PreviousScene2 = ws;
 	}
-
-	//reset autostart
-	s->autoStartedRecently = false;
 }
 
 /// <summary>

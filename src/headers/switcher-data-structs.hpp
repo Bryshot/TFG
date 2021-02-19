@@ -11,14 +11,11 @@
 
 constexpr auto default_interval = 300;
 constexpr auto previous_scene_name = "Previous Scene";
-
-typedef enum { NO_SWITCH = 0, SWITCH = 1} NoMatch;
-typedef enum { PERSIST = 0, START = 1, STOP = 2 } StartupBehavior;
-typedef enum {
-	RECORDING = 0,
-	STREAMING = 1,
-	RECORINDGSTREAMING = 2
-} AutoStartType;
+constexpr auto default_sizeRotativeText = 48;
+constexpr auto default_speedRotativeText = 100;
+constexpr auto default_contestName = "Contest";
+constexpr auto default_rotatingText = "Default rotating text";
+constexpr auto default_url = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
 
 class SwitcherThread;
 
@@ -38,21 +35,23 @@ struct SwitcherData {
 	bool tansitionOverrideOverride = false;
 	bool importedUrls = false;
 	bool usingDummy = false;
+	bool created = false;
 
-	string urlCam = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
-	string urlScreen = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
-	string urlClassification = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
+	string urlCam = default_url;
+	string urlScreen = default_url;
+	string urlClassification = default_url;
 
-	string contestName = "Contest";
+	string contestName = default_contestName;
+	string textRotativeContent = default_rotatingText;
 
 	int interval = default_interval;
+	int sizeRotativeText = default_sizeRotativeText;
+	int speedRotativeText = default_speedRotativeText;
+
 
 	obs_source_t *waitScene = NULL;
 	OBSWeakSource previousScene = NULL;
 	OBSWeakSource PreviousScene2 = NULL;
-	OBSWeakSource nonMatchingScene;
-	NoMatch switchIfNotMatching = NO_SWITCH;
-	StartupBehavior startupBehavior = PERSIST;
 
 	UrlsContest urlsContest;
 	OBSSource screenTeam;
@@ -67,14 +66,6 @@ struct SwitcherData {
 	obs_sceneitem_t *screenTeamDummyItem;
 	obs_sceneitem_t *camTeamItem;
 	obs_sceneitem_t *screenTeamItem;
-
-	bool autoStopEnable = false;
-	OBSWeakSource autoStopScene;
-
-	bool autoStartEnable = false;
-	AutoStartType autoStartType = RECORDING;
-	OBSWeakSource autoStartScene;
-	bool autoStartedRecently = false;
 
 	std::vector<SceneTransition> sceneTransitions;
 	std::vector<DefaultSceneTransition> defaultSceneTransitions;
@@ -125,8 +116,6 @@ struct SwitcherData {
 	bool sceneChangedDuringWait();
 	
 	void setDefaultSceneTransitions();
-	void autoStopStreamAndRecording();
-	void autoStartStreamRecording();
 	
 	void saveSceneTransitions(obs_data_t *obj);
 	void saveGeneralSettings(obs_data_t *obj);
