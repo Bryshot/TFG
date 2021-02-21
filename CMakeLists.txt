@@ -13,6 +13,7 @@ if(BUILD_OUT_OF_TREE)
 	find_package(LibObs REQUIRED)
 	find_package(Qt5Core REQUIRED)
 	find_package(Qt5Widgets REQUIRED)
+find_package(Libcurl REQUIRED)
 	find_path(LIBOBS_FRONTEND_INCLUDE_DIR HINTS ${LIBOBS_INCLUDE_DIRS})
 	find_file(LIBOBS_FRONTEND_API_LIB NAMES libobs-frontend-api.* HINTS ${LIBOBS_LIB} )
 
@@ -33,8 +34,13 @@ if(BUILD_OUT_OF_TREE)
 		${advanced-scene-switcher_HEADERS}
 		src/headers/advanced-scene-switcher.hpp
 		src/headers/switcher-data-structs.hpp
+		src/headers/curl-helper.hpp
 		src/headers/utility.hpp
+		src/headers/switch-transitions.hpp
 		src/headers/switch-generic.hpp
+		src/headers/setup.h
+		src/headers/importUrl.h
+		src/headers/curlCore.h
 		)
 
 	set(advanced-scene-switcher_SOURCES
@@ -45,6 +51,10 @@ if(BUILD_OUT_OF_TREE)
 		src/switch-transitions.cpp
 		src/hotkey.cpp
 		src/general.cpp
+		src/setup.cpp
+		src/importUrl.cpp
+		src/curl-helper.cpp
+		src/curlCore.cpp
 		)
 
 	set(advanced-scene-switcher_UI
@@ -87,7 +97,8 @@ if(BUILD_OUT_OF_TREE)
 		"${LIBOBS_INCLUDE_DIRS}"
 		"${LIBOBS_FRONTEND_INCLUDE_DIR}"
 		${Qt5Core_INCLUDES}
-		${Qt5Widgets_INCLUDES})
+		${Qt5Widgets_INCLUDES}
+${LIBCURL_INCLUDE_DIRS})
 
 	target_link_libraries(advanced-scene-switcher
 		${advanced-scene-switcher_PLATFORM_LIBS}
@@ -154,11 +165,13 @@ else ()
 		${advanced-scene-switcher_HEADERS}
 		src/headers/advanced-scene-switcher.hpp
 		src/headers/switcher-data-structs.hpp
+		src/headers/curl-helper.hpp
 		src/headers/utility.hpp
 		src/headers/switch-transitions.hpp
 		src/headers/switch-generic.hpp
 		src/headers/setup.h
 		src/headers/importUrl.h
+		src/headers/curlCore.h
 		)
 
 	set(advanced-scene-switcher_SOURCES
@@ -171,6 +184,8 @@ else ()
 		src/general.cpp
 		src/setup.cpp
 		src/importUrl.cpp
+		src/curl-helper.cpp
+		src/curlCore.cpp
 		)
 
 	set(advanced-scene-switcher_UI
