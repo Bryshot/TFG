@@ -17,6 +17,8 @@
 #include "headers/switcher-data-structs.hpp"
 #include "headers/advanced-scene-switcher.hpp"
 #include "headers/utility.hpp"
+#include "headers/curl-helper.hpp"
+#include "headers/curlCore.h"
 
 SwitcherData *switcher = nullptr;
 
@@ -141,9 +143,12 @@ void SwitcherData::Thread()
 	blog(LOG_INFO, "AutoProducer started");
 	int sleep = 0;
 	std::unique_lock<std::mutex> lock(m);
-	switchUrl(
-		"https://player.twitch.tv/?channel=akawonder&enableExtensions=true&muted=true&parent=twitch.tv&player=popout&volume=0.50",
-		"https://player.twitch.tv/?channel=akawonder&enableExtensions=true&muted=true&parent=twitch.tv&player=popout&volume=0.50", lock);
+
+	contestInfo contest = getContestRealTimeInfo(switcher->contestName);
+
+	auto it = switcher->urlsContestData.urlsTeams.begin();
+	it++;
+	switchIP(it->second.ipScreen,it->second.ipCam, lock);
 
 	while (true) {
 	startLoop:
@@ -215,7 +220,7 @@ void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
 	obs_source_release(source);
 }
 
-void SwitcherData::switchUrl(string urlScreen, string urlCam,
+void SwitcherData::switchIP(string ipScreen, string ipCam,
 	       unique_lock<mutex> &lock)
 {
 	obs_source_t *currentSource = obs_frontend_get_current_preview_scene();
@@ -235,16 +240,11 @@ void SwitcherData::switchUrl(string urlScreen, string urlCam,
 			screen = switcher->screenTeamDummy;
 			cam = switcher->camTeamDummy;
 		}
-		obs_data_t *dataScreen = obs_source_get_settings(screen);
-		obs_data_t *dataCam = obs_source_get_settings(cam);
 
-		obs_data_set_string(dataScreen, "url", urlScreen.c_str());
-		obs_data_set_string(dataCam, "url",urlCam.c_str());
+		switcher->modificaVLC(screen, ipScreen);
+		switcher->modificaVLC(cam, ipCam);
 
-		obs_source_update(screen, dataScreen);
-		obs_source_update(cam, dataCam);
-
-		cv.wait_for(lock, chrono::milliseconds(5000));
+		cv.wait_for(lock, chrono::milliseconds(15000));
 
 		if (switcher->usingDummy)
 		{
@@ -262,6 +262,18 @@ void SwitcherData::switchUrl(string urlScreen, string urlCam,
 		}
 		switcher->usingDummy = !switcher->usingDummy;
 	}
+}
+
+void SwitcherData::modificaVLC(obs_source_t* source, string ip) {
+
+	obs_data_t *data = obs_source_get_settings(source);
+	obs_data_array_t *array = obs_data_get_array(data, "playlist");
+	obs_data_t *d = obs_data_array_item(array, 0);
+
+	obs_data_set_string(d, "value", ip.c_str());
+	obs_data_release(d);
+	obs_data_array_release(array);
+	obs_source_update(source, data);
 }
 
 bool SwitcherData::sceneChangedDuringWait()
@@ -303,6 +315,13 @@ void SwitcherData::Stop()
  ********************************************************************************/
 extern "C" void FreeSceneSwitcher()
 {
+	if (loaded_curl_lib) {
+		if (switcher->curl && f_curl_cleanup)
+			f_curl_cleanup(switcher->curl);
+		delete loaded_curl_lib;
+		loaded_curl_lib = nullptr;
+	}
+
 	delete switcher;
 	switcher = nullptr;
 }
@@ -376,6 +395,10 @@ extern "C" void InitSceneSwitcher()
 		"Advanced Scene Switcher");
 
 	switcher = new SwitcherData;
+
+	if (loadCurl() && f_curl_init) {
+		switcher->curl = f_curl_init();
+	}
 
 	auto cb = []() {
 		QMainWindow *window =

@@ -5,6 +5,7 @@
 
 #include "headers/advanced-scene-switcher.hpp"
 #include "headers/importUrl.h"
+#include "headers/curl-helper.hpp"
 
 void SceneSwitcher::on_close_clicked()
 {
@@ -172,9 +173,8 @@ void SceneSwitcher::on_importUrls_clicked() {
 	if (directory.isEmpty())
 		return;
 	
-	switcher->urlsContest =
-			importUrlContest(directory.toStdString());
-	if (switcher->urlsContest.numTeams == -1)
+	switcher->urlsContestData = importUrlContest(directory.toStdString());
+	if (switcher->urlsContestData.numTeams == -1)
 	{
 		QMessageBox Msgbox;
 		Msgbox.setText("AutoProducer failed to import urls");
@@ -185,25 +185,24 @@ void SceneSwitcher::on_importUrls_clicked() {
 	Msgbox.setText("AutoProducer urls imported successfully");
 	Msgbox.exec();
 
-	switcher->urlScreen = switcher->urlsContest.urlsTeams[0].urlScreen;
-	switcher->urlCam = switcher->urlsContest.urlsTeams[0].urlCamara;
-	switcher->urlClassification = switcher->urlsContest.urlClassification;
+	map<string, UrlsTeam>::iterator it =	switcher->urlsContestData.urlsTeams.begin();
+	switcher->ipScreen = it->second.ipScreen;
+	switcher->ipCam = it->second.ipCam;
+	switcher->urlClassification = switcher->urlsContestData.urlClassification;
 
 	switcher->importedUrls = true;
 
-	obs_data_t *dataScreen = obs_source_get_settings(switcher->screenTeam);
-	obs_data_t *dataCam = obs_source_get_settings(switcher->camTeam);
 	obs_data_t *dataClassification = obs_source_get_settings(switcher->screenClassification);
 
-	obs_data_set_string(dataScreen, "url", switcher->urlScreen.c_str());
-	obs_data_set_string(dataCam, "url", switcher->urlCam.c_str());
-	obs_data_set_string(dataClassification, "url",switcher->urlClassification.c_str());
+	switcher->modificaVLC(switcher->screenTeam, switcher->ipScreen);
+	switcher->modificaVLC(switcher->camTeam, switcher->ipCam);
 
-	obs_source_update(switcher->screenTeam, dataScreen);
-	obs_source_update(switcher->camTeam, dataCam);
-	obs_source_update(switcher->screenClassification, dataCam);
+	obs_data_set_string(dataClassification, "url",switcher->urlClassification.c_str());
+	obs_source_update(switcher->screenClassification, dataClassification);
 	close();
 }
+
+
 
 void SceneSwitcher::on_createSetup_clicked() {
 	crearConfiguracion(switcher);
