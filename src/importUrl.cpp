@@ -26,36 +26,24 @@ UrlsContest importUrlContest(string path)
   getline(FicheroUrls, buffer);
   contest.urlClassification = buffer;
   for (int i = 0; i < contest.numTeams; i++) {
-    asignaNombreEquipo(contest.urlsTeams, i);
-    asignaCamaraEquipo(contest.urlsTeams, i);
-    asignaPantallaEquipo(contest.urlsTeams, i);
-    asignaLogoEquipo(contest.urlsTeams, i);
+    UrlsTeam team;
+    string name;
+    asignaString(name);
+    asignaString(team.ipScreen);
+    asignaString(team.ipCam);
+    asignaString(team.urlLogo);
+    contest.urlsTeams.insert(pair(name, team));
   }
   FicheroUrls.close();
   return contest;
 }
 
-void asignaNombreEquipo(UrlsTeam teams[], int i) {
-    string buffer;
-    getline(FicheroUrls, buffer);
-    teams[i].nombreEquipo = buffer;
+
+void asignaString(string & s)
+{
+	string buffer;
+	getline(FicheroUrls, buffer);
+	s = buffer;
 }
 
-void asignaCamaraEquipo(UrlsTeam teams[], int i) {
-  string buffer;
-  getline(FicheroUrls, buffer);
-  teams[i].urlCamara = buffer;
-}
-
-void asignaPantallaEquipo(UrlsTeam teams[], int i) {
-  string buffer;
-  getline(FicheroUrls, buffer);
-  teams[i].urlScreen = buffer;
-}
-
-void asignaLogoEquipo(UrlsTeam teams[], int i) {
-  string buffer;
-  getline(FicheroUrls, buffer);
-  teams[i].urlLogo = buffer;
-}
 
