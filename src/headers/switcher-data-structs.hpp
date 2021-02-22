@@ -5,7 +5,7 @@
 #include <mutex>
 #include <QDateTime>
 #include <QThread>
-
+#include <curl/curl.h>
 #include "switch-transitions.hpp"
 #include "importUrl.h"
 
@@ -27,6 +27,8 @@ struct SwitcherData {
 
 	std::condition_variable cv;
 	std::mutex m;
+	CURL *curl = nullptr;
+
 	bool transitionActive = false;
 	bool waitForTransition = false;
 	std::condition_variable transitionCv;
@@ -37,23 +39,34 @@ struct SwitcherData {
 	bool usingDummy = false;
 	bool created = false;
 
-	string urlCam = default_url;
-	string urlScreen = default_url;
-	string urlClassification = default_url;
-
 	string contestName = default_contestName;
-	string textRotativeContent = default_rotatingText;
-
+	UrlsContest urlsContestData;
 	int interval = default_interval;
+
+	/*Elementos necesarios para el texto rotativo */
+	string textRotativeContent = default_rotatingText;
 	int sizeRotativeText = default_sizeRotativeText;
 	int speedRotativeText = default_speedRotativeText;
 
+	/*Elementos necesarios para obtener la info del concurso*/
+	string contestServer = "https://www.domjudge.org/demoweb";
+	string curlAllContest = contestServer + "/api/v4/contests/";
+	string curlContest;
+	string curlProblems;
+	string curlScoreboard;
+	string curlTeams;
+	
 
 	obs_source_t *waitScene = NULL;
 	OBSWeakSource previousScene = NULL;
 	OBSWeakSource PreviousScene2 = NULL;
 
-	UrlsContest urlsContest;
+	/*Url de las fuentes actuales*/
+	string ipCam = "";
+	string ipScreen = "";
+	string urlClassification = default_url;
+
+	/*Fuentes necesarias para la realización del torneo*/
 	OBSSource screenTeam;
 	OBSSource camTeam;
 	OBSSource screenTeamDummy;
@@ -62,6 +75,7 @@ struct SwitcherData {
 	OBSSource textRotative;
 	OBSSource filter;
 
+	/*Scene items necesarios para la realización del torneo */
 	obs_sceneitem_t *camTeamDummyItem;
 	obs_sceneitem_t *screenTeamDummyItem;
 	obs_sceneitem_t *camTeamItem;
@@ -110,8 +124,10 @@ struct SwitcherData {
 	void Start();
 	void Stop();
 
-	void switchUrl(string urlScreen, string urlCam,
+	void switchIP(string ipScreen, string ipCam,
 		       unique_lock<mutex> &lock);
+
+	void modificaVLC(obs_source_t *source, string ip);
 
 	bool sceneChangedDuringWait();
 	
