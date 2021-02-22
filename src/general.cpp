@@ -27,6 +27,8 @@ void updateSizeRotativeText(SwitcherData *switcher)
 	obs_data_t *font = obs_data_get_obj(data, "font");
 	obs_data_set_int(font, "size", switcher->sizeRotativeText);
 	obs_source_update(switcher->textRotative, data);
+	obs_data_release(data);
+	obs_data_release(font);
 }
 
 void SceneSwitcher::on_sizeRotativeText_valueChanged(int value)
@@ -46,6 +48,7 @@ void updateSpeedRotativeText(SwitcherData *switcher)
 	obs_data_t *data = obs_data_create();
 	obs_data_set_int(data, "speed_x", switcher->speedRotativeText);
 	obs_source_update(switcher->filter, data);
+	obs_data_release(data);
 }
 
 void SceneSwitcher::on_SpeedRotation_valueChanged(int value)
@@ -199,10 +202,9 @@ void SceneSwitcher::on_importUrls_clicked() {
 
 	obs_data_set_string(dataClassification, "url",switcher->urlClassification.c_str());
 	obs_source_update(switcher->screenClassification, dataClassification);
-	close();
+
+	obs_data_release(dataClassification);
 }
-
-
 
 void SceneSwitcher::on_createSetup_clicked() {
 	crearConfiguracion(switcher);
@@ -212,12 +214,11 @@ void SceneSwitcher::on_contestName_textChanged(const QString &text) {
 	switcher->contestName = text.toStdString();
 }
 
-
 void updateRotativeTextContent(SwitcherData* switcher) {
 	obs_data_t *data = obs_source_get_settings(switcher->textRotative);
 	obs_data_set_string(data, "text", switcher->textRotativeContent.c_str());
 	obs_source_update(switcher->textRotative, data);
-	
+	obs_data_release(data);
 }
 
 void SceneSwitcher::on_rotativeText_textChanged(const QString &text) {
@@ -226,7 +227,6 @@ void SceneSwitcher::on_rotativeText_textChanged(const QString &text) {
 	if (switcher->created)
 		updateRotativeTextContent(switcher);
 }
-
 
 int findTabIndex(QTabBar *bar, int pos)
 {

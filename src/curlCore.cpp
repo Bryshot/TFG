@@ -46,6 +46,7 @@ contestInfo getContestRealTimeInfo(string contestName)
 	contest.penalty_time = obs_data_get_int(dataContestInfo, "penalty_time");
 	contest.start_time = obs_data_get_string(dataContestInfo, "start_time");
 	contest.end_time = obs_data_get_string(dataContestInfo, "end_time");
+	obs_data_release(dataContestInfo);
 
 	/*Obteneos la informacion general de los problemas del torneo*/
 	string jsonProblemsInfo = getRemoteData(switcher->curlProblems);
@@ -63,8 +64,11 @@ contestInfo getContestRealTimeInfo(string contestName)
 		info.label = obs_data_get_string(problem, "label");
 		info.name = obs_data_get_string(problem, "name");
 		info.timeLimit = obs_data_get_int(problem, "time_limit");
+		obs_data_release(problem);
 		contest.problems.push_back(info);
 	}
+	obs_data_array_release(arrayProblems);
+	obs_data_release(dataProblemsInfo);
 
 	/*Obtenemos la informacion de los equipos*/
 	string jsonScoreboardInfo = getRemoteData(switcher->curlScoreboard);
@@ -86,6 +90,7 @@ contestInfo getContestRealTimeInfo(string contestName)
 		obs_data_t *score = obs_data_get_obj(team, "score");
 		info.score.num_solved = obs_data_get_int(score, "num_solved");
 		info.score.total_time = obs_data_get_int(score, "total_time");
+		obs_data_release(score);
 
 		obs_data_array_t *problemsTeam = obs_data_get_array(team, "problems");
 		size_t sizeProblemsTeam = obs_data_array_count(problemsTeam);
@@ -106,10 +111,11 @@ contestInfo getContestRealTimeInfo(string contestName)
 			}
 			pInfo.first_to_solve = obs_data_get_bool(problem, "first_to_solve");
 			pInfo.time = obs_data_get_int(problem, "time");
+			obs_data_release(problem);
 
 			info.problems.push_back(pInfo);
 		}
-
+		obs_data_array_release(problemsTeam);
 		string curlTeam = switcher->curlTeams + id;
 
 		string jsonTeamInfo = getRemoteData(curlTeam);
@@ -123,6 +129,15 @@ contestInfo getContestRealTimeInfo(string contestName)
 		info.identificationInfo.name = obs_data_get_string(tamInfo, "name");
 		info.identificationInfo.nationality = obs_data_get_string(tamInfo, "nationality");
 		contest.scoreBoard.insert(pair<string,teamInfo>(id,info));
+
+		obs_data_release(dataTeamInfo);
+		obs_data_array_release(arrayTeamInfo);
+		obs_data_release(tamInfo);
+		obs_data_release(team);
 	}
+
+	obs_data_release(dataScoreboardInfo);
+	obs_data_array_release(arrayScoreboard);
+	
 	return contest;
 }

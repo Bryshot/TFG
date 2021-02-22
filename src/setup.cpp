@@ -40,30 +40,37 @@ void crearConfiguracion( SwitcherData *switcher)
 	obs_data_t *settingsCam = obs_data_create();
 	make_source_settings(settingsCam, switcher->ipCam);
 	switcher->camTeam = obs_source_create("vlc_source","camTeam",settingsCam,NULL);
+	obs_data_release(settingsCam);
 
 	obs_data_t *settingsScreen = obs_data_create();
 	make_source_settings(settingsScreen, switcher->ipScreen);
 	switcher->screenTeam = obs_source_create("vlc_source", "screenTeam",settingsScreen, NULL);
+	obs_data_release(settingsScreen);
 
 	obs_data_t *settingsCamDummy = obs_data_create();
 	make_source_settings(settingsCamDummy, "");
 	switcher->camTeamDummy = obs_source_create("vlc_source", "camTeamDummy", settingsCamDummy, NULL);
+	obs_data_release(settingsCamDummy);
 
 	obs_data_t *settingsScreenDummy = obs_data_create();
 	make_source_settings(settingsScreenDummy, "");
 	switcher->screenTeamDummy = obs_source_create("vlc_source", "screenTeamDummy", settingsScreenDummy, NULL);
+	obs_data_release(settingsScreenDummy);
 
 	obs_data_t *settingsClassification = obs_data_create();
 	make_source_settings(settingsClassification,switcher->urlClassification,fullscreenHeight - switcher->sizeRotativeText, fullscreenWidth);
 	switcher->screenClassification = obs_source_create("browser_source", "screenClassification", settingsClassification, NULL);
+	obs_data_release(settingsClassification);
 
 	obs_data_t *settingsText = obs_data_create();
 	make_text_settings(settingsText, switcher->textRotativeContent, switcher->sizeRotativeText, "bottom"); 
 	switcher->textRotative = obs_source_create("text_gdiplus", "textRotative", settingsText,NULL);
+	obs_data_release(settingsText);
 
 	obs_data_t *settingsFilter = obs_data_create();
 	make_filter_settings(settingsFilter, switcher->speedRotativeText);
 	switcher->filter = obs_source_create("scroll_filter", "filter", settingsFilter, NULL);
+	obs_data_release(settingsFilter);
 
 	obs_source_filter_add(switcher->textRotative, switcher->filter);
 
@@ -187,6 +194,8 @@ void make_source_settings(obs_data_t* data ,string ip) {
 	obs_data_set_string(obj, "value", ip.c_str());
 	obs_data_array_push_back(array, obj);
 	obs_data_set_array(data, "playlist", array);
+	obs_data_release(obj);
+	obs_data_array_release(array);
 }
 
 void make_source_settings(obs_data_t *data, string url, int height, int width)
@@ -213,8 +222,9 @@ void make_text_settings(obs_data_t* data, string text, int size,string valign)
 	obs_data_set_obj(data, "font", font);
 	obs_data_set_string(data, "text", text.c_str());
 	obs_data_set_string(data, "valign", valign.c_str());
-}
 
+	obs_data_release(font);
+}
 
 void make_filter_settings(obs_data_t* data, int rotationSpeed) {
 

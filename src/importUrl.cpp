@@ -38,7 +38,6 @@ UrlsContest importUrlContest(string path)
   return contest;
 }
 
-
 void asignaString(string & s)
 {
 	string buffer;
