@@ -46,6 +46,14 @@ string makeFileName(string name);
 
 
 /// <summary>
+/// Función encargada de crear las settings de una VLC source
+/// </summary>
+/// <param name="data">, donde se añade</param>
+/// <param name="ip"> de la fuente</param>
+void make_source_settings(obs_data_t *data, string ip);
+
+
+/// <summary>
 /// Función encargada de crear las settings de una browser source
 /// </summary>
 /// <param name="data">, donde se añade</param>

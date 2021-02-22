@@ -38,23 +38,23 @@ void crearConfiguracion( SwitcherData *switcher)
 	obs_scene *classificationView = obs_scene_create("ClassificationView");
 
 	obs_data_t *settingsCam = obs_data_create();
-	make_source_settings(settingsCam, switcher->urlCam, camHeight, camWidth);
-	switcher->camTeam = obs_source_create("browser_source","camTeam",settingsCam,NULL);
+	make_source_settings(settingsCam, switcher->ipCam);
+	switcher->camTeam = obs_source_create("vlc_source","camTeam",settingsCam,NULL);
 
 	obs_data_t *settingsScreen = obs_data_create();
-	make_source_settings(settingsScreen, switcher->urlScreen, fullscreenHeight- switcher->sizeRotativeText, fullscreenWidth);
-	switcher->screenTeam = obs_source_create("browser_source", "screenTeam",settingsScreen, NULL);
+	make_source_settings(settingsScreen, switcher->ipScreen);
+	switcher->screenTeam = obs_source_create("vlc_source", "screenTeam",settingsScreen, NULL);
 
 	obs_data_t *settingsCamDummy = obs_data_create();
-	make_source_settings(settingsCamDummy, "", camHeight, camWidth);
-	switcher->camTeamDummy = obs_source_create("browser_source", "camTeamDummy", settingsCamDummy, NULL);
+	make_source_settings(settingsCamDummy, "");
+	switcher->camTeamDummy = obs_source_create("vlc_source", "camTeamDummy", settingsCamDummy, NULL);
 
 	obs_data_t *settingsScreenDummy = obs_data_create();
-	make_source_settings(settingsScreenDummy, "", fullscreenHeight - switcher->sizeRotativeText,fullscreenWidth);
-	switcher->screenTeamDummy = obs_source_create("browser_source", "screenTeamDummy", settingsScreenDummy, NULL);
+	make_source_settings(settingsScreenDummy, "");
+	switcher->screenTeamDummy = obs_source_create("vlc_source", "screenTeamDummy", settingsScreenDummy, NULL);
 
 	obs_data_t *settingsClassification = obs_data_create();
-	make_source_settings(settingsClassification,switcher->urlClassification,fullscreenHeight - switcher->sizeRotativeText,fullscreenWidth);
+	make_source_settings(settingsClassification,switcher->urlClassification,fullscreenHeight - switcher->sizeRotativeText, fullscreenWidth);
 	switcher->screenClassification = obs_source_create("browser_source", "screenClassification", settingsClassification, NULL);
 
 	obs_data_t *settingsText = obs_data_create();
@@ -178,13 +178,24 @@ string makeFileName(string name)
 	return name;
 }
 
-void make_source_settings(obs_data_t* data ,string url, int height, int width) {
+void make_source_settings(obs_data_t* data ,string ip) {
+	obs_data_set_string(data, "playback_behavior", "always_play");
+	obs_data_array_t *array = obs_data_array_create();
+	obs_data_t *obj = obs_data_create();
+	obs_data_set_bool(obj, "hidden", false);
+	obs_data_set_bool(obj, "selected", true);
+	obs_data_set_string(obj, "value", ip.c_str());
+	obs_data_array_push_back(array, obj);
+	obs_data_set_array(data, "playlist", array);
+}
+
+void make_source_settings(obs_data_t *data, string url, int height, int width)
+{
 	obs_data_set_int(data, "height", height);
 	obs_data_set_string(data, "url", url.c_str());
 	obs_data_set_int(data, "width", width);
 	obs_data_set_bool(data, "reroute_audio", true);
 }
-
 
 void make_text_settings(obs_data_t* data, string text, int size,string valign)
 {
