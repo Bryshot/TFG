@@ -63,6 +63,7 @@ public slots:
 
 	void on_contestName_textChanged(const QString &text);
 	void on_rotativeText_textChanged(const QString &text);
+	void on_contestServer_textChanged(const QString &text);
 
 	void on_sceneTransitions_currentRowChanged(int idx);
 	void on_transitionsAdd_clicked();

@@ -16,6 +16,7 @@ constexpr auto default_speedRotativeText = 100;
 constexpr auto default_contestName = "Contest";
 constexpr auto default_rotatingText = "Default rotating text";
 constexpr auto default_url = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
+const string default_contestServer = "https://www.domjudge.org/demoweb";
 
 class SwitcherThread;
 
@@ -49,8 +50,8 @@ struct SwitcherData {
 	int speedRotativeText = default_speedRotativeText;
 
 	/*Elementos necesarios para obtener la info del concurso*/
-	string contestServer = "https://www.domjudge.org/demoweb";
-	string curlAllContest = contestServer + "/api/v4/contests/";
+
+	string contestServerWebsite = default_contestServer;
 	string curlContest;
 	string curlProblems;
 	string curlScoreboard;

@@ -228,6 +228,11 @@ void SceneSwitcher::on_rotativeText_textChanged(const QString &text) {
 		updateRotativeTextContent(switcher);
 }
 
+void SceneSwitcher::on_contestServer_textChanged(const QString &text)
+{
+	switcher->contestServerWebsite = text.toStdString();
+}
+
 int findTabIndex(QTabBar *bar, int pos)
 {
 	int at = -1;
@@ -319,6 +324,8 @@ void SceneSwitcher::setupGeneralTab()
 	ui->sizeRotativeText->setValue(switcher->sizeRotativeText);
 	ui->rotativeText->setText(switcher->textRotativeContent.c_str());
 	ui->SpeedRotation->setValue(switcher->speedRotativeText);
+	ui->contestServer->setText(switcher->contestServerWebsite.c_str());
+
 
 	for (int i = 0; i < (int)switcher->threadPriorities.size(); ++i) {
 		ui->threadPriority->addItem(

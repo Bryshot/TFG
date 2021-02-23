@@ -33,7 +33,7 @@ contestInfo getContestRealTimeInfo(string contestName)
 	contestInfo contest;
 
 	/*Configuramos las variables del curl para nuestro torneo*/
-	switcher->curlContest = switcher->curlAllContest+ contestName;
+	switcher->curlContest = switcher->contestServerWebsite + "/api/v4/contests/" + contestName;
 	switcher->curlProblems = switcher->curlContest + "/problems";
 	switcher->curlScoreboard = switcher->curlContest + "/scoreboard";
 	switcher->curlTeams = switcher->curlContest + "/teams?ids%5B%5D=";
