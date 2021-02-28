@@ -57,7 +57,7 @@ public slots:
 	void on_exportSettings_clicked();
 	void on_importSettings_clicked();
 
-	void on_importUrls_clicked();
+	void on_importIPs_clicked();
 
 	void on_createSetup_clicked();
 

@@ -134,38 +134,37 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 			switcher->Start();
 	}
 }
-
 /********************************************************************************
  * Main switcher thread
  ********************************************************************************/
 void SwitcherData::Thread()
 {
+	//Anunciamos el inicio del funcionamiento del plugin
 	blog(LOG_INFO, "AutoProducer started");
+
 	int sleep = 0;
-	std::unique_lock<std::mutex> lock(m);
+	std::unique_lock<std::mutex> lock(m);//Inutil
 
-	contestInfo contest = getContestRealTimeInfo(switcher->contestName);
-
-	auto it = switcher->urlsContestData.urlsTeams.begin();
-	it++;
-	switchIP(it->second.ipScreen,it->second.ipCam, lock);
+	//Obtenemos la información inicial del concurso
+	contestInfo contest = getContestRealTimeInfo();
 
 	while (true) {
 	startLoop:
-		bool match = false;
+		bool switchS;
 		OBSWeakSource scene;
 		OBSWeakSource transition;
-		std::chrono::milliseconds duration;
+		std::chrono::milliseconds duration = std::chrono::milliseconds(sleep);
 
-		
-		duration = std::chrono::milliseconds(sleep);
 		if (verbose)
 			blog(LOG_INFO,"AutoProducer sleep for %d",sleep);
+
+		//Se recargan las 
 		switcher->Prune();
-		//sleep for a bit
+		waitScene = obs_frontend_get_current_scene();
+		//Tiempom de espera entre switch y switch
 		cv.wait_for(lock, duration);
 
-		//Comprueba si se ha detenido el programa durante el sleep o si se ha activado/puesto en alguna escena que afecte autoStop/autoStart
+		//Comprueba si se ha detenido el programa durante el sleep.
 		if (switcher->stop) break;
 		setDefaultSceneTransitions();
 		
@@ -182,13 +181,26 @@ void SwitcherData::Thread()
 			goto endLoop;
 		}	
 
-		if (match) {
-			switchScene(scene, transition,
-				    tansitionOverrideOverride, lock);
+		if (switchS) {
+			switchScene(scene, transition, tansitionOverrideOverride, lock);
+		} else
+		{
 		}
+
 	}
 endLoop:
 	blog(LOG_INFO, "AutoProducer stopped");
+}
+
+/********************************************************************************
+ * Thread submissions
+ ********************************************************************************/
+
+void SwitcherData::ThreadSubmissions() {
+
+	while (!switcher->stop) {
+		//Codigo para actualizar barra de submissions
+	}
 }
 
 void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
@@ -202,7 +214,7 @@ void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
 
 		// this call might block when OBS_FRONTEND_EVENT_SCENE_CHANGED is active and mutex is held
 		// thus unlock mutex to avoid deadlock
-		lock.unlock();
+		//lock.unlock();
 
 		transitionData td;
 		setNextTransition(scene, currentSource, transition,
@@ -290,23 +302,30 @@ bool SwitcherData::sceneChangedDuringWait()
 
 void SwitcherData::Start()
 {
-	if (!(th && th->isRunning())) {
+	if (!(th && th->isRunning() && thSub && thSub->isRunning())) {
 		stop = false;
 		switcher->th = new SwitcherThread();
 		switcher->th->start(
+			(QThread::Priority)switcher->threadPriority);
+		switcher->thSub = new SwitcherThreadSubmissions();
+		switcher->thSub->start(
 			(QThread::Priority)switcher->threadPriority);
 	}
 }
 
 void SwitcherData::Stop()
 {
-	if (th && th->isRunning()) {
+	if (th && th->isRunning() && thSub && thSub->isRunning())
+	{
 		switcher->stop = true;
 		transitionCv.notify_one();
 		cv.notify_one();
 		th->wait();
+		thSub->wait();
 		delete th;
+		delete thSub;
 		th = nullptr;
+		thSub = nullptr;
 	}
 }
 
@@ -344,23 +363,6 @@ void handleSceneChange(SwitcherData *s)
 	}
 }
 
-/// <summary>
-/// Ajusta el contador de tiempo del directo
-/// </summary>
-/// <param name="s"></param>
-void setLiveTime(SwitcherData *s)
-{
-	s->liveTime = QDateTime::currentDateTime();
-}
-
-/// <summary>
-/// Reinicia el contador de tiempo del directo
-/// </summary>
-/// <param name="s"></param>
-void resetLiveTime(SwitcherData *s)
-{
-	s->liveTime = QDateTime();
-}
 
 /// <summary>
 /// Funcion encargada de gestionar los eventos de obs que puedan ocurrir.
@@ -375,14 +377,6 @@ static void OBSEvent(enum obs_frontend_event event, void *switcher)
 		break;
 	case OBS_FRONTEND_EVENT_SCENE_CHANGED:
 		handleSceneChange((SwitcherData *)switcher);
-		break;
-	case OBS_FRONTEND_EVENT_RECORDING_STARTED:
-	case OBS_FRONTEND_EVENT_STREAMING_STARTED:
-		setLiveTime((SwitcherData *)switcher);
-		break;
-	case OBS_FRONTEND_EVENT_RECORDING_STOPPED:
-	case OBS_FRONTEND_EVENT_STREAMING_STOPPED:
-		resetLiveTime((SwitcherData *)switcher);
 		break;
 	default:
 		break;

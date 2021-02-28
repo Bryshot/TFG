@@ -4,7 +4,7 @@
 #include <QMessageBox>
 
 #include "headers/advanced-scene-switcher.hpp"
-#include "headers/importUrl.h"
+#include "headers/importIPs.h"
 #include "headers/curl-helper.hpp"
 
 void SceneSwitcher::on_close_clicked()
@@ -80,13 +80,13 @@ void SceneSwitcher::on_toggleStartButton_clicked()
 	if (switcher->th && switcher->th->isRunning()) {
 		switcher->Stop();
 		SetStopped();
-	} else if(switcher->importedUrls){
+	} else if(switcher->importedIPs){
 		switcher->Start();
 		SetStarted();
 	}
 	else{
 		QMessageBox Msgbox;
-		Msgbox.setText("Import the url before start the plugin");
+		Msgbox.setText("Import the IPs for the contest before start the plugin");
 		Msgbox.exec();
 		return;
 	}
@@ -168,7 +168,7 @@ void SceneSwitcher::on_importSettings_clicked()
 	close();
 }
 
-void SceneSwitcher::on_importUrls_clicked() {
+void SceneSwitcher::on_importIPs_clicked() {
 
 	QString directory = QFileDialog::getOpenFileName(
 		this, tr("Import AutoProducer settings from file ..."),
@@ -176,8 +176,8 @@ void SceneSwitcher::on_importUrls_clicked() {
 	if (directory.isEmpty())
 		return;
 	
-	switcher->urlsContestData = importUrlContest(directory.toStdString());
-	if (switcher->urlsContestData.numTeams == -1)
+	switcher->ipsContestData = importUrlContest(directory.toStdString());
+	if (switcher->ipsContestData.numTeams == -1)
 	{
 		QMessageBox Msgbox;
 		Msgbox.setText("AutoProducer failed to import urls");
@@ -188,12 +188,12 @@ void SceneSwitcher::on_importUrls_clicked() {
 	Msgbox.setText("AutoProducer urls imported successfully");
 	Msgbox.exec();
 
-	map<string, UrlsTeam>::iterator it =	switcher->urlsContestData.urlsTeams.begin();
+	map<string, IpsTeam>::iterator it =	switcher->ipsContestData.ipsTeams.begin();
 	switcher->ipScreen = it->second.ipScreen;
 	switcher->ipCam = it->second.ipCam;
-	switcher->urlClassification = switcher->urlsContestData.urlClassification;
+	switcher->urlClassification = switcher->ipsContestData.ipClassification;
 
-	switcher->importedUrls = true;
+	switcher->importedIPs = true;
 
 	obs_data_t *dataClassification = obs_source_get_settings(switcher->screenClassification);
 

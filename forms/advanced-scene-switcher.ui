@@ -474,9 +474,9 @@ Rotating text content:</string>
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="importUrls">
+          <widget class="QPushButton" name="importIPs">
            <property name="text">
-            <string>Import url List</string>
+            <string>Import IPs contest</string>
            </property>
           </widget>
          </item>

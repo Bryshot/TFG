@@ -1,6 +1,6 @@
-#include "headers\importUrl.h"
+#include "headers\importIPs.h"
 
-ifstream FicheroUrls;
+ifstream FicheroIPs;
 
 bool isNumber(const string &str)
 {
@@ -11,37 +11,37 @@ bool isNumber(const string &str)
 	return true;
 }
 
-UrlsContest importUrlContest(string path)
+IpsContest importUrlContest(string path)
 {
-  UrlsContest contest;
+  IpsContest contest;
   string buffer;
-  FicheroUrls.open(path, ios::in);
-  getline(FicheroUrls, buffer);
+  FicheroIPs.open(path, ios::in);
+  getline(FicheroIPs, buffer);
   if (!isNumber(buffer))
   {
 	  contest.numTeams = -1;
 	  return contest;
   }
   contest.numTeams = std::stoi(buffer); 
-  getline(FicheroUrls, buffer);
-  contest.urlClassification = buffer;
+  getline(FicheroIPs, buffer);
+  contest.ipClassification = buffer;
   for (int i = 0; i < contest.numTeams; i++) {
-    UrlsTeam team;
+    IpsTeam team;
     string name;
     asignaString(name);
     asignaString(team.ipScreen);
     asignaString(team.ipCam);
     asignaString(team.urlLogo);
-    contest.urlsTeams.insert(pair(name, team));
+    contest.ipsTeams.insert(pair(name, team));
   }
-  FicheroUrls.close();
+  FicheroIPs.close();
   return contest;
 }
 
 void asignaString(string & s)
 {
 	string buffer;
-	getline(FicheroUrls, buffer);
+	getline(FicheroIPs, buffer);
 	s = buffer;
 }
 
