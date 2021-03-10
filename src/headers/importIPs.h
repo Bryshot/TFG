@@ -13,7 +13,7 @@ typedef struct{
 } IpsTeam;
 
 typedef struct  {
- map<string,IpsTeam> ipsTeams;///Cambiar por vector
+ map<string,IpsTeam> ipsTeams;
  int numTeams;
  string ipClassification;
 } IpsContest;

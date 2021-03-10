@@ -39,7 +39,7 @@ find_package(Libcurl REQUIRED)
 		src/headers/switch-transitions.hpp
 		src/headers/switch-generic.hpp
 		src/headers/setup.h
-		src/headers/importUrl.h
+		src/headers/importIPs.h
 		src/headers/curlCore.h
 		)
 
@@ -52,7 +52,7 @@ find_package(Libcurl REQUIRED)
 		src/hotkey.cpp
 		src/general.cpp
 		src/setup.cpp
-		src/importUrl.cpp
+		src/importIPs.cpp
 		src/curl-helper.cpp
 		src/curlCore.cpp
 		)
@@ -170,7 +170,7 @@ else ()
 		src/headers/switch-transitions.hpp
 		src/headers/switch-generic.hpp
 		src/headers/setup.h
-		src/headers/importUrl.h
+		src/headers/importIPs.h
 		src/headers/curlCore.h
 		)
 
@@ -183,7 +183,7 @@ else ()
 		src/hotkey.cpp
 		src/general.cpp
 		src/setup.cpp
-		src/importUrl.cpp
+		src/importIPs.cpp
 		src/curl-helper.cpp
 		src/curlCore.cpp
 		)

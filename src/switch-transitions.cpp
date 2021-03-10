@@ -1,6 +1,6 @@
 #include "headers/advanced-scene-switcher.hpp"
 
-void SceneSwitcher::on_transitionsAdd_clicked()
+/*void SceneSwitcher::on_transitionsAdd_clicked()
 {
 	QString scene1Name = ui->transitionsScene1->currentText();
 	QString scene2Name = ui->transitionsScene2->currentText();
@@ -474,11 +474,11 @@ void SwitcherData::loadSceneTransitions(obs_data_t *obj)
 
 	switcher->tansitionOverrideOverride =
 		obs_data_get_bool(obj, "tansitionOverrideOverride");
-}
+}*/
 
 void SceneSwitcher::setupTransitionsTab()
 {
-	populateSceneSelection(ui->transitionsScene1, false);
+	/*populateSceneSelection(ui->transitionsScene1, false);
 	populateSceneSelection(ui->transitionsScene2, false);
 	populateSceneSelection(ui->defaultTransitionsScene, false);
 	populateTransitionSelection(ui->transitionsTransitions);
@@ -509,9 +509,9 @@ void SceneSwitcher::setupTransitionsTab()
 	}
 
 	ui->transitionOverridecheckBox->setChecked(
-		switcher->tansitionOverrideOverride);
+		switcher->tansitionOverrideOverride);*/
 }
-
+/*
 static inline QString MakeSceneTransitionName(const QString &scene1,
 					      const QString &scene2,
 					      const QString &transition)
@@ -524,4 +524,4 @@ static inline QString MakeDefaultSceneTransitionName(const QString &scene,
 						     const QString &transition)
 {
 	return scene + QStringLiteral(" --> ") + transition;
-}
+}*/

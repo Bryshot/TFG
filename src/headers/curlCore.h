@@ -1,65 +1,57 @@
 #pragma once
+#include <string>
+#include <map>
+#include <vector>
+#include "headers/switcher-data-structs.hpp"
 #include "headers/curl-helper.hpp"
 #include "headers/advanced-scene-switcher.hpp"
+#include <obs-frontend-api.h>
 
-enum class typesInfo {Submissions,Problems};
+using namespace std;
 
+const string pendingJugment = "PJ";
 
-/*Estructura que alberga la información estática de un problema*/
-struct problemInfo {
-	string id;
-	string label;
-	int timeLimit;
-	string name;
-};
+enum class typesInfo {Submissions};
+
 
 /*Estructura que alberga la información personal de un equipo */
 struct idenInfo {
 	string affiliation;
 	string nationality;
 	string name;
-};
+} ;
 
-/*Estructura que alberga la información de un problema respecto a un equipo*/
-struct problemTeamInfo {
-	int num_judged;
-	bool solved;
-	bool first_to_solve;
-	int time;
-};
 
 /*Estructura que alberga la puntuación de un equipo*/
-struct score_t {
+ struct score_t {
 	int num_solved;
 	int total_time;
 	int num_pending; //Puede ser interesante para el sistema heuristico
-};
+} ;
 
 /*Estructura que alberga toda la información relativa a un equipo */
-struct teamInfo {
+ struct teamInfo {
 	int rank;
 	score_t score;
+	int timeInStream = 0;
 	idenInfo identificationInfo;
-	map<string,problemTeamInfo> problems;
-};
+} ;
 
 /*Estructuea que alberga la información de una entrega*/
-struct submissionInfo {
+ struct submissionInfo {
 	string idProblem;
 	string idTeam;
-	string result = "pendingJudgment";
-};
+	string result = pendingJugment;
+} ;
 
 /*Estructura que alberga toda la información del torneo*/
 struct contestInfo {
 	string name;
-	int penalty_time;//
 	string start_time;
 	string end_time;
 	map<string,teamInfo> scoreBoard;
-	vector<problemInfo> problems;
 	map<string, submissionInfo> submissionPendings;
-};
+} ;
 
 
 
@@ -77,6 +69,13 @@ string getRemoteData(std::string &url);
 /// <returns>Un contestInfo con toda la información del torneo</returns>
 contestInfo getContestRealTimeInfo();
 
+
+/// <summary>
+/// Función encargada de actualizar la información del torneo en tiempo real
+/// </summary>
+/// <param name="data"> donde se almacena toda la información</param>
+void updateContestRealTimeInfo(contestInfo &data);
+
 /// <summary>
 /// Configura las variables del curl del torneo
 /// </summary>
@@ -87,13 +86,6 @@ void setCurls();
 /// </summary>
 /// <param name="contest">, donde se almacena la información</param>
 void getGeneralContestInfo(contestInfo& contest);
-
-///<summary>
-/// Obtiene la información general del torneo
-/// </summary>
-/// <param name="contest">, donde se almacena la información</param>
-/// <param name="data">, la información</param>
-void getProblemContestInfo(contestInfo &contest, obs_data_t *data);
 
 /// <summary>
 /// Obtiene la información de los equipos
@@ -129,3 +121,13 @@ void getArrayInfo(contestInfo &contest, string curl, typesInfo type);
 /// <param name="id">, del equipo</param>
 /// <param name="info">, donde se almacena la información</param>
 void getIdentificationTeamInfo(string id, teamInfo&info);
+
+/// <summary>
+/// Realiza los calculos heuristicos
+/// </summary>
+/// <param name="bestHeuristic">, el valor heuristico del mejor equipo</param>
+/// <param name="best">, la información del mejor equipo</param>
+/// <param name="bestId">, id del mejor equipo</param>
+/// <param name="contest">, donde se almacena la información dinámica</param>
+void heuristic(int bestHeuristic, teamInfo best, string bestId,
+	       contestInfo &contest);

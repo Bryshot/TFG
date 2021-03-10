@@ -6,7 +6,7 @@
 /// </summary>
 void SwitcherData::Prune()
 {
-	for (size_t i = 0; i < sceneTransitions.size(); i++) {
+	/*for (size_t i = 0; i < sceneTransitions.size(); i++) {
 		SceneTransition &s = sceneTransitions[i];
 		if (!s.valid())
 			sceneTransitions.erase(sceneTransitions.begin() + i--);
@@ -17,5 +17,5 @@ void SwitcherData::Prune()
 		if (!s.valid())
 			defaultSceneTransitions.erase(
 				defaultSceneTransitions.begin() + i--);
-	}
+	}*/
 }

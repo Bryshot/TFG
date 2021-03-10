@@ -5,15 +5,15 @@
 #include <filesystem>
 #include <obs-frontend-api.h>
 #include <util/platform.h>
-#include <src/headers/switcher-data-structs.hpp>
+#include "switcher-data-structs.hpp"
 
 using namespace std;
 
-const int fullscreenWidth = 1920;
-const int fullscreenHeight = 1080;
-const int camHeight = 400;
-const int camWidth = 600;
-const string fuente = "Arial";
+const int fullscreenWidth = 1920;	//Tamaño de la pantalla completa (Ancho)
+const int fullscreenHeight = 1080;	//Tamaño de la pantalla completa (Alto)
+const int camHeight = 400;		//Tamaño de la camara (Alto)
+const int camWidth = 600;		//Tamaño de la camara (Ancho)
+const string fuente = "Arial";		//Fuente de los texto
 
 /// <summary>
 /// Función encargada de obtener los parametros necesarios para crear el JSon de configuración.
@@ -67,9 +67,12 @@ void make_source_settings(obs_data_t *data, string url, int height, int width);
 /// </summary>
 /// <param name="data">, donde se añade</param>
 /// <param name="text"> de la fuente</param>
-/// <param name="size">  altura de la fuente</param>
+/// <param name="width">, del texto</param>
+/// <param name="height"> del texto</param>
+/// <param name="sizeFont"> tamaño de la fuente</param>
+/// <param name="opacity"> de la fuente</param>
 /// <param name="valign"> a donde esta alinineada la fuente</param>
-void make_text_settings(obs_data_t *data, string text, int size, string valign);
+void make_text_settings(obs_data_t *data, string text, int width, int height,int sizeFont, int opacity,int flag,string valign);
 
 /// <summary>
 ///  Función encargada de añadir las settings de un scroll filter
@@ -77,3 +80,10 @@ void make_text_settings(obs_data_t *data, string text, int size, string valign);
 /// <param name="data">, donde se añade</param>
 /// <param name="rotationSpeed">, la velocidad de rotación en el eje X</param>
 void make_filter_settings(obs_data_t *data, int rotationSpeed);
+
+/// <summary>
+/// Función encarga de añadir las settings de una imagen
+/// </summary>
+/// <param name="data"></param>
+/// <param name="file"></param>
+void make_image_settings(obs_data_t *data, string file);

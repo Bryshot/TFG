@@ -33,10 +33,16 @@ contestInfo getContestRealTimeInfo()
 
 	setCurls();
 	getGeneralContestInfo(contest);
-	getArrayInfo(contest, switcher->curlProblems, typesInfo::Problems);
 	getTeamsContestInfo(contest,true);
 	
 	return contest;
+}
+
+void updateContestRealTimeInfo(contestInfo& data)
+{
+	getTeamsContestInfo(data, false);
+	getArrayInfo(data, switcher->curlSubmissions,typesInfo::Submissions);
+	switcher->updatedSubmissions = true;
 }
 
 void setCurls() {
@@ -45,7 +51,7 @@ void setCurls() {
 	switcher->curlScoreboard = switcher->curlContest + "/scoreboard";
 	switcher->curlTeams = switcher->curlContest + "/teams?ids%5B%5D=";
 	switcher->curlSubmissions = switcher->curlContest + "/submissions";
-	switcher->curlJudgements =switcher->curlContest + "/judgements?submission_id=";
+	switcher->curlJudgements = switcher->curlContest + "/judgements?submission_id=";
 }
 
 void getGeneralContestInfo(contestInfo& contest)
@@ -53,24 +59,17 @@ void getGeneralContestInfo(contestInfo& contest)
 	string jsonContestInfo = getRemoteData(switcher->curlContest);
 	obs_data_t *dataContestInfo = obs_data_create_from_json(jsonContestInfo.c_str());
 	contest.name = obs_data_get_string(dataContestInfo, "name");
-	contest.penalty_time = obs_data_get_int(dataContestInfo, "penalty_time");
 	contest.start_time = obs_data_get_string(dataContestInfo, "start_time");
 	contest.end_time = obs_data_get_string(dataContestInfo, "end_time");
 	obs_data_release(dataContestInfo);
 }
 
-void getProblemContestInfo(contestInfo& contest, obs_data_t * data)
-{	
-	problemInfo info;	
-	info.id = obs_data_get_string(data, "id");
-	info.label = obs_data_get_string(data, "label");
-	info.name = obs_data_get_string(data, "name");
-	info.timeLimit = obs_data_get_int(data, "time_limit");
-	contest.problems.push_back(info);
-}
+void getTeamsContestInfo(contestInfo &contest, bool startingInfo)
+{
 
-void getTeamsContestInfo(contestInfo& contest, bool startingInfo) {
-
+	int bestHeuristic = 0;
+	teamInfo best;
+	string bestId;
 
 	string jsonScoreboardInfo = getRemoteData(switcher->curlScoreboard);
 	obs_data_t *dataScoreboardInfo = obs_data_create_from_json(jsonScoreboardInfo.c_str());
@@ -86,7 +85,7 @@ void getTeamsContestInfo(contestInfo& contest, bool startingInfo) {
 		/*Obtenemos la información general relacionada con un equipo*/
 		string id = obs_data_get_string(team, "team_id");
 		if (!startingInfo) {
-			map<string,teamInfo>::iterator it = contest.scoreBoard.find(id);
+			map<string, teamInfo>::iterator it = contest.scoreBoard.find(id);
 			info = it->second;
 		}
 		info.rank = obs_data_get_int(team, "rank");
@@ -102,42 +101,37 @@ void getTeamsContestInfo(contestInfo& contest, bool startingInfo) {
 
 		/*Obtenemos la informacion relativa a los problemas del equipo*/
 		for (size_t j = 0; j < sizeProblemsTeam; j++) {
-			problemTeamInfo pInfo;
-			obs_data_t *problem =
-				obs_data_array_item(problemsTeam, j);
-
-			string problemId = obs_data_get_string(problem, "problem_id");
-			if (!startingInfo) {
-				map<string, problemTeamInfo>::iterator it2 = info.problems.find(problemId);
-				pInfo = it2->second;
-			}
-			pInfo.num_judged =
-				obs_data_get_int(problem, "num_judged");
+			obs_data_t *problem = obs_data_array_item(problemsTeam, j);
 			int pending = obs_data_get_int(problem, "num_pending");
-			pInfo.solved = obs_data_get_bool(problem, "solved");
-			if (pending > 0 && !pInfo.solved)
+			bool solved = obs_data_get_bool(problem, "solved");
+			if (pending > 0 && !solved)
 				info.score.num_pending += 1;
-			switcher->numPendingSubmissions += pending;
-			pInfo.first_to_solve =
-				obs_data_get_bool(problem, "first_to_solve");
-			pInfo.time = obs_data_get_int(problem, "time");
 			obs_data_release(problem);
-
-			if (startingInfo) 
-				info.problems.insert(pair(problemId, pInfo));
-
-			obs_data_release(team);	
 		}
+
+		obs_data_release(team);
 		obs_data_array_release(problemsTeam);
 
 		if (startingInfo) {
 			getIdentificationTeamInfo(id, info);
-			contest.scoreBoard.insert(pair<string, teamInfo>(id, info));
+			contest.scoreBoard.insert( pair<string, teamInfo>(id, info));
 		}
-		
+		else
+		{
+			int temp = (switcher->rankWeight/ info.rank) + (switcher->numPendingWeight * (info.score.num_pending / info.rank)) - (switcher->timeInStreamWeight * (info.timeInStream * info.rank));
+			if (temp > bestHeuristic) {
+				bestHeuristic = temp;
+				best = info;
+				bestId = id;
+			}
+		}
 	}
 	obs_data_array_release(arrayScoreboard);
 	obs_data_release(dataScoreboardInfo);
+
+	if (!startingInfo) {
+		heuristic(bestHeuristic, best, bestId, contest);
+	}
 	
 }
 
@@ -156,7 +150,8 @@ void getJudgementsInfo(contestInfo& contest) {
 	map<string,submissionInfo>::iterator it = contest.submissionPendings.begin();
 
 	while (it != contest.submissionPendings.end()) {
-		string jsonJudgementsInfo = getRemoteData(switcher->curlJudgements+it->first);
+		string tmp = switcher->curlJudgements + it->first; /*NO SE PORQUE COÑO NO OBTIENE RESULTADO*/
+		string jsonJudgementsInfo = getRemoteData(tmp);
 		string jsonFixedJudgementsInfo = vectorToObj(jsonJudgementsInfo); //Como el servidor devuelve el vector directamente, es necesario una adaptación para usar la función del obs
 		obs_data_t *dataJudgementsInfo = obs_data_create_from_json(jsonFixedJudgementsInfo.c_str());
 		obs_data_array_t *arrayJudgements = obs_data_get_array(dataJudgementsInfo, "array");
@@ -164,7 +159,6 @@ void getJudgementsInfo(contestInfo& contest) {
 		obs_data_t *judgements = obs_data_array_item(arrayJudgements, 0);
 		it->second.result = obs_data_get_string(judgements, "judgement_type_id");
 		obs_data_release(judgements);
-		switcher->numPendingSubmissions--;
 		obs_data_array_release(arrayJudgements);
 		obs_data_release(dataJudgementsInfo);
 		it++;
@@ -173,7 +167,6 @@ void getJudgementsInfo(contestInfo& contest) {
 
 void getArrayInfo(contestInfo &contest, string curl, typesInfo type)
 {
-
 	string jsonInfo = getRemoteData(curl);
 	string jsonFixedInfo = vectorToObj(jsonInfo); //Como el servidor devuelve el vector directamente, es necesario una adaptación para usar la función del obs
 	obs_data_t *dataInfo = obs_data_create_from_json(jsonFixedInfo.c_str());
@@ -185,8 +178,6 @@ void getArrayInfo(contestInfo &contest, string curl, typesInfo type)
 
 		if (type == typesInfo::Submissions)
 			getSubmissionsInfo(contest, element);
-		else if (type == typesInfo::Problems)
-			getProblemContestInfo(contest, element);
 
 		obs_data_release(element);
 	}
@@ -213,3 +204,51 @@ void getIdentificationTeamInfo(string id, teamInfo& info) {
 	obs_data_release(tamInfo);
 }
 
+
+void heuristic(int bestHeuristic, teamInfo best, string bestId, contestInfo & contest)
+{
+	/*Si el mejor no es el actual, se realizan los cambios*/
+	if (bestId.c_str() != switcher->lastTeamsInStream.cend()->c_str())
+	{
+
+		if (bestHeuristic >= (switcher->rankWeight - (switcher->classificationTimeInStream * switcher->timeInStreamWeight)))
+		{
+			//Busqueda del elemento en la base de datos estática
+			map<string, IpsTeam>::iterator it1 = switcher->ipsContestData.ipsTeams.find(best.identificationInfo.name); //IpsContest y la información obtenida por curl se conectan gracias a que el equipo tiene el MISMO NOMBRE
+
+			//Actualización de las variables para la emisión
+			switcher->ipCam = it1->second.ipCam;
+			switcher->ipScreen = it1->second.ipScreen;
+			switcher->textTeamImageFile = it1->second.urlLogo;
+			switcher->backUpText = "Team: " + best.identificationInfo.name + "/nClassification: " + std::to_string(best.rank) + "/nNumber of problem solved: " + std::to_string(best.score.num_solved);
+
+			/*Actualización de las variables de control*/
+			switcher->swapIp = true;
+			if (switcher->lastTeamsInStream.cend()->c_str() == switcher->tokenIdClassification ) {
+				switcher->swapScene = true;
+			}
+
+			/*Actualización de las variables para la heurística*/
+			switcher->lastTeamsInStream.push_back(bestId);
+			best.timeInStream++;
+		}
+		else
+		{
+			switcher->classificationTimeInStream++;
+			switcher->lastTeamsInStream.push_back(switcher->tokenIdClassification);
+			if (switcher->lastTeamsInStream.cend()->c_str() != switcher->tokenIdClassification) 
+				switcher->swapScene = true;
+		}
+
+		//Actualización de las variables para la heurística
+		if (switcher->lastTeamsInStream.size() == switcher->cycleSize+1) //El mas uno es para tener en cuenta que durante esta función se inserta un nuevo elemento
+		{
+			if (switcher->lastTeamsInStream.begin()->c_str() == switcher->tokenIdClassification) //Tratamiento especial de la clasificación
+				switcher->classificationTimeInStream--;
+			else //Caso general
+				contest.scoreBoard.find(switcher->lastTeamsInStream.begin()->c_str())->second.timeInStream--;
+			switcher->lastTeamsInStream.erase(switcher->lastTeamsInStream.begin());
+		}
+		
+	}	
+}

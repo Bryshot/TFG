@@ -31,9 +31,6 @@ public:
 	void SetStopped();
 
 	int FindByData(const QString &window);
-	int SceneTransitionsFindByData(const QString &scene1,
-				       const QString &scene2);
-	int DefaultTransitionsFindByData(const QString &scene);
 	
 	void loadUI();
 	void populateSceneSelection(QComboBox *sel, bool addPrevious);
@@ -65,17 +62,19 @@ public slots:
 	void on_rotativeText_textChanged(const QString &text);
 	void on_contestServer_textChanged(const QString &text);
 
-	void on_sceneTransitions_currentRowChanged(int idx);
-	void on_transitionsAdd_clicked();
-	void on_transitionsRemove_clicked();
-	void on_defaultTransitions_currentRowChanged(int idx);
-	void on_defaultTransitionsAdd_clicked();
-	void on_defaultTransitionsRemove_clicked();
-	void on_transitionOverridecheckBox_stateChanged(int state);
-
 	void on_close_clicked();
 
 private:
+	/*void on_transitionsAdd_clicked();
+	void on_transitionsRemove_clicked();
+	void on_defaultTransitionsAdd_clicked();
+	void on_defaultTransitionsRemove_clicked();
+	int SceneTransitionsFindByData(const QString &scene1,
+				       const QString &scene2);
+	int DefaultTransitionsFindByData(const QString &scene);
+	void on_sceneTransitions_currentRowChanged(int idx);
+	void on_defaultTransitions_currentRowChanged(int idx);
+	void on_transitionOverridecheckBox_stateChanged(int state);*/
 };
 
 /********************************************************************************
@@ -86,13 +85,10 @@ void GetWindowList(QStringList &windows); // Overloaded
 void GetCurrentWindowTitle(std::string &title);
 bool isFullscreen(std::string &title);
 
-/********************************************************************************
- * Screenregion helper
- ********************************************************************************/
-std::pair<int, int> getCursorPos();
+
 
 /********************************************************************************
- * Idle detection helper
+ *REVISAR Idle detection helper
  ********************************************************************************/
 int secondsSinceLastInput();
 
@@ -113,16 +109,8 @@ typedef struct transitionData {
 	int duration = 0;
 } transitionData;
 
-void setNextTransition(OBSWeakSource &targetScene, obs_source_t *currentSource,
-		       OBSWeakSource &transition,
-		       bool &transitionOverrideOverride, transitionData &td);
-void overwriteTransitionOverride(obs_weak_source_t *sceneWs,
-				 obs_source_t *transition, transitionData &td);
-void restoreTransitionOverride(obs_source_t *scene, transitionData td);
 
-void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
-		 bool &transitionOverrideOverride,
-		 std::unique_lock<std::mutex> &lock);
+void switchScene(obs_source_t *transition, std::unique_lock<std::mutex> &lock);
 
 /********************************************************************************
  * Main SwitcherData

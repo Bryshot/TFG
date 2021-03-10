@@ -6,6 +6,7 @@
 #include <chrono>
 #include <vector>
 #include <mutex>
+#include <stdlib.h> 
 #include <thread>
 
 #include <obs-frontend-api.h>
@@ -20,7 +21,9 @@
 #include "headers/curl-helper.hpp"
 #include "headers/curlCore.h"
 
+
 SwitcherData *switcher = nullptr;
+contestInfo contestRealData;
 
 /// <summary>
 /// Función encargada de inicializar el plugin
@@ -64,7 +67,6 @@ void SceneSwitcher::populateTransitionSelection(QComboBox *sel)
 {
 	obs_frontend_source_list *transitions = new obs_frontend_source_list();
 	obs_frontend_get_transitions(transitions);
-
 	for (size_t i = 0; i < transitions->sources.num; i++) {
 		const char *name =
 			obs_source_get_name(transitions->sources.array[i]);
@@ -83,7 +85,7 @@ void SceneSwitcher::loadUI()
 	setMinimumHeight(700);
 #endif
 	setupGeneralTab();
-	setupTransitionsTab();
+	//setupTransitionsTab();
 	setTabOrder();
 
 	loading = false;
@@ -103,7 +105,7 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 
 		obs_data_t *obj = obs_data_create();
 
-		switcher->saveSceneTransitions(obj);
+	//	switcher->saveSceneTransitions(obj);
 		switcher->saveGeneralSettings(obj);
 		switcher->saveHotkeys(obj);
 
@@ -118,7 +120,7 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 		if (!obj)
 			obj = obs_data_create();
 
-		switcher->loadSceneTransitions(obj);
+		//switcher->loadSceneTransitions(obj);
 		switcher->loadGeneralSettings(obj);
 		switcher->loadHotkeys(obj);
 
@@ -146,46 +148,46 @@ void SwitcherData::Thread()
 	std::unique_lock<std::mutex> lock(m);//Inutil
 
 	//Obtenemos la información inicial del concurso
-	contestInfo contest = getContestRealTimeInfo();
+	contestRealData = getContestRealTimeInfo();
 
 	while (true) {
 	startLoop:
-		bool switchS;
-		OBSWeakSource scene;
-		OBSWeakSource transition;
+		/*Declaración de las variables*/
 		std::chrono::milliseconds duration = std::chrono::milliseconds(sleep);
+		obs_frontend_get_transitions(switcher->transitions);
 
 		if (verbose)
-			blog(LOG_INFO,"AutoProducer sleep for %d",sleep);
+			blog(LOG_INFO, "AutoProducer sleep for %d", sleep);
 
-		//Se recargan las 
+		//Se recargan las variables de control para el wait (Revisar)
 		switcher->Prune();
 		waitScene = obs_frontend_get_current_scene();
-		//Tiempom de espera entre switch y switch
+
+		//Tiempo  de espera entre switch y switch
 		cv.wait_for(lock, duration);
 
 		//Comprueba si se ha detenido el programa durante el sleep.
 		if (switcher->stop) break;
-		setDefaultSceneTransitions();
-		
-		/// <summary>
-		/// Decisor
-		/// </summary>
-
-		if (sceneChangedDuringWait()) //scene might have changed during the sleep
-		{
+		else if (sceneChangedDuringWait()) //scene might have changed during the sleep
 			goto startLoop;
-		}
 
+		obs_source_t * transition = selectRandomTransition();
+		//setDefaultSceneTransitions();//Revisar
+
+		//Actualización de la información del torneo y realiza el calculo heurístico
+		updateContestRealTimeInfo(contestRealData);
+
+		/*Si durante el proceso de  decisión se para el plugin, se cancela el cambio*/
 		if (switcher->stop) {
 			goto endLoop;
-		}	
-
-		if (switchS) {
-			switchScene(scene, transition, tansitionOverrideOverride, lock);
-		} else
-		{
 		}
+
+		if (switcher->swapIp) //Realiza el cambio de las vlcSources
+			switchIP(lock);
+		if (switcher->swapScene) //Realiza el cambio de escenas
+			switchScene(transition, lock);
+		
+		
 
 	}
 endLoop:
@@ -198,82 +200,126 @@ endLoop:
 
 void SwitcherData::ThreadSubmissions() {
 
-	while (!switcher->stop) {
+	while (true) {
+		//Variables del thread
+		int i = 0;
+		string tmp = "";
+
+		/*Establecer un lock simple en el mapa submissionPendings*/
+		while (!switcher->updatedSubmissions) {
+			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		}
+
 		//Codigo para actualizar barra de submissions
+		getJudgementsInfo(contestRealData);
+
+		map<string, submissionInfo>::iterator it =
+			contestRealData.submissionPendings.begin();
+
+		/*Bucle para cada envio*/
+		while (it != contestRealData.submissionPendings.end() &&
+		       i < MAX_VISIBLE_TEAMS_SUBMISSION) {
+
+			map<string, teamInfo>::iterator it2 =
+				contestRealData.scoreBoard.find(
+					it->second.idTeam);
+			tmp += it2->second.identificationInfo.name.substr(0,
+									  20);
+
+			/*Seguramente tenga que regular la fuentes y tener un sistema que inserte espacios segun los elementos reales del nombre*/
+			tmp += it->second.idTeam;
+
+			/*Sumar espacios para maquetación*/
+
+			tmp += it->second.result + "\n";
+			it++;
+			if (it->second.result != pendingJugment) {
+				contestRealData.scoreBoard.erase(it2);
+			}
+		}
+
+		switcher->updatedSubmissions = false;
+		updateTextSubmissionContent(tmp);
+		//Espera temporal entre refrescos
+
+		//Si se para el programa tambien se para este thread
+		if (switcher->stop) {
+			return;
+		}
 	}
+
 }
 
-void switchScene(OBSWeakSource &scene, OBSWeakSource &transition,
-		 bool &transitionOverrideOverride,
-		 std::unique_lock<std::mutex> &lock)
+void switchScene(obs_source_t *transition,std::unique_lock<std::mutex> &lock)
 {
-	obs_source_t *source = obs_weak_source_get_source(scene);
 	obs_source_t *currentSource = obs_frontend_get_current_scene();
+	obs_source_t *sourceTeamviewer = obs_scene_get_source(switcher->teamViewerScene);
+	obs_source_t *sourceClassification = obs_scene_get_source(switcher->classificationScene);
+	obs_source_t *source = nullptr;
 
-	if (source && source != currentSource) {
+	if (currentSource == sourceTeamviewer)
+		source = sourceClassification;
+	else if (currentSource == sourceClassification)
+		source = sourceTeamviewer;
 
-		// this call might block when OBS_FRONTEND_EVENT_SCENE_CHANGED is active and mutex is held
-		// thus unlock mutex to avoid deadlock
-		//lock.unlock();
+	// this call might block when OBS_FRONTEND_EVENT_SCENE_CHANGED is active and mutex is held
+	// thus unlock mutex to avoid deadlock
+	lock.unlock();
 
-		transitionData td;
-		setNextTransition(scene, currentSource, transition,
-				  transitionOverrideOverride, td);
-		obs_frontend_set_current_scene(source);
-		if (transitionOverrideOverride)
-			restoreTransitionOverride(source, td);
-		lock.lock();
+	obs_frontend_set_current_transition(transition);
+	obs_frontend_set_current_scene(source);
+	lock.lock();
 
-		if (switcher->verbose)
-			blog(LOG_INFO,
-			     "AutoProducer switched scene");
-	}
+	if (switcher->verbose)
+		blog(LOG_INFO,"AutoProducer switched scene");
+	
 	obs_source_release(currentSource);
-	obs_source_release(source);
+	obs_source_release(sourceTeamviewer);
+	obs_source_release(sourceClassification);
 }
 
-void SwitcherData::switchIP(string ipScreen, string ipCam,
-	       unique_lock<mutex> &lock)
+obs_source_t * SwitcherData::selectRandomTransition() {
+
+	int random = rand() % switcher->transitions->sources.num;
+	return switcher->transitions->sources.array[random];
+}
+
+void SwitcherData::switchIP(unique_lock<mutex> &lock)
 {
-	obs_source_t *currentSource = obs_frontend_get_current_preview_scene();
-	string nombreEscena = obs_source_get_name(currentSource);
+	obs_source_t *screen;
+	obs_source_t *cam;
 
-	if (nombreEscena == "TeamView") {
-
-		obs_source_t *screen;
-		obs_source_t *cam;
-
-		if (switcher->usingDummy) {
-			screen = switcher->screenTeam;
-			cam = switcher->camTeam;
-		}
-		else
-		{
-			screen = switcher->screenTeamDummy;
-			cam = switcher->camTeamDummy;
-		}
-
-		switcher->modificaVLC(screen, ipScreen);
-		switcher->modificaVLC(cam, ipCam);
-
-		cv.wait_for(lock, chrono::milliseconds(15000));
-
-		if (switcher->usingDummy)
-		{
-			obs_sceneitem_set_visible(switcher->screenTeamDummyItem,false);
-			obs_sceneitem_set_visible(switcher->camTeamDummyItem, false);
-			obs_sceneitem_set_visible(switcher->screenTeamItem,true);
-			obs_sceneitem_set_visible(switcher->camTeamItem, true);
-		}
-		else
-		{
-			obs_sceneitem_set_visible(switcher->screenTeamDummyItem,true);
-			obs_sceneitem_set_visible(switcher->camTeamDummyItem, true);
-			obs_sceneitem_set_visible(switcher->screenTeamItem, false);
-			obs_sceneitem_set_visible(switcher->camTeamItem, false);
-		}
-		switcher->usingDummy = !switcher->usingDummy;
+	if (usingDummy) {
+		screen = screenTeam;
+		cam = camTeam;
 	}
+	else
+	{
+		screen = screenTeamDummy;
+		cam = camTeamDummy;
+	}
+
+	modificaVLC(screen, ipScreen);
+	modificaVLC(cam, ipCam);
+
+	cv.wait_for(lock, chrono::milliseconds(15000));
+
+	if (usingDummy)
+	{
+		obs_sceneitem_set_visible(screenTeamDummyItem,false);
+		obs_sceneitem_set_visible(camTeamDummyItem, false);
+		obs_sceneitem_set_visible(screenTeamItem,true);
+		obs_sceneitem_set_visible(camTeamItem, true);
+	}
+	else
+	{
+		obs_sceneitem_set_visible(screenTeamDummyItem,true);
+		obs_sceneitem_set_visible(camTeamDummyItem, true);
+		obs_sceneitem_set_visible(screenTeamItem, false);
+		obs_sceneitem_set_visible(camTeamItem, false);
+	}
+	usingDummy = !usingDummy;
+	swapIp = false;
 }
 
 void SwitcherData::modificaVLC(obs_source_t* source, string ip) {
@@ -286,6 +332,14 @@ void SwitcherData::modificaVLC(obs_source_t* source, string ip) {
 	obs_data_release(d);
 	obs_data_array_release(array);
 	obs_source_update(source, data);
+}
+
+void SwitcherData::updateTextSubmissionContent(string text)
+{
+	obs_data_t *data = obs_source_get_settings(switcher->textSubmission);
+	obs_data_set_string(data, "text", text.c_str());
+	obs_source_update(switcher->textSubmission, data);
+	obs_data_release(data);
 }
 
 bool SwitcherData::sceneChangedDuringWait()

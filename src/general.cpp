@@ -120,7 +120,6 @@ void SceneSwitcher::on_exportSettings_clicked()
 
 	obs_data_t *obj = obs_data_create();
 
-	switcher->saveSceneTransitions(obj);
 	switcher->saveGeneralSettings(obj);
 	switcher->saveHotkeys(obj);
 
@@ -155,7 +154,6 @@ void SceneSwitcher::on_importSettings_clicked()
 		return;
 	}
 
-	switcher->loadSceneTransitions(obj);
 	switcher->loadGeneralSettings(obj);
 	switcher->loadHotkeys(obj);
 
@@ -191,19 +189,30 @@ void SceneSwitcher::on_importIPs_clicked() {
 	map<string, IpsTeam>::iterator it =	switcher->ipsContestData.ipsTeams.begin();
 	switcher->ipScreen = it->second.ipScreen;
 	switcher->ipCam = it->second.ipCam;
+	switcher->textTeamImageFile = it->second.urlLogo;
 	switcher->urlClassification = switcher->ipsContestData.ipClassification;
 
 	switcher->importedIPs = true;
 
 	obs_data_t *dataClassification = obs_source_get_settings(switcher->screenClassification);
+	obs_data_t *dataTextTeam = obs_source_get_settings(switcher->textTeam);
+	obs_data_t *dataTextTeamImage = obs_source_get_settings(switcher->textTeamImage);
 
 	switcher->modificaVLC(switcher->screenTeam, switcher->ipScreen);
 	switcher->modificaVLC(switcher->camTeam, switcher->ipCam);
 
+	obs_data_set_string(dataTextTeamImage, "file", switcher->textTeamImageFile.c_str());
+	string tmp = "Team: " + it->first + "\n" +"Classification:\nNumber of Problem Resolved: ";
+	obs_data_set_string(dataTextTeam, "text", tmp.c_str());
 	obs_data_set_string(dataClassification, "url",switcher->urlClassification.c_str());
+
 	obs_source_update(switcher->screenClassification, dataClassification);
+	obs_source_update(switcher->textTeam, dataTextTeam);
+	obs_source_update(switcher->textTeamImage, dataTextTeamImage);
 
 	obs_data_release(dataClassification);
+	obs_data_release(dataTextTeamImage);
+	obs_data_release(dataTextTeam);
 }
 
 void SceneSwitcher::on_createSetup_clicked() {

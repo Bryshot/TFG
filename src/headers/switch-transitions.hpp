@@ -2,7 +2,7 @@
 #include <string>
 #include "utility.hpp"
 #include "switch-generic.hpp"
-
+/*
 /// <summary>
 /// Estructura que representa los SceneTransitions
 /// </summary>
@@ -92,3 +92,4 @@ struct DefaultSceneTransition : SceneSwitcherEntry {
 /// <param name="transition">, string que define la transición</param>
 static inline QString MakeDefaultSceneTransitionName(const QString &scene,
 						     const QString &transition);
+						     */
