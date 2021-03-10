@@ -127,7 +127,6 @@ void SwitcherData::Thread()
 	//Anunciamos el inicio del funcionamiento del plugin
 	blog(LOG_INFO, "Advanced Switcher started");
 
-	int sleep = 0;
 	std::unique_lock<std::mutex> lock(m);
 
 	//Obtenemos la información inicial del concurso
@@ -136,11 +135,11 @@ void SwitcherData::Thread()
 	while (true) {
 	startLoop:
 		/*Declaración de las variables*/
-		std::chrono::milliseconds duration = std::chrono::milliseconds(sleep);
+		std::chrono::milliseconds duration = std::chrono::milliseconds(interval);
 		obs_frontend_get_transitions(switcher->transitions);
 
 		if (verbose)
-			blog(LOG_INFO, "AutoProducer sleep for %d", sleep);
+			blog(LOG_INFO, "AutoProducer sleep for %d", interval);
 
 		//Se recargan las variables de control para el wait (Revisar)
 		switcher->Prune();
@@ -355,7 +354,6 @@ void SwitcherData::Stop()
 	if (th && th->isRunning() && thSub && thSub->isRunning())
 	{
 		switcher->stop = true;
-		transitionCv.notify_one();
 		cv.notify_one();
 		th->wait();
 		thSub->wait();
