@@ -2,7 +2,6 @@
 #include <QFileInfo>
 #include <curl/curl.h>
 #include <obs.hpp>
-
 #include "headers/curl-helper.hpp"
 
 initFunction f_curl_init = nullptr;
@@ -11,6 +10,8 @@ performFunction f_curl_perform = nullptr;
 cleanupFunction f_curl_cleanup = nullptr;
 
 QLibrary *loaded_curl_lib = nullptr;
+
+/*Fichero encargado de la funcionalidad base de curl*/
 
 bool resolveCurl()
 {

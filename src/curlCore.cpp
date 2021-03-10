@@ -47,7 +47,6 @@ void updateContestRealTimeInfo(contestInfo& data)
 
 void setCurls() {
 	switcher->curlContest = switcher->contestServerWebsite +"/api/v4/contests/" + switcher->contestName;
-	switcher->curlProblems = switcher->curlContest + "/problems";
 	switcher->curlScoreboard = switcher->curlContest + "/scoreboard";
 	switcher->curlTeams = switcher->curlContest + "/teams?ids%5B%5D=";
 	switcher->curlSubmissions = switcher->curlContest + "/submissions";

@@ -6,8 +6,10 @@
 #include <QDateTime>
 #include <QThread>
 #include <curl/curl.h>
-#include "switch-transitions.hpp"
+#include <obs.h>
+#include <obs-frontend-api.h>
 #include "importIPs.h"
+
 //#include "curlCore.h"
 
 
@@ -88,7 +90,6 @@ struct SwitcherData {
 	/*Elementos necesarios para obtener la info del concurso*/
 	string contestServerWebsite = default_contestServer; //Url base del servidor de DomJudge
 	string curlContest;				     //Url del concurso dentro del DomJugde
-	string curlProblems;				     //Url de los problemas dentro del DomJugde
 	string curlScoreboard;				     //Url de la clasificación dentro del DomJugde
 	string curlSubmissions;				     //Url de las entregas dentro del DomJugde
 	string curlJudgements;				     //Url de las valoraciones dentro del DomJugde
@@ -103,29 +104,27 @@ struct SwitcherData {
 	int cycleSize = 20;
 
 	obs_source_t *waitScene = NULL;			     //Scene que almacena la escena presente antes de un cv.wait
-	OBSWeakSource previousScene = NULL;		///REVISAR
-	OBSWeakSource PreviousScene2 = NULL;		///REVISAR
 
-	/*Url de las fuentes actuales*/
+	//Url de las fuentes actuales
 	string ipCam = "";				//Variable que almacena el valor futuro de camTeam
 	string ipScreen = "";				//Variable que almacena el valor futuro de screenTeam
 	string backUpText = "";				//Variable que almacena el valor futuro de backUpText
 	string urlClassification = default_url;		//Variable que almacena el valor inicial de screenClassification
 
-	/*Fuentes necesarias para la realización del torneo*/ /*QUIZA ES obs_source_t y obs_scene_t*/
-	OBSSource screenTeam;				//Source que almacena la screenTeam
-	OBSSource camTeam;				//Source que almacena la camTeam
-	OBSSource screenTeamDummy;			//Source que almacena la screenTeamDummy
-	OBSSource camTeamDummy;				//Source que almacena la camTeamDummy
-	OBSSource screenClassification;			//Source que almacena la screenClassification
-	OBSSource textRotative;				//Source que almacena el textRotative
-	OBSSource staticText;				//Source que almacena el staticText
-	OBSSource textSubmission;			//Source que almacena el textSubmision
-	OBSSource textTeam;				//Source que almacena el textTeam
-	OBSSource textTeamImage;			//Source que almacena el textTeamImage
-	OBSSource filter;				//Source que almacena el filtro de rotación del textRotative
-	OBSScene teamViewerScene;			//Scene  que almacena la escena TeamViewer
-	OBSScene classificationScene;			//Scene  que almacena la escena Classification
+	//Fuentes necesarias para la realización del torneo
+	obs_source_t *screenTeam;			//Source que almacena la screenTeam
+	obs_source_t *camTeam;				//Source que almacena la camTeam
+	obs_source_t *screenTeamDummy;			//Source que almacena la screenTeamDummy
+	obs_source_t *camTeamDummy;			//Source que almacena la camTeamDummy
+	obs_source_t *screenClassification;		//Source que almacena la screenClassification
+	obs_source_t *textRotative;			//Source que almacena el textRotative
+	obs_source_t *staticText;			//Source que almacena el staticText
+	obs_source_t *textSubmission;			//Source que almacena el textSubmision
+	obs_source_t *textTeam;				//Source que almacena el textTeam
+	obs_source_t *textTeamImage;			//Source que almacena el textTeamImage
+	obs_source_t *filter;				//Source que almacena el filtro de rotación del textRotative
+	obs_scene_t  *teamViewerScene;			//Scene  que almacena la escena TeamViewer
+	obs_scene_t  *classificationScene;		//Scene  que almacena la escena Classification
 	obs_frontend_source_list *transitions;		//Lista de sources que almacena las transition
 
 	/*Scene items necesarios para la realización del torneo */

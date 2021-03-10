@@ -36,28 +36,11 @@ SceneSwitcher::SceneSwitcher(QWidget *parent)
 
 	std::lock_guard<std::mutex> lock(switcher->m);
 
-	switcher->Prune();
+	//switcher->Prune();
+
 	loadUI();
 }
 
-/// <summary>
-/// Añade todas las escenas en sel; si addPrevious es true, tambien se añade la última escena
-/// </summary>
-/// <param name="sel">ComboBox donde estaran todas las escenas</param>
-/// <param name="addPrevious">Booleano de selección</param>
-void SceneSwitcher::populateSceneSelection(QComboBox *sel, bool addPrevious)
-{
-	BPtr<char *> scenes = obs_frontend_get_scene_names();
-	char **temp = scenes;
-	while (*temp) {
-		const char *name = *temp;
-		sel->addItem(name);
-		temp++;
-	}
-
-	if (addPrevious)
-		sel->addItem(previous_scene_name);
-}
 
 /// <summary>
 /// Añade todas las transiciones en sel
@@ -84,6 +67,7 @@ void SceneSwitcher::loadUI()
 #if __APPLE__
 	setMinimumHeight(700);
 #endif
+
 	setupGeneralTab();
 	//setupTransitionsTab();
 	setTabOrder();
@@ -101,26 +85,25 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 		switcher->Stop();
 		std::lock_guard<std::mutex> lock(switcher->m);
 
-		switcher->Prune();
+		//switcher->Prune();
 
 		obs_data_t *obj = obs_data_create();
 
-	//	switcher->saveSceneTransitions(obj);
 		switcher->saveGeneralSettings(obj);
 		switcher->saveHotkeys(obj);
 
-		obs_data_set_obj(save_data, "advanced-scene-switcher", obj);
+		obs_data_set_obj(save_data, "advanced-switcher", obj);
 
 		obs_data_release(obj);
 	} else {
 		switcher->m.lock();
 
-		obs_data_t *obj = obs_data_get_obj(save_data, "advanced-scene-switcher");
+		obs_data_t *obj = obs_data_get_obj(save_data, "advanced-switcher");
 
 		if (!obj)
 			obj = obs_data_create();
 
-		//switcher->loadSceneTransitions(obj);
+		
 		switcher->loadGeneralSettings(obj);
 		switcher->loadHotkeys(obj);
 
@@ -142,10 +125,10 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 void SwitcherData::Thread()
 {
 	//Anunciamos el inicio del funcionamiento del plugin
-	blog(LOG_INFO, "AutoProducer started");
+	blog(LOG_INFO, "Advanced Switcher started");
 
 	int sleep = 0;
-	std::unique_lock<std::mutex> lock(m);//Inutil
+	std::unique_lock<std::mutex> lock(m);
 
 	//Obtenemos la información inicial del concurso
 	contestRealData = getContestRealTimeInfo();
@@ -271,7 +254,7 @@ void switchScene(obs_source_t *transition,std::unique_lock<std::mutex> &lock)
 	lock.lock();
 
 	if (switcher->verbose)
-		blog(LOG_INFO,"AutoProducer switched scene");
+		blog(LOG_INFO,"Advanced Switcher switched scene");
 	
 	obs_source_release(currentSource);
 	obs_source_release(sourceTeamviewer);
@@ -405,16 +388,6 @@ void handleSceneChange(SwitcherData *s)
 	//stop waiting if scene was manually changed
 	if (s->sceneChangedDuringWait())
 		s->cv.notify_one();
-
-	//set previous scene
-	obs_source_t *source = obs_frontend_get_current_scene();
-	obs_weak_source_t *ws = obs_source_get_weak_source(source);
-	obs_source_release(source);
-	obs_weak_source_release(ws);
-	if (source && s->PreviousScene2 != ws) {
-		s->previousScene = s->PreviousScene2;
-		s->PreviousScene2 = ws;
-	}
 }
 
 

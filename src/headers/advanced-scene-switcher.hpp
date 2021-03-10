@@ -30,10 +30,9 @@ public:
 	void SetStarted();
 	void SetStopped();
 
-	int FindByData(const QString &window);
+	int FindByData(const QString &window);//Revisar
 	
 	void loadUI();
-	void populateSceneSelection(QComboBox *sel, bool addPrevious);
 	void populateTransitionSelection(QComboBox *sel);
 	void setupGeneralTab();
 	void setupTransitionsTab();
@@ -65,50 +64,14 @@ public slots:
 	void on_close_clicked();
 
 private:
-	/*void on_transitionsAdd_clicked();
-	void on_transitionsRemove_clicked();
-	void on_defaultTransitionsAdd_clicked();
-	void on_defaultTransitionsRemove_clicked();
-	int SceneTransitionsFindByData(const QString &scene1,
-				       const QString &scene2);
-	int DefaultTransitionsFindByData(const QString &scene);
-	void on_sceneTransitions_currentRowChanged(int idx);
-	void on_defaultTransitions_currentRowChanged(int idx);
-	void on_transitionOverridecheckBox_stateChanged(int state);*/
+	
 };
-
-/********************************************************************************
- * Windowtitle helper
- ********************************************************************************/
-void GetWindowList(std::vector<std::string> &windows);
-void GetWindowList(QStringList &windows); // Overloaded
-void GetCurrentWindowTitle(std::string &title);
-bool isFullscreen(std::string &title);
-
-
-
-/********************************************************************************
- *REVISAR Idle detection helper
- ********************************************************************************/
-int secondsSinceLastInput();
-
-/********************************************************************************
- * Executable helper
- ********************************************************************************/
-void GetProcessList(QStringList &processes);
-bool isInFocus(const QString &executable);
 
 /********************************************************************************
  * Sceneswitch helper
  ********************************************************************************/
 struct obs_weak_source;
 typedef struct obs_weak_source obs_weak_source_t;
-
-typedef struct transitionData {
-	std::string name = "";
-	int duration = 0;
-} transitionData;
-
 
 void switchScene(obs_source_t *transition, std::unique_lock<std::mutex> &lock);
 

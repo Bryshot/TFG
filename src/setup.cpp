@@ -2,13 +2,15 @@
 
 void crearConfiguracion( SwitcherData *switcher)
 {
+	//Marcamos el inicio de una creacion
+	switcher->created = false;
+
 	//Declaración de variables
-	string path, nameJson;
+	obs_sceneitem_t *item; 
 	char dst[512];
+
 	struct vec2 pos = vec2();
 	vec2_set(&pos, 0.0, fullscreenHeight - switcher->sizeRotativeText);
-	struct vec2 pos2 = vec2();
-	vec2_set(&pos2, 0.0,331.0);
 
 	//Ruta absoluta
 	os_get_config_path(dst, 512, "obs-studio/basic/scenes/");
@@ -21,16 +23,7 @@ void crearConfiguracion( SwitcherData *switcher)
 	//Cambio de nombre a la escena creada por default
 	struct obs_frontend_source_list scenes = {};
 	obs_frontend_get_scenes(&scenes);
-
-	for (size_t i = 0; i < scenes.sources.num; i++) {
-		obs_source_t *source = scenes.sources.array[i];
-		string temp = obs_source_get_name(source);
-		if (temp == "Escena") {
-			obs_source_set_name(source, "ProblemResolutionView");
-			break;
-		}
-	}
-
+	obs_source_set_name(scenes.sources.array[0], "ProblemResolutionView");
 	obs_frontend_source_list_free(&scenes);
 
 	//Creacion de las escenas y fuentes necesarias para la configuración
@@ -94,33 +87,34 @@ void crearConfiguracion( SwitcherData *switcher)
 
 	obs_source_filter_add(switcher->textRotative, switcher->filter);
 
-	//Adicción de las escenas y fuentes a la configuración
 
+	//Adicción de las escenas y fuentes a la configuración
 	switcher->screenTeamDummyItem = obs_scene_add(switcher->teamViewerScene, switcher->screenTeamDummy);
 	switcher->camTeamDummyItem = obs_scene_add(switcher->teamViewerScene, switcher->camTeamDummy);
 	switcher->screenTeamItem = obs_scene_add(switcher->teamViewerScene, switcher->screenTeam);
 	switcher->camTeamItem = obs_scene_add(switcher->teamViewerScene, switcher->camTeam);
 
-	obs_sceneitem_t *item = obs_scene_add(switcher->teamViewerScene, switcher->textRotative);
+	item = obs_scene_add(switcher->teamViewerScene, switcher->textRotative);
 	obs_sceneitem_set_pos(item, &pos);
-
-	item = obs_scene_add(switcher->teamViewerScene, switcher->staticText);
-	obs_sceneitem_set_pos(item, &pos2);
-	
-	vec2_set(&pos2, 0.0, 365.0);
-	item = obs_scene_add(switcher->teamViewerScene, switcher->textSubmission);
-	obs_sceneitem_set_pos(item, &pos2);
-	
-	vec2_set(&pos2, 659, 878);
-	item = obs_scene_add(switcher->teamViewerScene, switcher->textTeam);
-	obs_sceneitem_set_pos(item, &pos2);
-
-	vec2_set(&pos2, 1432.4312744140625, 879);
-	item = obs_scene_add(switcher->teamViewerScene, switcher->textTeamImage);
-	obs_sceneitem_set_pos(item, &pos2);
 
 	obs_scene_add(switcher->classificationScene, switcher->screenClassification);
 	item = obs_scene_add(switcher->classificationScene, switcher->textRotative);
+	obs_sceneitem_set_pos(item, &pos);
+
+	vec2_set(&pos, 0.0, 331.0);
+	item = obs_scene_add(switcher->teamViewerScene, switcher->staticText);
+	obs_sceneitem_set_pos(item, &pos);
+	
+	vec2_set(&pos, 0.0, 365.0);
+	item = obs_scene_add(switcher->teamViewerScene, switcher->textSubmission);
+	obs_sceneitem_set_pos(item, &pos);
+	
+	vec2_set(&pos, 659, 878);
+	item = obs_scene_add(switcher->teamViewerScene, switcher->textTeam);
+	obs_sceneitem_set_pos(item, &pos);
+
+	vec2_set(&pos, 1432.4312744140625, 879);
+	item = obs_scene_add(switcher->teamViewerScene, switcher->textTeamImage);
 	obs_sceneitem_set_pos(item, &pos);
 
 	//Parametros adicionales de la configuración
@@ -131,6 +125,7 @@ void crearConfiguracion( SwitcherData *switcher)
 	//Establecimiento de escena inicial
 	obs_frontend_set_current_preview_scene(obs_scene_get_source(switcher->teamViewerScene));
 
+	//Marcamos el final de la creación
 	switcher->created = true;
 }
 
@@ -222,6 +217,7 @@ string makeFileName(string name)
 }
 
 void make_source_settings(obs_data_t* data ,string ip) {
+
 	obs_data_set_string(data, "playback_behavior", "always_play");
 	obs_data_array_t *array = obs_data_array_create();
 	obs_data_t *obj = obs_data_create();
