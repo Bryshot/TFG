@@ -1,7 +1,6 @@
 #include <QMainWindow>
 #include <QDir>
 #include <QAction>
-
 #include <condition_variable>
 #include <chrono>
 #include <vector>
@@ -132,11 +131,13 @@ void SwitcherData::Thread()
 	//Obtenemos la información inicial del concurso
 	contestRealData = getContestRealTimeInfo();
 
+	updateTextRotative(switcher->textRotative);
+
 	while (true) {
 	startLoop:
 		/*Declaración de las variables*/
 		std::chrono::milliseconds duration = std::chrono::milliseconds(interval);
-		obs_frontend_get_transitions(switcher->transitions);
+		obs_frontend_get_transitions(&switcher->transitions);
 
 		if (verbose)
 			blog(LOG_INFO, "AutoProducer sleep for %d", interval);
@@ -150,15 +151,15 @@ void SwitcherData::Thread()
 
 		//Comprueba si se ha detenido el programa durante el sleep.
 		if (switcher->stop) break;
-		else if (sceneChangedDuringWait()) //scene might have changed during the sleep
-			goto startLoop;
+		//else if (sceneChangedDuringWait()) //scene might have changed during the sleep
+		//	goto startLoop;
 
 		obs_source_t * transition = selectRandomTransition();
 		//setDefaultSceneTransitions();//Revisar
 
 		//Actualización de la información del torneo y realiza el calculo heurístico
 		updateContestRealTimeInfo(contestRealData);
-
+		
 		/*Si durante el proceso de  decisión se para el plugin, se cancela el cambio*/
 		if (switcher->stop) {
 			goto endLoop;
@@ -193,31 +194,49 @@ void SwitcherData::ThreadSubmissions() {
 		}
 
 		//Codigo para actualizar barra de submissions
-		getJudgementsInfo(contestRealData);
+		//getJudgementsInfo(contestRealData);
 
-		map<string, submissionInfo>::iterator it =
-			contestRealData.submissionPendings.begin();
+		map<string, submissionInfo>::iterator it = contestRealData.submissionPendings.begin();
 
 		/*Bucle para cada envio*/
-		while (it != contestRealData.submissionPendings.end() &&
-		       i < MAX_VISIBLE_TEAMS_SUBMISSION) {
+		while (it != contestRealData.submissionPendings.end() && i < MAX_VISIBLE_TEAMS_SUBMISSION) {
 
-			map<string, teamInfo>::iterator it2 =
-				contestRealData.scoreBoard.find(
-					it->second.idTeam);
-			tmp += it2->second.identificationInfo.name.substr(0,
-									  20);
+			int slot1 = 11;
+			int slot2 = 23;
+			map<string, teamInfo>::iterator it2 = contestRealData.scoreBoard.find(it->second.idTeam);
+			string tmp2 = "";
 
-			/*Seguramente tenga que regular la fuentes y tener un sistema que inserte espacios segun los elementos reales del nombre*/
-			tmp += it->second.idTeam;
+			//string tmp3 = it2->second.identificationInfo.name;
+			//std::for_each(tmp3.begin(),tmp3.end(),[](char &c) { c = ::tolower(c); });
+			tmp2 += it2->second.identificationInfo.name.substr(0,7);
+			insertSpaces(tmp2, slot1 - tmp2.size());
+
+			//tmp3 = it->second.idProblem;
+			//std::for_each(tmp3.begin(),tmp3.end(),[](char &c) { c = ::tolower(c); });
+			tmp2 += it->second.idProblem; /*Quiza crear una lista de pair con id y nombre*/
+
+
+			if (slot2 - tmp2.size() <= 0) {
+				insertSpaces(tmp2, 1);
+			}
+			else
+				insertSpaces(tmp2, slot2 - tmp2.size());
+			
 
 			/*Sumar espacios para maquetación*/
 
-			tmp += it->second.result + "\n";
-			it++;
-			if (it->second.result != pendingJugment) {
-				contestRealData.scoreBoard.erase(it2);
+			tmp2 += it->second.result + "\n";
+			
+			i++;
+			if (it->second.result != pendingJugment) 
+			{
+				string temp = it->first;
+				it++;
+				contestRealData.submissionPendings.erase(contestRealData.submissionPendings.find(temp));
 			}
+			else 
+				it++;
+			tmp += tmp2;
 		}
 
 		switcher->updatedSubmissions = false;
@@ -254,16 +273,20 @@ void switchScene(obs_source_t *transition,std::unique_lock<std::mutex> &lock)
 
 	if (switcher->verbose)
 		blog(LOG_INFO,"Advanced Switcher switched scene");
-	
+	switcher->swapScene = false;
 	obs_source_release(currentSource);
-	obs_source_release(sourceTeamviewer);
-	obs_source_release(sourceClassification);
+}
+
+void insertSpaces(string & elem, int numSpaces) {
+	for (int i = 0 ; i<numSpaces;i++) {
+		elem+=" ";
+	}
 }
 
 obs_source_t * SwitcherData::selectRandomTransition() {
 
-	int random = rand() % switcher->transitions->sources.num;
-	return switcher->transitions->sources.array[random];
+	int random = rand() % switcher->transitions.sources.num;
+	return switcher->transitions.sources.array[random];
 }
 
 void SwitcherData::switchIP(unique_lock<mutex> &lock)
@@ -283,8 +306,9 @@ void SwitcherData::switchIP(unique_lock<mutex> &lock)
 
 	modificaVLC(screen, ipScreen);
 	modificaVLC(cam, ipCam);
+	modificaTextTeam(switcher->textTeam, switcher->textTeamContent);
 
-	cv.wait_for(lock, chrono::milliseconds(15000));
+	cv.wait_for(lock, chrono::milliseconds(1000));//GUI
 
 	if (usingDummy)
 	{
@@ -314,6 +338,26 @@ void SwitcherData::modificaVLC(obs_source_t* source, string ip) {
 	obs_data_release(d);
 	obs_data_array_release(array);
 	obs_source_update(source, data);
+	obs_data_release(data);
+}
+
+void updateTextRotative(obs_source_t * source) {
+
+	switcher->textRotativeContent += "| Name of the contest = "+ switcher->contestName + " | Start of the contest:"+ contestRealData.start_time + " | End of the contest:"+contestRealData.end_time+" |";
+	obs_data_t *data = obs_source_get_settings(source);
+	obs_data_set_string(data, "text", switcher->textRotativeContent.c_str());
+	obs_source_update(source, data);
+	obs_data_release(data);
+}
+
+void modificaTextTeam(obs_source_t *source, string text)
+{
+
+	obs_data_t *data = obs_source_get_settings(source);
+	obs_data_set_string(data, "text", text.c_str());
+	obs_source_update(source, data);
+	obs_data_release(data);
+	
 }
 
 void SwitcherData::updateTextSubmissionContent(string text)
@@ -344,8 +388,7 @@ void SwitcherData::Start()
 		switcher->th->start(
 			(QThread::Priority)switcher->threadPriority);
 		switcher->thSub = new SwitcherThreadSubmissions();
-		switcher->thSub->start(
-			(QThread::Priority)switcher->threadPriority);
+		switcher->thSub->start((QThread::Priority)switcher->threadSubmissionPriority);
 	}
 }
 
@@ -417,6 +460,7 @@ extern "C" void InitSceneSwitcher()
 
 	if (loadCurl() && f_curl_init) {
 		switcher->curl = f_curl_init();
+		//switcher->curlAdmin = f_curl_init();
 	}
 
 	auto cb = []() {

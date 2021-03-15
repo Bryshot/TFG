@@ -19,7 +19,8 @@ string getRemoteData(std::string &url, bool admin) //quiza es string url
 
 		if (admin) {
 			f_curl_setopt(switcher->curl, CURLOPT_HTTPAUTH,(long)CURLAUTH_BASIC);
-			f_curl_setopt(switcher->curl, CURLOPT_USERPWD,"admin:admin");
+			string tmp = switcher->userContestServer +":"+switcher->passwordContestServer;
+			f_curl_setopt(switcher->curl, CURLOPT_USERPWD,tmp);
 		}
 		
 		f_curl_perform(switcher->curl);
@@ -97,6 +98,7 @@ void getTeamsContestInfo(contestInfo &contest, bool startingInfo)
 		if (!startingInfo) {
 			map<string, teamInfo>::iterator it = contest.scoreBoard.find(id);
 			info = it->second;
+			info .score.num_pending = 0;
 		}
 		info.rank = obs_data_get_int(team, "rank");
 

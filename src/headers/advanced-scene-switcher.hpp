@@ -41,8 +41,13 @@ public:
 public slots:
 
 	void on_checkInterval_valueChanged(int value);
-	void on_sizeRotativeText_valueChanged(int value);
+	//void on_sizeRotativeText_valueChanged(int value);
 	void on_SpeedRotation_valueChanged(int value);
+
+	void on_weightOfRank_valueChanged(double value);
+	void on_weightOfTime_valueChanged(double value);
+	void on_weightOfPending_valueChanged(double value);
+	void on_numberOfCycle_valueChanged(int value);
 
 	void on_toggleStartButton_clicked();
 	void on_tabMoved(int from, int to);
@@ -58,8 +63,9 @@ public slots:
 	void on_createSetup_clicked();
 
 	void on_contestName_textChanged(const QString &text);
-	void on_rotativeText_textChanged(const QString &text);
 	void on_contestServer_textChanged(const QString &text);
+	void on_userContestServer_textChanged(const QString &text);
+	void on_passwordContestServer_textChanged(const QString &text);
 
 	void on_close_clicked();
 
@@ -70,10 +76,14 @@ private:
 /********************************************************************************
  * Sceneswitch helper
  ********************************************************************************/
-struct obs_weak_source;
-typedef struct obs_weak_source obs_weak_source_t;
 
 void switchScene(obs_source_t *transition, std::unique_lock<std::mutex> &lock);
+
+void modificaTextTeam(obs_source_t *source, string text);
+
+void insertSpaces(string &tmp, int numSpaces);
+
+void updateTextRotative(obs_source_t * source);
 
 /********************************************************************************
  * Main SwitcherData

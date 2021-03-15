@@ -21,28 +21,6 @@ void SceneSwitcher::on_checkInterval_valueChanged(int value)
 	switcher->interval = value;
 }
 
-void updateSizeRotativeText(SwitcherData *switcher)
-{
-	obs_data_t *data = obs_source_get_settings(switcher->textRotative);
-	obs_data_t *font = obs_data_get_obj(data, "font");
-	obs_data_set_int(font, "size", switcher->sizeRotativeText);
-	obs_source_update(switcher->textRotative, data);
-	obs_data_release(data);
-	obs_data_release(font);
-}
-
-void SceneSwitcher::on_sizeRotativeText_valueChanged(int value)
-{
-	if (loading)
-		return;
-
-	std::lock_guard<std::mutex> lock(switcher->m);
-	switcher->sizeRotativeText = value;
-	//Actualizar el tamaño
-	if (switcher->created)
-		updateSizeRotativeText(switcher);
-}
-
 void updateSpeedRotativeText(SwitcherData *switcher)
 {
 	obs_data_t *data = obs_data_create();
@@ -61,6 +39,42 @@ void SceneSwitcher::on_SpeedRotation_valueChanged(int value)
 	//Actualizar la velocidad
 	if (switcher->created)
 		updateSpeedRotativeText(switcher);
+}
+
+void SceneSwitcher::on_weightOfRank_valueChanged(double value)
+{
+	if (loading)
+		return;
+
+	std::lock_guard<std::mutex> lock(switcher->m);
+	switcher->rankWeight = value;
+}
+
+void SceneSwitcher::on_weightOfTime_valueChanged(double value)
+{
+	if (loading)
+		return;
+
+	std::lock_guard<std::mutex> lock(switcher->m);
+	switcher->timeInStreamWeight = value;
+}
+
+void SceneSwitcher::on_weightOfPending_valueChanged(double value)
+{
+	if (loading)
+		return;
+
+	std::lock_guard<std::mutex> lock(switcher->m);
+	switcher->numPendingWeight = value;
+}
+
+void SceneSwitcher::on_numberOfCycle_valueChanged(int value)
+{
+	if (loading)
+		return;
+
+	std::lock_guard<std::mutex> lock(switcher->m);
+	switcher->cycleSize = value;
 }
 
 void SceneSwitcher::SetStarted()
@@ -94,7 +108,7 @@ void SceneSwitcher::on_toggleStartButton_clicked()
 
 void SceneSwitcher::closeEvent(QCloseEvent *)
 {
-	obs_frontend_save();
+	done(0);
 }
 
 void SceneSwitcher::on_verboseLogging_stateChanged(int state)
@@ -194,25 +208,29 @@ void SceneSwitcher::on_importIPs_clicked() {
 
 	switcher->importedIPs = true;
 
-	obs_data_t *dataClassification = obs_source_get_settings(switcher->screenClassification);
-	obs_data_t *dataTextTeam = obs_source_get_settings(switcher->textTeam);
-	obs_data_t *dataTextTeamImage = obs_source_get_settings(switcher->textTeamImage);
+	if (switcher->created) {
+		obs_data_t *dataClassification = obs_source_get_settings(switcher->screenClassification);
+		obs_data_t *dataTextTeam = obs_source_get_settings(switcher->textTeam);
+		obs_data_t *dataTextTeamImage = obs_source_get_settings(switcher->textTeamImage);
 
-	switcher->modificaVLC(switcher->screenTeam, switcher->ipScreen);
-	switcher->modificaVLC(switcher->camTeam, switcher->ipCam);
+		switcher->modificaVLC(switcher->screenTeam, switcher->ipScreen);
+		switcher->modificaVLC(switcher->camTeam, switcher->ipCam);
 
-	obs_data_set_string(dataTextTeamImage, "file", switcher->textTeamImageFile.c_str());
-	string tmp = "Team: " + it->first + "\n" +"Classification:\nNumber of Problem Resolved: ";
-	obs_data_set_string(dataTextTeam, "text", tmp.c_str());
-	obs_data_set_string(dataClassification, "url",switcher->urlClassification.c_str());
+		obs_data_set_string(dataTextTeamImage, "file", switcher->textTeamImageFile.c_str());
+		string tmp = "Team: " + it->first + "\n" +"Classification:\nNumber of Problem Resolved: ";
+		obs_data_set_string(dataTextTeam, "text", tmp.c_str());
+		obs_data_set_string(dataClassification, "url",switcher->urlClassification.c_str());
 
-	obs_source_update(switcher->screenClassification, dataClassification);
-	obs_source_update(switcher->textTeam, dataTextTeam);
-	obs_source_update(switcher->textTeamImage, dataTextTeamImage);
+		obs_source_update(switcher->screenClassification, dataClassification);
+		obs_source_update(switcher->textTeam, dataTextTeam);
+		obs_source_update(switcher->textTeamImage, dataTextTeamImage);
 
-	obs_data_release(dataClassification);
-	obs_data_release(dataTextTeamImage);
-	obs_data_release(dataTextTeam);
+		obs_data_release(dataClassification);
+		obs_data_release(dataTextTeamImage);
+		obs_data_release(dataTextTeam);
+	}
+	else switcher->textTeamContent ="Team: " + it->first + "\n" +"Classification:\nNumber of Problem Resolved: ";
+
 }
 
 void SceneSwitcher::on_createSetup_clicked() {
@@ -223,23 +241,19 @@ void SceneSwitcher::on_contestName_textChanged(const QString &text) {
 	switcher->contestName = text.toStdString();
 }
 
-void updateRotativeTextContent(SwitcherData* switcher) {
-	obs_data_t *data = obs_source_get_settings(switcher->textRotative);
-	obs_data_set_string(data, "text", switcher->textRotativeContent.c_str());
-	obs_source_update(switcher->textRotative, data);
-	obs_data_release(data);
-}
-
-void SceneSwitcher::on_rotativeText_textChanged(const QString &text) {
-	switcher->textRotativeContent = text.toStdString();
-	//Update texto
-	if (switcher->created)
-		updateRotativeTextContent(switcher);
-}
-
 void SceneSwitcher::on_contestServer_textChanged(const QString &text)
 {
 	switcher->contestServerWebsite = text.toStdString();
+}
+
+void SceneSwitcher::on_userContestServer_textChanged(const QString &text)
+{
+	switcher->userContestServer = text.toStdString();
+}
+
+void SceneSwitcher::on_passwordContestServer_textChanged(const QString &text)
+{
+	switcher->passwordContestServer = text.toStdString();
 }
 
 int findTabIndex(QTabBar *bar, int pos)
@@ -330,8 +344,8 @@ void SceneSwitcher::setupGeneralTab()
 	ui->verboseLogging->setChecked(switcher->verbose);
 
 	ui->contestName->setText(switcher->contestName.c_str());
-	ui->sizeRotativeText->setValue(switcher->sizeRotativeText);
-	ui->rotativeText->setText(switcher->textRotativeContent.c_str());
+	ui->passwordContestServer->setText(switcher->passwordContestServer.c_str());
+	ui->userContestServer->setText(switcher->userContestServer.c_str());
 	ui->SpeedRotation->setValue(switcher->speedRotativeText);
 	ui->contestServer->setText(switcher->contestServerWebsite.c_str());
 

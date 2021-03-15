@@ -56,7 +56,7 @@ void crearConfiguracion( SwitcherData *switcher)
 	obs_data_release(settingsClassification);
 
 	obs_data_t *settingsText = obs_data_create();
-	make_text_settings(settingsText, switcher->textRotativeContent,switcher->sizeRotativeText, fullscreenWidth,switcher->sizeRotativeText,100,0, "bottom"); 
+	make_text_settings(settingsText, switcher->textRotativeContent,switcher->sizeRotativeText, 3500,switcher->sizeRotativeText,100,0, "bottom"); 
 	switcher->textRotative = obs_source_create("text_gdiplus", "textRotative", settingsText,NULL);
 	obs_data_release(settingsText);
 
@@ -123,7 +123,8 @@ void crearConfiguracion( SwitcherData *switcher)
 	obs_sceneitem_set_visible(switcher->camTeamDummyItem, false);
 
 	//Establecimiento de escena inicial
-	obs_frontend_set_current_preview_scene(obs_scene_get_source(switcher->teamViewerScene));
+	obs_frontend_set_current_preview_scene(obs_scene_get_source(switcher->classificationScene));
+	obs_frontend_set_current_scene(obs_scene_get_source(switcher->teamViewerScene));
 
 	//Marcamos el final de la creación
 	switcher->created = true;

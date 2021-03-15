@@ -35,7 +35,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="movable">
       <bool>true</bool>
@@ -201,17 +201,16 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_33">
          <item>
-          <widget class="QLabel" name="label_2">
+          <widget class="QLabel" name="label_7">
            <property name="text">
-            <string>
-Rotating text content:</string>
+            <string>Contest server website:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="rotativeText">
+          <widget class="QLineEdit" name="contestServer">
            <property name="text">
-            <string>Default rotating text </string>
+            <string>https://www.domjudge.org/demoweb</string>
            </property>
           </widget>
          </item>
@@ -233,24 +232,21 @@ Rotating text content:</string>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_50">
          <item>
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="label_2">
            <property name="text">
-            <string>Size of the rotative text:</string>
+            <string>Admin user of the Contest Server:</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="sizeRotativeText">
-           <property name="maximum">
-            <number>256</number>
-           </property>
-           <property name="value">
-            <number>48</number>
+          <widget class="QLineEdit" name="userContestServer">
+           <property name="text">
+            <string>admin</string>
            </property>
           </widget>
          </item>
          <item>
-          <spacer name="horizontalSpacer_55">
+          <spacer name="horizontalSpacer_10">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
@@ -262,6 +258,31 @@ Rotating text content:</string>
            </property>
           </spacer>
          </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Admin user password:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="passwordContestServer">
+           <property name="text">
+            <string>admin</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_10">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="label_6">
            <property name="text">
@@ -279,96 +300,6 @@ Rotating text content:</string>
            </property>
            <property name="value">
             <number>100</number>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_10">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_9">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_7">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="Line" name="line_10">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="label_7">
-           <property name="text">
-            <string>Contest server website:</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="contestServer">
-           <property name="text">
-            <string>https://www.domjudge.org/demoweb</string>
            </property>
           </widget>
          </item>

@@ -1,7 +1,7 @@
 #pragma once
 #include <condition_variable>
 #include <string>
-#include <vector>
+#include <queue>
 #include <mutex>
 #include <QDateTime>
 #include <QThread>
@@ -9,11 +9,9 @@
 #include <obs.h>
 #include <obs-frontend-api.h>
 #include "importIPs.h"
-#include "curlCore.h"
 
 
 const int default_interval = 300;
-constexpr auto previous_scene_name = "Previous Scene";
 const int default_sizeRotativeText = 48;
 const int default_speedRotativeText = 100;
 const int default_textStaticWidth = 350;
@@ -22,15 +20,19 @@ const int default_textSubmissionWidth = 350;
 const int default_textSubmissionHeight = 600;
 const int default_textTeamWidth = 880;
 const int default_textTeamHeight = 110;
-const int MAX_VISIBLE_TEAMS_SUBMISSION = 20;
-const int MAX_VISIBLE_CHARACTERS_SUBMISSION_TEXT = 20;
+const int default_weightOfRank = 1;
+const int default_weightOfTime = 1;
+const int default_weightOfPending = 1;
+const int default_numberOfCycle = 20;
+
 const string default_contestName = "Contest";
 const string default_rotatingText = "Default rotating text";
 const string defautl_staticText = "TEAM | PROBLEM | STATUS";
 const string default_url = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
 const string default_contestServer = "https://www.domjudge.org/demoweb";
 
-
+const int MAX_VISIBLE_TEAMS_SUBMISSION = 20;
+const int MAX_VISIBLE_CHARACTERS_SUBMISSION_TEXT = 20;
 
 class SwitcherThread;
 class SwitcherThreadSubmissions;
@@ -48,6 +50,11 @@ struct SwitcherData {
 
 	const string tokenIdClassification = "-1";			//Constante del id de equipo que representa la clasificación 
 
+	string contestName = default_contestName;			//Nombre del concurso
+	IpsContest ipsContestData;					//Estructura encargada de almacenar las direcciones IP del torneo
+	int interval = default_interval;				//Intervalo de tiempo entre switchs
+
+	/*Elementos necesarios para el control del plugin(Flags internos)*/
 	bool stop = false;						//Si se ha detenido el plugin
 	bool verbose = false;						//Si se debe escribir las acciones por la salida estandar
 	bool importedIPs = false;					//Si se han cargado las IPs del torneo
@@ -57,33 +64,31 @@ struct SwitcherData {
 	bool swapScene = false;						//Si hay que cambiar de escena
 	bool swapIp = false;						//Si hay que cambiar las fuentes de TeamViewer
 
-	string contestName = default_contestName;			//Nombre del concurso
-	IpsContest ipsContestData;					//Estructura encargada de almacenar las direcciones IP del torneo
-	int interval = default_interval;				//Intervalo de tiempo entre switchs
-
 	/*Elementos necesarios para el texto rotativo */
 	string textRotativeContent = default_rotatingText;		//Contenido del texto rotativo
-	int sizeRotativeText = default_sizeRotativeText;		//Tamaño  del texto rotativo	(Poner en el Gui, pero que solo afecte a futuras create, hacer que se guarde con el save y carge con el load)
-	int speedRotativeText = default_speedRotativeText;		//Velocidad del texto rotativo	(Poner en el Gui, pero que solo afecte a futuras create, hacer que se guarde con el save y carge con el load)
+	int sizeRotativeText = default_sizeRotativeText;		//Tamaño  del texto rotativo	
+	int speedRotativeText = default_speedRotativeText;		//Velocidad del texto rotativo	
 
 	/*Elementos necesarios para el texto estático*/
 	string textStaticContent = defautl_staticText;			//Contenido del texto rotativo
-	int textStaticWidth = default_textStaticWidth;			//Ancho del texto estático	(Poner en el Gui, pero que solo afecte a futuras create, hacer que se guarde con el save y carge con el load)
-	int textStaticHeight = default_textStaticHeight;		//Alto del texto estático	(Poner en el Gui, pero que solo afecte a futuras create, hacer que se guarde con el save y carge con el load)
+	int textStaticWidth = default_textStaticWidth;			//Ancho del texto estático	
+	int textStaticHeight = default_textStaticHeight;		//Alto del texto estático	
 
 	/*Elementos necesarios para el texto estático*/
 	string textSubmissionContent = "";				//Contenido del texto rotativo
-	int textSubmissionWidth = default_textSubmissionWidth;		//Ancho del texto estático	(Poner en el Gui, pero que solo afecte a futuras create, hacer que se guarde con el save y carge con el load)
-	int textSubmissionHeight = default_textSubmissionHeight;	//Ancho del texto estático	(Poner en el Gui, pero que solo afecte a futuras create, hacer que se guarde con el save y carge con el load)
+	int textSubmissionWidth = default_textSubmissionWidth;		//Ancho del texto estático	
+	int textSubmissionHeight = default_textSubmissionHeight;	//Ancho del texto estático	
 
 	/*Elementos necesarios para el texto estático*/
 	string textTeamContent = "Team:\nClassification:\nNumber of Problem Resolved:"; //Contenido del texto rotativo
-	int textTeamWidth = default_textTeamWidth;			//Ancho del texto del equipo en stream	(Poner en el Gui, pero que solo afecte a futuras create, hacer que se guarde con el save y carge con el load)
-	int textTeamHeight = default_textTeamHeight;			//Ancho del texto del equipo en stream  (Poner en el Gui, pero que solo afecte a futuras create, hacer que se guarde con el save y carge con el load)
+	int textTeamWidth = default_textTeamWidth;			//Ancho del texto del equipo en stream	
+	int textTeamHeight = default_textTeamHeight;			//Ancho del texto del equipo en stream  
 	string textTeamImageFile = "";					//Variable que almacena la dirección del icono el eqipo en el Stream
 
 	/*Elementos necesarios para obtener la info del concurso*/
 	string contestServerWebsite = default_contestServer;		//Url base del servidor de DomJudge
+	string passwordContestServer = "admin";				//Contraseña del usuario admin
+	string userContestServer = "admin";				//Usuario del concurso con permisos de administrador (Necesario logear para acceder a ciertas consultas)
 	string curlContest;						//Url del concurso dentro del DomJugde
 	string curlScoreboard;						//Url de la clasificación dentro del DomJugde
 	string curlSubmissions;						//Url de las entregas dentro del DomJugde
@@ -91,19 +96,18 @@ struct SwitcherData {
 	string curlTeams;						//Url de los equipos dentro del DomJugde
 	
 	/*Elementos necesarios para el calculo de la heurística*/
-	vector<string> lastTeamsInStream;				//Vector de identificadores de los ultimos cycleSize equipos que han estado en el Stream (Cambiar por cola, solo se inserta por el final y se elimina el primero) 
+	queue<string> lastTeamsInStream;				//Vector de identificadores de los ultimos cycleSize equipos que han estado en el Stream (Cambiar por cola, solo se inserta por el final y se elimina el primero) 
 	int classificationTimeInStream = 0;				//Variable que controla la cantidad de veces que ClassificationView ha estado en Stream en los ultimos cycleSize ciclos.
-	int rankWeight = 1;						//GUI
-	int numPendingWeight = 1;					//GUI
-	int timeInStreamWeight = 1;					//GUI
-	int cycleSize = 20;						//GUI
+	double rankWeight = default_weightOfRank;                       //Peso del ranking en el computo de la heurística
+	double numPendingWeight = default_weightOfPending;		//Peso de los envios pendientes en el computo de la heurística
+	double timeInStreamWeight = default_weightOfTime;		//Peso del tiempo en pantalla en el computo de la heurística
+	int cycleSize = default_numberOfCycle;				//Tamaño maximo de la cola lastTeamInStream (durante cuantos cambios se tienen en cuenta una aparición en el stream)
 
 	obs_source_t *waitScene = NULL;					//Scene que almacena la escena presente antes de un cv.wait
 
 	//Url de las fuentes actuales
 	string ipCam = "";						//Variable que almacena el valor futuro de camTeam
 	string ipScreen = "";						//Variable que almacena el valor futuro de screenTeam
-	string backUpText = "";						//Variable que almacena el valor futuro de backUpText
 	string urlClassification = default_url;				//Variable que almacena el valor inicial de screenClassification
 
 	//Fuentes necesarias para la realización del torneo
@@ -120,7 +124,7 @@ struct SwitcherData {
 	obs_source_t *filter;						//Source que almacena el filtro de rotación del textRotative
 	obs_scene_t  *teamViewerScene;					//Scene  que almacena la escena TeamViewer
 	obs_scene_t  *classificationScene;				//Scene  que almacena la escena Classification
-	obs_frontend_source_list *transitions;				//Lista de sources que almacena las transition
+	struct obs_frontend_source_list transitions = {};		//Lista de sources que almacena las transition
 
 	/*Scene items necesarios para la realización del torneo */
 	obs_sceneitem_t *camTeamDummyItem;				//Scene_Item que almacena la camTeamDummy	
@@ -139,9 +143,26 @@ struct SwitcherData {
 		uint32_t value;
 	};
 	//Vector con los distintos tipos de prioridades disponibles para un QThread
-	std::vector<ThreadPrio> threadPriorities;
+	std::vector<ThreadPrio> threadPriorities{
+		{"Idle",
+		 "scheduled only when no other threads are running (lowest CPU load)",
+		 QThread::IdlePriority},
+		{"Lowest", "scheduled less often than LowPriority",
+		 QThread::LowestPriority},
+		{"Low", "scheduled less often than NormalPriority",
+		 QThread::LowPriority},
+		{"Normal", "the default priority of the operating system",
+		 QThread::NormalPriority},
+		{"High", "scheduled more often than NormalPriority",
+		 QThread::HighPriority},
+		{"Highest", "scheduled more often than HighPriority",
+		 QThread::HighestPriority},
+		{"Time critical",
+		 "scheduled as often as possible (highest CPU load)",
+		 QThread::TimeCriticalPriority},
+	};
 	uint32_t threadPriority = QThread::NormalPriority;		//Prioridad utilizada en los QThreads del plugin
-
+	uint32_t threadSubmissionPriority = QThread::HighestPriority;
 	
 	std::vector<int> tabOrder;					//Orden del las tabs de la configuración del plugin
 
