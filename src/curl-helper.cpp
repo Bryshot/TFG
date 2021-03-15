@@ -8,6 +8,7 @@ initFunction f_curl_init = nullptr;
 setOptFunction f_curl_setopt = nullptr;
 performFunction f_curl_perform = nullptr;
 cleanupFunction f_curl_cleanup = nullptr;
+resetFunction f_curl_reset = nullptr;
 
 QLibrary *loaded_curl_lib = nullptr;
 
@@ -22,6 +23,9 @@ bool resolveCurl()
 		(performFunction)loaded_curl_lib->resolve("curl_easy_perform");
 	f_curl_cleanup =
 		(cleanupFunction)loaded_curl_lib->resolve("curl_easy_cleanup");
+	f_curl_reset =
+		(resetFunction)loaded_curl_lib->resolve("curl_easy_reset");
+
 
 	if (f_curl_init && f_curl_setopt && f_curl_perform && f_curl_cleanup) {
 		blog(LOG_INFO, "curl loaded successfully");

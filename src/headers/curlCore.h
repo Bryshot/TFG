@@ -26,7 +26,7 @@ struct idenInfo {
  struct score_t {
 	int num_solved;
 	int total_time;
-	int num_pending; //Puede ser interesante para el sistema heuristico
+	int num_pending = 0; //Puede ser interesante para el sistema heuristico
 } ;
 
 /*Estructura que alberga toda la información relativa a un equipo */
@@ -129,5 +129,5 @@ void getIdentificationTeamInfo(string id, teamInfo&info);
 /// <param name="best">, la información del mejor equipo</param>
 /// <param name="bestId">, id del mejor equipo</param>
 /// <param name="contest">, donde se almacena la información dinámica</param>
-void heuristic(int bestHeuristic, teamInfo best, string bestId,
+void heuristic(double bestHeuristic, teamInfo &best, string bestId,
 	       contestInfo &contest);
