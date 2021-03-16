@@ -20,7 +20,7 @@ string getRemoteData(std::string &url, bool admin) //quiza es string url
 		if (admin) {
 			f_curl_setopt(switcher->curl, CURLOPT_HTTPAUTH,(long)CURLAUTH_BASIC);
 			string tmp = switcher->userContestServer +":"+switcher->passwordContestServer;
-			f_curl_setopt(switcher->curl, CURLOPT_USERPWD,tmp);
+			f_curl_setopt(switcher->curl, CURLOPT_USERPWD,tmp.c_str()); //Quiza es si c_str
 		}
 		
 		f_curl_perform(switcher->curl);
