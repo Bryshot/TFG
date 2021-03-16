@@ -58,20 +58,6 @@ if(BUILD_OUT_OF_TREE)
 		forms/advanced-scene-switcher.ui
 		)
 
-	
-
-	if(APPLE)
-		set_source_files_properties(advanced-scene-switcher-osx.mm
-			PROPERTIES COMPILE_FLAGS "-fobjc-arc")
-		set(advanced-scene-switcher_PLATFORM_LIBS
-			${COCOA})
-	elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
-		set(advanced-scene-switcher_PLATFORM_SOURCES
-			src/linux/advanced-scene-switcher-nix.cpp)
-		set(advanced-scene-switcher_PLATFORM_LIBS
-			Xss)
-	endif()
-
 	qt5_wrap_ui(advanced-scene-switcher_UI_HEADERS
 		${advanced-scene-switcher_UI}
 		${advanced-scene-switcher_PLATFORM_UI})
@@ -90,7 +76,6 @@ if(BUILD_OUT_OF_TREE)
 		${LIBCURL_INCLUDE_DIRS})
 
 	target_link_libraries(advanced-scene-switcher
-		${advanced-scene-switcher_PLATFORM_LIBS}
 		${LIBOBS_LIB}
 		${LIBOBS_FRONTEND_API_LIB}
 		Qt5::Core
@@ -178,16 +163,6 @@ else ()
 		forms/advanced-scene-switcher.ui
 		)
 
-	
-	if(APPLE)
-		set_source_files_properties(advanced-scene-switcher-osx.mm
-			PROPERTIES COMPILE_FLAGS "-fobjc-arc")
-		set(advanced-scene-switcher_PLATFORM_LIBS
-			${COCOA})
-	else()
-		set(advanced-scene-switcher_PLATFORM_LIBS
-			Xss)
-	endif()
 
 	qt5_wrap_ui(advanced-scene-switcher_UI_HEADERS
 		${advanced-scene-switcher_UI}
@@ -200,7 +175,6 @@ else ()
 		)
 
 	target_link_libraries(advanced-scene-switcher
-		${advanced-scene-switcher_PLATFORM_LIBS}
 		obs-frontend-api
 		Qt5::Widgets
 		libobs)
