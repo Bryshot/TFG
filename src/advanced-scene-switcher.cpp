@@ -40,24 +40,6 @@ SceneSwitcher::SceneSwitcher(QWidget *parent)
 	loadUI();
 }
 
-
-/// <summary>
-/// Añade todas las transiciones en sel
-/// </summary>
-/// <param name="sel">ComboBox donde estaran todas las transiciones</param>
-void SceneSwitcher::populateTransitionSelection(QComboBox *sel)
-{
-	obs_frontend_source_list *transitions = new obs_frontend_source_list();
-	obs_frontend_get_transitions(transitions);
-	for (size_t i = 0; i < transitions->sources.num; i++) {
-		const char *name =
-			obs_source_get_name(transitions->sources.array[i]);
-		sel->addItem(name);
-	}
-
-	obs_frontend_source_list_free(transitions);
-}
-
 /// <summary>
 /// Función que llama a las funciones encargadas de la lógica de cada Tab de la config del Plugin
 /// </summary>
@@ -460,7 +442,6 @@ extern "C" void InitSceneSwitcher()
 
 	if (loadCurl() && f_curl_init) {
 		switcher->curl = f_curl_init();
-		//switcher->curlAdmin = f_curl_init();
 	}
 
 	auto cb = []() {

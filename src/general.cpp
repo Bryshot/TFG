@@ -12,6 +12,15 @@ void SceneSwitcher::on_close_clicked()
 	done(0);
 }
 
+void SceneSwitcher::on_threadPriority_currentIndexChanged(int index) {
+
+	if (loading)
+		return;
+
+	std::lock_guard<std::mutex> lock(switcher->m);
+	switcher->threadPriority = switcher->threadPriorities[index].value;
+}
+
 void SceneSwitcher::on_checkInterval_valueChanged(int value)
 {
 	if (loading)
@@ -19,6 +28,24 @@ void SceneSwitcher::on_checkInterval_valueChanged(int value)
 
 	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->interval = value;
+}
+
+void SceneSwitcher::on_delayJudgments_valueChanged(int value)
+{
+	if (loading)
+		return;
+
+	std::lock_guard<std::mutex> lock(switcher->m);
+	switcher->delayJugdment = value;
+}
+
+void SceneSwitcher::on_delayIp_valueChanged(int value)
+{
+	if (loading)
+		return;
+
+	std::lock_guard<std::mutex> lock(switcher->m);
+	switcher->delayIp = value;
 }
 
 void updateSpeedRotativeText(SwitcherData *switcher)

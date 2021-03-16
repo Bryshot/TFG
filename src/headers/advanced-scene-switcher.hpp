@@ -33,17 +33,16 @@ public:
 	int FindByData(const QString &window);//Revisar
 	
 	void loadUI();
-	void populateTransitionSelection(QComboBox *sel);
 	void setupGeneralTab();
-	void setupTransitionsTab();
 	void setTabOrder();
 
 public slots:
 
 	void on_checkInterval_valueChanged(int value);
-	//void on_sizeRotativeText_valueChanged(int value);
 	void on_SpeedRotation_valueChanged(int value);
-
+	void on_threadPriority_currentIndexChanged(int index);
+	void on_delayJudgments_valueChanged(int value);
+	void on_delayIp_valueChanged(int value);
 	void on_weightOfRank_valueChanged(double value);
 	void on_weightOfTime_valueChanged(double value);
 	void on_weightOfPending_valueChanged(double value);
