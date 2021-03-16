@@ -134,7 +134,7 @@ void SwitcherData::Thread()
 	updateTextRotative(switcher->textRotative);
 
 	while (true) {
-	startLoop:
+
 		/*Declaración de las variables*/
 		std::chrono::milliseconds duration = std::chrono::milliseconds(interval);
 		obs_frontend_get_transitions(&switcher->transitions);
@@ -190,7 +190,7 @@ void SwitcherData::ThreadSubmissions() {
 
 		/*Establecer un lock simple en el mapa submissionPendings*/
 		while (!switcher->updatedSubmissions) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+			std::this_thread::sleep_for(std::chrono::milliseconds(switcher->delayJugdment));
 		}
 
 		//Codigo para actualizar barra de submissions
@@ -209,7 +209,7 @@ void SwitcherData::ThreadSubmissions() {
 			//string tmp3 = it2->second.identificationInfo.name;
 			//std::for_each(tmp3.begin(),tmp3.end(),[](char &c) { c = ::tolower(c); });
 			tmp2 += it2->second.identificationInfo.name.substr(0,7);
-			insertSpaces(tmp2, slot1 - tmp2.size());
+			insertSpaces(tmp2, slot1 - (int)tmp2.size());
 
 			//tmp3 = it->second.idProblem;
 			//std::for_each(tmp3.begin(),tmp3.end(),[](char &c) { c = ::tolower(c); });
@@ -220,7 +220,7 @@ void SwitcherData::ThreadSubmissions() {
 				insertSpaces(tmp2, 1);
 			}
 			else
-				insertSpaces(tmp2, slot2 - tmp2.size());
+				insertSpaces(tmp2, slot2 - (int)tmp2.size());
 			
 
 			/*Sumar espacios para maquetación*/
@@ -308,7 +308,7 @@ void SwitcherData::switchIP(unique_lock<mutex> &lock)
 	modificaVLC(cam, ipCam);
 	modificaTextTeam(switcher->textTeam, switcher->textTeamContent);
 
-	cv.wait_for(lock, chrono::milliseconds(1000));//GUI
+	cv.wait_for(lock, chrono::milliseconds(switcher->delayIp));
 
 	if (usingDummy)
 	{
@@ -388,7 +388,7 @@ void SwitcherData::Start()
 		switcher->th->start(
 			(QThread::Priority)switcher->threadPriority);
 		switcher->thSub = new SwitcherThreadSubmissions();
-		switcher->thSub->start((QThread::Priority)switcher->threadSubmissionPriority);
+		switcher->thSub->start((QThread::Priority)switcher->threadPriority);
 	}
 }
 

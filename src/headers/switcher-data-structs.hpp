@@ -11,7 +11,9 @@
 #include "importIPs.h"
 
 
-const int default_interval = 300;
+const int default_interval = 3000;
+const int default_delayIp = 5000;
+const int default_delayJugdement = 1000;
 const int default_sizeRotativeText = 48;
 const int default_speedRotativeText = 100;
 const int default_textStaticWidth = 350;
@@ -52,7 +54,11 @@ struct SwitcherData {
 
 	string contestName = default_contestName;			//Nombre del concurso
 	IpsContest ipsContestData;					//Estructura encargada de almacenar las direcciones IP del torneo
+
+	/*Delays y Timers para el control de los QThreads*/
 	int interval = default_interval;				//Intervalo de tiempo entre switchs
+	int delayIp = default_delayIp;					//Retraso previo ha hacer efectivo un cambio de equipo (Debido al delay interno del cambio de VLC)
+	int delayJugdment = default_delayJugdement;			//Retraso entre actualizaciones de la cola de envios
 
 	/*Elementos necesarios para el control del plugin(Flags internos)*/
 	bool stop = false;						//Si se ha detenido el plugin
@@ -142,6 +148,7 @@ struct SwitcherData {
 		std::string description;
 		uint32_t value;
 	};
+
 	//Vector con los distintos tipos de prioridades disponibles para un QThread
 	std::vector<ThreadPrio> threadPriorities{
 		{"Idle",
@@ -162,7 +169,7 @@ struct SwitcherData {
 		 QThread::TimeCriticalPriority},
 	};
 	uint32_t threadPriority = QThread::NormalPriority;		//Prioridad utilizada en los QThreads del plugin
-	uint32_t threadSubmissionPriority = QThread::HighestPriority;
+	//uint32_t threadSubmissionPriority = QThread::HighestPriority;
 	
 	std::vector<int> tabOrder;					//Orden del las tabs de la configuración del plugin
 
