@@ -341,7 +341,8 @@ void SwitcherData::saveGeneralSettings(obs_data_t *obj)
 	obs_data_set_int(obj, "threadPriority", switcher->threadPriority);
 
 	obs_data_set_int(obj, "generalTabPos", switcher->tabOrder[0]);
-	obs_data_set_int(obj, "transitionTabPos", switcher->tabOrder[1]);
+	obs_data_set_int(obj, "heuristicTabPos", switcher->tabOrder[1]);
+	obs_data_set_int(obj, "timerTabPos", switcher->tabOrder[2]);
 }
 
 void SwitcherData::loadGeneralSettings(obs_data_t *obj)
@@ -363,7 +364,9 @@ void SwitcherData::loadGeneralSettings(obs_data_t *obj)
 	switcher->tabOrder.emplace_back(
 		(int)(obs_data_get_int(obj, "generalTabPos")));
 	switcher->tabOrder.emplace_back(
-		(int)(obs_data_get_int(obj, "transitionTabPos")));
+		(int)(obs_data_get_int(obj, "heuristicTabPos")));
+	switcher->tabOrder.emplace_back(
+		(int)(obs_data_get_int(obj, "timerTabPos")));
 }
 
 void SceneSwitcher::setupGeneralTab()

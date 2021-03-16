@@ -46,17 +46,6 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_41">
-         <item>
-          <widget class="QLabel" name="label_63">
-           <property name="text">
-            <string>WARNING! Condition checking interval must be greater than the duration of transitions to avoid scene locking</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
         <widget class="Line" name="line_6">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -137,50 +126,21 @@
         <layout class="QGridLayout" name="gridLayout_4">
          <item row="0" column="0">
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="1" column="1">
+           <item row="0" column="1">
             <widget class="QLabel" name="pluginRunningText">
              <property name="text">
               <string notr="true">Not Active</string>
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QSpinBox" name="checkInterval">
-             <property name="minimumSize">
-              <size>
-               <width>100</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="suffix">
-              <string notr="true">ms</string>
-             </property>
-             <property name="minimum">
-              <number>50</number>
-             </property>
-             <property name="maximum">
-              <number>20000</number>
-             </property>
-             <property name="value">
-              <number>300</number>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Check switch conditions every</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
+           <item row="1" column="1">
             <widget class="QPushButton" name="toggleStartButton">
              <property name="text">
               <string>Start</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="0" column="0">
             <widget class="QLabel" name="label_5">
              <property name="text">
               <string>         AutoProducer is:</string>
@@ -493,6 +453,13 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_15">
        <item>
+        <widget class="Line" name="line_5">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <spacer name="horizontalSpacer_15">
@@ -592,6 +559,13 @@
         </layout>
        </item>
        <item>
+        <widget class="Line" name="line_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <item>
           <spacer name="horizontalSpacer_18">
@@ -678,6 +652,13 @@
         </layout>
        </item>
        <item>
+        <widget class="Line" name="line_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="horizontalLayout_7">
          <item>
           <spacer name="horizontalSpacer_24">
@@ -762,6 +743,13 @@
           </spacer>
          </item>
         </layout>
+       </item>
+       <item>
+        <widget class="Line" name="line_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </item>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -860,6 +848,252 @@
         </layout>
        </item>
       </layout>
+     </widget>
+     <widget class="QWidget" name="timerTab">
+      <attribute name="title">
+       <string>Timers</string>
+      </attribute>
+      <widget class="QWidget" name="horizontalLayoutWidget">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>1051</width>
+         <height>211</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>6</number>
+        </property>
+        <property name="sizeConstraint">
+         <enum>QLayout::SetDefaultConstraint</enum>
+        </property>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_12">
+          <property name="text">
+           <string>Update delay in judgment queue:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="delayJudgments">
+          <property name="suffix">
+           <string> ms</string>
+          </property>
+          <property name="prefix">
+           <string/>
+          </property>
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+          <property name="value">
+           <number>1000</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_6">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="horizontalLayoutWidget_2">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>230</y>
+         <width>1051</width>
+         <height>171</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <spacer name="horizontalSpacer_27">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_14">
+          <property name="text">
+           <string>Delay before change teams  </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="delayIp">
+          <property name="suffix">
+           <string> ms</string>
+          </property>
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+          <property name="value">
+           <number>5000</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_7">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="Line" name="line_9">
+       <property name="geometry">
+        <rect>
+         <x>-3</x>
+         <y>400</y>
+         <width>1081</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="Line" name="line_11">
+       <property name="geometry">
+        <rect>
+         <x>-10</x>
+         <y>220</y>
+         <width>1081</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="Line" name="line_12">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1061</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QWidget" name="horizontalLayoutWidget_3">
+       <property name="geometry">
+        <rect>
+         <x>9</x>
+         <y>419</y>
+         <width>1051</width>
+         <height>191</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <spacer name="horizontalSpacer_9">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_15">
+          <property name="text">
+           <string>Interval between switches</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSpinBox" name="checkInterval">
+          <property name="suffix">
+           <string> ms</string>
+          </property>
+          <property name="maximum">
+           <number>100000</number>
+          </property>
+          <property name="value">
+           <number>3000</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_21">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="horizontalLayoutWidget_4">
+       <property name="geometry">
+        <rect>
+         <x>29</x>
+         <y>249</y>
+         <width>1021</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <item>
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>WARNING!!! The delay must be longer than the time needed to make the change of the VLC sources, to prevent black screens in the switch of them</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </widget>
    </item>
