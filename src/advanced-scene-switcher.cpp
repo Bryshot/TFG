@@ -49,11 +49,10 @@ void SceneSwitcher::loadUI()
 	setMinimumHeight(700);
 #endif
 
-	setupGeneralTab();
-	//setupTransitionsTab();
-	setTabOrder();
+	setupGeneralTab(); 
+	setTabOrder(); 
 
-	loading = false;
+	switcher->loading = false;
 }
 
 
@@ -78,7 +77,7 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 		obs_data_release(obj);
 	} else {
 		switcher->m.lock();
-
+		
 		obs_data_t *obj = obs_data_get_obj(save_data, "advanced-switcher");
 
 		if (!obj)
@@ -91,7 +90,6 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 		obs_data_release(obj);
 
 		switcher->m.unlock();
-
 		// stop the scene switcher at least once
 		// to avoid issues with scene collection changes
 		bool start = !switcher->stop;

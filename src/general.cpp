@@ -14,37 +14,34 @@ void SceneSwitcher::on_close_clicked()
 
 void SceneSwitcher::on_threadPriority_currentIndexChanged(int index) {
 
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
+	//std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->threadPriority = switcher->threadPriorities[index].value;
 }
 
 void SceneSwitcher::on_checkInterval_valueChanged(int value)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->interval = value;
 }
 
 void SceneSwitcher::on_delayJudgments_valueChanged(int value)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->delayJugdment = value;
 }
 
 void SceneSwitcher::on_delayIp_valueChanged(int value)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->delayIp = value;
 }
 
@@ -58,10 +55,9 @@ void updateSpeedRotativeText(SwitcherData *switcher)
 
 void SceneSwitcher::on_SpeedRotation_valueChanged(int value)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->speedRotativeText = value;
 	//Actualizar la velocidad
 	if (switcher->created)
@@ -70,37 +66,33 @@ void SceneSwitcher::on_SpeedRotation_valueChanged(int value)
 
 void SceneSwitcher::on_weightOfRank_valueChanged(double value)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->rankWeight = value;
 }
 
 void SceneSwitcher::on_weightOfTime_valueChanged(double value)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->timeInStreamWeight = value;
 }
 
 void SceneSwitcher::on_weightOfPending_valueChanged(double value)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->numPendingWeight = value;
 }
 
 void SceneSwitcher::on_numberOfCycle_valueChanged(int value)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->cycleSize = value;
 }
 
@@ -140,10 +132,9 @@ void SceneSwitcher::closeEvent(QCloseEvent *)
 
 void SceneSwitcher::on_verboseLogging_stateChanged(int state)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 
-	std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->verbose = state;
 }
 
@@ -204,7 +195,7 @@ void SceneSwitcher::on_importSettings_clicked()
 	Msgbox.setText(
 		"AutoProducer settings imported successfully");
 	Msgbox.exec();
-	close();
+	setupGeneralTab();
 }
 
 void SceneSwitcher::on_importIPs_clicked() {
@@ -265,25 +256,41 @@ void SceneSwitcher::on_createSetup_clicked() {
 }
 
 void SceneSwitcher::on_contestName_textChanged(const QString &text) {
+
+	if (switcher->loading)
+		return;
+
 	switcher->contestName = text.toStdString();
 }
 
 void SceneSwitcher::on_contestServer_textChanged(const QString &text)
 {
+
+	if (switcher->loading)
+		return;
+
 	switcher->contestServerWebsite = text.toStdString();
 }
 
 void SceneSwitcher::on_userContestServer_textChanged(const QString &text)
 {
+
+	if (switcher->loading)
+		return;
+
 	switcher->userContestServer = text.toStdString();
 }
 
 void SceneSwitcher::on_passwordContestServer_textChanged(const QString &text)
 {
+
+	if (switcher->loading)
+		return;
+
 	switcher->passwordContestServer = text.toStdString();
 }
 
-int findTabIndex(QTabBar *bar, int pos)
+int findTabIndex(QTabBar *bar, int pos)//
 {
 	int at = -1;
 
@@ -293,7 +300,10 @@ int findTabIndex(QTabBar *bar, int pos)
 		tabName = "General";
 		break;
 	case 1:
-		tabName = "Transition";
+		tabName = "Heuristic";
+		break;
+	case 2:
+		tabName = "Timers";
 		break;
 	}
 
@@ -310,6 +320,7 @@ int findTabIndex(QTabBar *bar, int pos)
 	return at;
 }
 
+//Se encarga de establecer el orden de las tabs
 void SceneSwitcher::setTabOrder()
 {
 	QTabBar *bar = ui->tabWidget->tabBar();
@@ -325,50 +336,73 @@ void SceneSwitcher::setTabOrder()
 
 void SceneSwitcher::on_tabMoved(int from, int to)
 {
-	if (loading)
+	if (switcher->loading)
 		return;
 	std::swap(switcher->tabOrder[from], switcher->tabOrder[to]);
 }
 
 void SwitcherData::saveGeneralSettings(obs_data_t *obj)
 {
-	obs_data_set_int(obj, "interval", switcher->interval);
-
-	obs_data_set_bool(obj, "active", !switcher->stop);
-
-	obs_data_set_bool(obj, "verbose", switcher->verbose);
-
+	obs_data_set_string(obj, "contestName", switcher->contestName.c_str());
+	obs_data_set_string(obj, "contestServerWebsite", switcher->contestServerWebsite.c_str());
+	obs_data_set_string(obj, "userContestServer", switcher->userContestServer.c_str());
+	obs_data_set_string(obj, "passwordContestServer", switcher->passwordContestServer.c_str());
+	obs_data_set_int(obj, "speedRotativeText", switcher->speedRotativeText);
 	obs_data_set_int(obj, "threadPriority", switcher->threadPriority);
-
+	obs_data_set_bool(obj, "active", !switcher->stop);
+	obs_data_set_bool(obj, "verbose", switcher->verbose);
 	obs_data_set_int(obj, "generalTabPos", switcher->tabOrder[0]);
 	obs_data_set_int(obj, "heuristicTabPos", switcher->tabOrder[1]);
 	obs_data_set_int(obj, "timerTabPos", switcher->tabOrder[2]);
+
+	/*Save Heuristic settings*/
+	obs_data_set_double(obj, "rankWeight", switcher->rankWeight);
+	obs_data_set_double(obj, "numPendingWeight", switcher->numPendingWeight);
+	obs_data_set_double(obj, "timeInStreamWeight", switcher->timeInStreamWeight);
+	obs_data_set_int(obj, "cycleSize", switcher->cycleSize);
+
+	/*Save Timers settings*/
+	obs_data_set_int(obj, "interval", switcher->interval);
+	obs_data_set_int(obj, "delayIp", switcher->delayIp);
+	obs_data_set_int(obj, "delayJugdment", switcher->delayJugdment);
 }
 
 void SwitcherData::loadGeneralSettings(obs_data_t *obj)
 {
-	obs_data_set_default_int(obj, "interval", default_interval);
-	switcher->interval = obs_data_get_int(obj, "interval");
-
-	switcher->stop = !obs_data_get_bool(obj, "active");
 	
-	switcher->verbose = obs_data_get_bool(obj, "verbose");
 
-	obs_data_set_default_int(obj, "threadPriority",
-				 QThread::NormalPriority);
+	switcher->contestName = obs_data_get_string(obj, "contestName");
+	switcher->contestServerWebsite = obs_data_get_string(obj, "contestServerWebsite");
+	switcher->userContestServer = obs_data_get_string(obj, "userContestServer");
+	switcher->passwordContestServer = obs_data_get_string(obj, "passwordContestServer");
+	switcher->speedRotativeText = obs_data_get_int(obj, "speedRotativeText");
 	switcher->threadPriority = obs_data_get_int(obj, "threadPriority");
+	switcher->stop = !obs_data_get_bool(obj, "active");
+	switcher->verbose = obs_data_get_bool(obj, "verbose");
+	if (!switcher->loading)
+	{
+		switcher->tabOrder.clear();
+		switcher->tabOrder.emplace_back((int)(obs_data_get_int(obj, "generalTabPos")));
+		switcher->tabOrder.emplace_back((int)(obs_data_get_int(obj, "heuristicTabPos")));
+		switcher->tabOrder.emplace_back((int)(obs_data_get_int(obj, "timerTabPos")));
+	}
+	
 
-	obs_data_set_default_int(obj, "generalTabPos", 0);
-	obs_data_set_default_int(obj, "transitionTabPos", 1);
+	/*Load Heuristic settings*/
+	switcher->rankWeight = obs_data_get_double(obj, "rankWeight");
+	switcher->numPendingWeight = obs_data_get_double(obj, "numPendingWeight");
+	switcher->timeInStreamWeight = obs_data_get_double(obj, "timeInStreamWeight");
+	switcher->cycleSize = obs_data_get_int(obj, "cycleSize");
 
-	switcher->tabOrder.emplace_back(
-		(int)(obs_data_get_int(obj, "generalTabPos")));
-	switcher->tabOrder.emplace_back(
-		(int)(obs_data_get_int(obj, "heuristicTabPos")));
-	switcher->tabOrder.emplace_back(
-		(int)(obs_data_get_int(obj, "timerTabPos")));
+	/*Load Timers settings*/
+	switcher->interval = obs_data_get_int(obj, "interval");
+	switcher->delayIp = obs_data_get_int(obj, "delayIp");
+	switcher->delayJugdment = obs_data_get_int(obj, "delayJugdment");
+
 }
 
+
+//Se encarga de cargar los valores de las variables del gui
 void SceneSwitcher::setupGeneralTab()
 {
 	ui->verboseLogging->setChecked(switcher->verbose);
@@ -397,4 +431,16 @@ void SceneSwitcher::setupGeneralTab()
 		SetStarted();
 	else
 		SetStopped();
+
+	/*Heuristic tab*/
+	ui->weightOfRank->setValue(switcher->rankWeight);
+	ui->weightOfPending->setValue(switcher->numPendingWeight);
+	ui->weightOfTime->setValue(switcher->timeInStreamWeight);
+	ui->numberOfCycle->setValue(switcher->cycleSize);
+
+
+	/*Timers tab*/
+	ui->delayJudgments->setValue(switcher->delayJugdment);
+	ui->delayIp->setValue(switcher->delayIp);
+	ui->checkInterval->setValue(switcher->interval);
 }

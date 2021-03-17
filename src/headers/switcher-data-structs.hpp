@@ -69,6 +69,7 @@ struct SwitcherData {
 	bool updatedSubmissions = false;				//Si hay cambios en la información de las entregas
 	bool swapScene = false;						//Si hay que cambiar de escena
 	bool swapIp = false;						//Si hay que cambiar las fuentes de TeamViewer
+	bool loading = true;						//Si se esta realizando una carga 
 
 	/*Elementos necesarios para el texto rotativo */
 	string textRotativeContent = default_rotatingText;		//Contenido del texto rotativo
@@ -171,7 +172,7 @@ struct SwitcherData {
 	uint32_t threadPriority = QThread::NormalPriority;		//Prioridad utilizada en los QThreads del plugin
 	//uint32_t threadSubmissionPriority = QThread::HighestPriority;
 	
-	std::vector<int> tabOrder;					//Orden del las tabs de la configuración del plugin
+	std::vector<int> tabOrder = {0, 1, 2}; //Orden del las tabs de la configuración del plugin
 
 	/*Elementos necesarios para los hotkeys del plugin*/
 	bool hotkeysRegistered = false;					//Si se han registrado los hotkeys del plugin dentro de los del obs
