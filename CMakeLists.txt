@@ -44,7 +44,6 @@ if(BUILD_OUT_OF_TREE)
 		${advanced-scene-switcher_SOURCES}
 		src/advanced-scene-switcher.cpp
 		src/advanced-scene-switcher-module.c
-		src/switcher-data-structs.cpp
 		src/hotkey.cpp
 		src/general.cpp
 		src/setup.cpp
@@ -149,7 +148,6 @@ else ()
 		${advanced-scene-switcher_SOURCES}
 		src/advanced-scene-switcher.cpp
 		src/advanced-scene-switcher-module.c
-		src/switcher-data-structs.cpp
 		src/hotkey.cpp
 		src/general.cpp
 		src/setup.cpp

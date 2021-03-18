@@ -9,9 +9,9 @@
 
 using namespace std;
 
-const string pendingJugment = "PJ";
+const string pendingJugment = "PJ"; 
 
-enum class typesInfo {Submissions};
+enum class typesInfo {Submissions};//Simplificar en un futuro si no se añaden nuevos types
 
 
 /*Estructura que alberga la información personal de un equipo */
@@ -25,8 +25,8 @@ struct idenInfo {
 /*Estructura que alberga la puntuación de un equipo*/
  struct score_t {
 	int num_solved;
-	int total_time;
-	int num_pending = 0; //Puede ser interesante para el sistema heuristico
+	int total_time;//Puede ser interesante para el sistema heuristico (En desuso)
+	int num_pending = 0; 
 } ;
 
 /*Estructura que alberga toda la información relativa a un equipo */
@@ -53,14 +53,13 @@ struct contestInfo {
 	map<string, submissionInfo> submissionPendings;
 } ;
 
-
-
 /// <summary>
 /// Función auxiliar que se encarga de obtener la respuesta relacionada con la url aportada (Consulta en servidor por medio de cUrl)
 /// </summary>
 /// <param name="url">  de la consulta que se desea realizar</param>
+/// <param name="admin"> si el mensaje debe enviarse como admin</param>
 /// <returns>json en formato string correspondiente a la consulta realizada</returns>
-string getRemoteData(std::string &url);
+string getRemoteData(std::string &url, bool admin);
 
 /// <summary>
 /// Función encargada de obtener la informacion inicial del contest
@@ -68,7 +67,6 @@ string getRemoteData(std::string &url);
 /// <param name="contestName">Nombre del contest</param>
 /// <returns>Un contestInfo con toda la información del torneo</returns>
 contestInfo getContestRealTimeInfo();
-
 
 /// <summary>
 /// Función encargada de actualizar la información del torneo en tiempo real

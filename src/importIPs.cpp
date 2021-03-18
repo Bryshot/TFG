@@ -11,7 +11,7 @@ bool isNumber(const string &str)
 	return true;
 }
 
-IpsContest importUrlContest(string path)
+IpsContest importIpContest(string path)
 {
   IpsContest contest;
   string buffer;

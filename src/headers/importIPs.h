@@ -13,12 +13,20 @@ typedef struct{
 } IpsTeam;
 
 typedef struct  {
- map<string,IpsTeam> ipsTeams;
- int numTeams;
- string ipClassification;
+ map<string,IpsTeam> ipsTeams;		//Mapa con todos los equipos del torneo
+ int numTeams;				//Numero de equipos en el torneo
+ string ipClassification;		//Dirección  web de la clasificación
 } IpsContest;
 
-
+/// <summary>
+/// Función encargada de asignar una linea del fichero a una variable
+/// </summary>
+/// <param name="s"></param>
 void asignaString(string & s);
 
-IpsContest importUrlContest(string path);
+/// <summary>
+/// Función encargada de obtener la información del torneo y los equipos del fichero seleccionado
+/// </summary>
+/// <param name="path">, del fichero que se obtiene la información</param>
+/// <returns></returns>
+IpsContest importIpContest(string path);

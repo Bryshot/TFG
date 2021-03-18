@@ -7,17 +7,12 @@ void crearConfiguracion( SwitcherData *switcher)
 
 	//Declaración de variables
 	obs_sceneitem_t *item; 
-	char dst[512];
-
 	struct vec2 pos = vec2();
-	vec2_set(&pos, 0.0, fullscreenHeight - switcher->sizeRotativeText);
 
-	//Ruta absoluta
-	os_get_config_path(dst, 512, "obs-studio/basic/scenes/");
+	vec2_set(&pos, 0.0, fullscreenHeight - switcher->sizeRotativeText);
 
 	//Nombre unico de fichero y de colección
 	string name = makeUniqueName(switcher->contestName);
-	string fileName = makeUniqueFileName(name, dst);
 	obs_frontend_add_scene_collection(name.c_str());
 
 	//Cambio de nombre a la escena creada por default
@@ -30,62 +25,72 @@ void crearConfiguracion( SwitcherData *switcher)
 	switcher->teamViewerScene = obs_scene_create("TeamView");
 	switcher->classificationScene = obs_scene_create("ClassificationView");
 
+	//Camara principal
 	obs_data_t *settingsCam = obs_data_create();
 	make_source_settings(settingsCam, switcher->ipCam);
 	switcher->camTeam = obs_source_create("vlc_source","camTeam",settingsCam,NULL);
 	obs_data_release(settingsCam);
 
+	//Escritorio principal
 	obs_data_t *settingsScreen = obs_data_create();
 	make_source_settings(settingsScreen, switcher->ipScreen);
 	switcher->screenTeam = obs_source_create("vlc_source", "screenTeam",settingsScreen, NULL);
 	obs_data_release(settingsScreen);
 
+	//Camara secundaria
 	obs_data_t *settingsCamDummy = obs_data_create();
 	make_source_settings(settingsCamDummy, "");
 	switcher->camTeamDummy = obs_source_create("vlc_source", "camTeamDummy", settingsCamDummy, NULL);
 	obs_data_release(settingsCamDummy);
 
+	//Escritorio secundario
 	obs_data_t *settingsScreenDummy = obs_data_create();
 	make_source_settings(settingsScreenDummy, "");
 	switcher->screenTeamDummy = obs_source_create("vlc_source", "screenTeamDummy", settingsScreenDummy, NULL);
 	obs_data_release(settingsScreenDummy);
 
+	//Clasificación
 	obs_data_t *settingsClassification = obs_data_create();
 	make_source_settings(settingsClassification,switcher->urlClassification,fullscreenHeight - switcher->sizeRotativeText, fullscreenWidth);
 	switcher->screenClassification = obs_source_create("browser_source", "screenClassification", settingsClassification, NULL);
 	obs_data_release(settingsClassification);
 
+	//Texto rotativo
 	obs_data_t *settingsText = obs_data_create();
 	make_text_settings(settingsText, switcher->textRotativeContent,switcher->sizeRotativeText, 3500,switcher->sizeRotativeText,100,0, "bottom"); 
 	switcher->textRotative = obs_source_create("text_gdiplus", "textRotative", settingsText,NULL);
 	obs_data_release(settingsText);
 
+	//Texto estático
 	obs_data_t *settingsStaticText = obs_data_create();
 	make_text_settings(settingsStaticText, switcher->textStaticContent,switcher->textStaticHeight,switcher->textStaticWidth, 28, 0,4, "top");
 	switcher->staticText = obs_source_create("text_gdiplus","textStatic",settingsStaticText, NULL);
 	obs_data_release(settingsStaticText);
 
+	//Cola de envios
 	obs_data_t *settingsTextSubmission = obs_data_create();
 	make_text_settings(settingsTextSubmission,switcher->textSubmissionContent, switcher->textSubmissionHeight,switcher->textSubmissionWidth, 28,0,0,"top");
 	switcher->textSubmission = obs_source_create("text_gdiplus", "textSubmission", settingsTextSubmission, NULL);
 	obs_data_release(settingsTextSubmission);
 
+	//Texto información de los equipos
 	obs_data_t *settingsTextTeam = obs_data_create();
 	make_text_settings(settingsTextTeam, switcher->textTeamContent,switcher->textTeamHeight,switcher->textTeamWidth, 36, 50, 0, "top");
 	switcher->textTeam = obs_source_create("text_gdiplus", "textTeam", settingsTextTeam, NULL);
 	obs_data_release(settingsTextTeam);
 
+	//Icono de los equipos
 	obs_data_t *settingsImageTeam = obs_data_create();
 	make_image_settings(settingsImageTeam, switcher->textTeamImageFile);
 	switcher->textTeamImage = obs_source_create("image_source", "imageTeam",settingsImageTeam, NULL);
 	obs_data_release(settingsImageTeam);
 
+	//Filtro rotativo
 	obs_data_t *settingsFilter = obs_data_create();
 	make_filter_settings(settingsFilter, switcher->speedRotativeText);
 	switcher->filter = obs_source_create("scroll_filter", "filter", settingsFilter, NULL);
-	obs_data_release(settingsFilter);
-
 	obs_source_filter_add(switcher->textRotative, switcher->filter);
+	obs_data_release(settingsFilter);
 
 
 	//Adicción de las escenas y fuentes a la configuración
@@ -154,66 +159,6 @@ string makeUniqueName(string name)
 				return test;
 		}
 	}
-	return name;
-}
-
-string makeUniqueFileName(string name,string path)
-{
-	string file_name = makeFileName(name);
-	filesystem::path file_path = std::filesystem::path(path)
-			    .append(file_name)
-			    .concat(".json");
-
-	if (std::filesystem::exists(file_path)) {
-		std::stringstream sstr;
-
-		// Name already exists, make it unique.
-		for (size_t idx = 1; true; idx++) {
-			sstr.str(std::string());
-			sstr << idx << ".json";
-			file_path = std::filesystem::path(path)
-					    .append(file_name)
-					    .concat(sstr.str());
-			if (!std::filesystem::exists(file_path)) {
-				break;
-			}
-		}
-	}
-	return file_path.string();
-}
-
-string makeFileName(string name)
-{
-	size_t base_len = name.length();
-	size_t len = os_utf8_to_wcs(name.data(), base_len, nullptr, 0);
-	std::wstring wfile;
-
-	if (!len)
-		return name;
-
-	wfile.resize(len);
-	os_utf8_to_wcs(name.data(), base_len, &wfile[0], len + 1);
-
-	for (size_t i = wfile.size(); i > 0; i--) {
-		size_t im1 = i - 1;
-
-		if (iswspace(wfile[im1])) {
-			wfile[im1] = '_';
-		} else if (wfile[im1] != '_' && !iswalnum(wfile[im1])) {
-			wfile.erase(im1, 1);
-		}
-	}
-
-	if (wfile.size() == 0)
-		wfile = L"characters_only";
-
-	len = os_wcs_to_utf8(wfile.c_str(), wfile.size(), nullptr, 0);
-	if (!len)
-		return name;
-
-	name.resize(len);
-	os_wcs_to_utf8(wfile.c_str(), wfile.size(), name.data(), len + 1);
-
 	return name;
 }
 

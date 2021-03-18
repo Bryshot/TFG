@@ -20,7 +20,6 @@
 #include "headers/curl-helper.hpp"
 #include "headers/curlCore.h"
 
-
 SwitcherData *switcher = nullptr;
 contestInfo contestRealData;
 
@@ -34,8 +33,6 @@ SceneSwitcher::SceneSwitcher(QWidget *parent)
 	ui->setupUi(this);
 
 	std::lock_guard<std::mutex> lock(switcher->m);
-
-	//switcher->Prune();
 
 	loadUI();
 }
@@ -55,7 +52,6 @@ void SceneSwitcher::loadUI()
 	switcher->loading = false;
 }
 
-
 /********************************************************************************
  * Saving and loading the settings
  ********************************************************************************/
@@ -64,8 +60,6 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 	if (saving) {
 		switcher->Stop();
 		std::lock_guard<std::mutex> lock(switcher->m);
-
-		//switcher->Prune();
 
 		obs_data_t *obj = obs_data_create();
 
@@ -80,10 +74,8 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 		
 		obs_data_t *obj = obs_data_get_obj(save_data, "advanced-switcher");
 
-		if (!obj)
-			obj = obs_data_create();
+		if (!obj) obj = obs_data_create();
 
-		
 		switcher->loadGeneralSettings(obj);
 		switcher->loadHotkeys(obj);
 
@@ -98,6 +90,7 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 			switcher->Start();
 	}
 }
+
 /********************************************************************************
  * Main switcher thread
  ********************************************************************************/
@@ -111,49 +104,41 @@ void SwitcherData::Thread()
 	//Obtenemos la información inicial del concurso
 	contestRealData = getContestRealTimeInfo();
 
-	updateTextRotative(switcher->textRotative);
+	switcher->textRotativeContent += "| Name of the contest = "+ switcher->contestName + " | Start of the contest:"+ contestRealData.start_time + " | End of the contest:"+contestRealData.end_time+" |";
+
+	modificaText(switcher->textRotative, switcher->textRotativeContent);
 
 	while (true) {
-
-		/*Declaración de las variables*/
-		std::chrono::milliseconds duration = std::chrono::milliseconds(interval);
-		obs_frontend_get_transitions(&switcher->transitions);
 
 		if (verbose)
 			blog(LOG_INFO, "AutoProducer sleep for %d", interval);
 
-		//Se recargan las variables de control para el wait (Revisar)
-		switcher->Prune();
+		//Se actualiza la variable de control waitScene
 		waitScene = obs_frontend_get_current_scene();
 
 		//Tiempo  de espera entre switch y switch
-		cv.wait_for(lock, duration);
+		std::this_thread::sleep_for(std::chrono::milliseconds(interval));
 
 		//Comprueba si se ha detenido el programa durante el sleep.
 		if (switcher->stop) break;
-		//else if (sceneChangedDuringWait()) //scene might have changed during the sleep
-		//	goto startLoop;
-
-		obs_source_t * transition = selectRandomTransition();
-		//setDefaultSceneTransitions();//Revisar
 
 		//Actualización de la información del torneo y realiza el calculo heurístico
 		updateContestRealTimeInfo(contestRealData);
 		
 		/*Si durante el proceso de  decisión se para el plugin, se cancela el cambio*/
-		if (switcher->stop) {
-			goto endLoop;
-		}
+		if (switcher->stop)
+			break;
 
 		if (switcher->swapIp) //Realiza el cambio de las vlcSources
 			switchIP(lock);
 		if (switcher->swapScene) //Realiza el cambio de escenas
+		{
+			obs_frontend_get_transitions(&switcher->transitions);
+			obs_source_t *transition = selectRandomTransition();
 			switchScene(transition, lock);
-		
-		
-
+		}
 	}
-endLoop:
+
 	blog(LOG_INFO, "AutoProducer stopped");
 }
 
@@ -168,70 +153,52 @@ void SwitcherData::ThreadSubmissions() {
 		int i = 0;
 		string tmp = "";
 
-		/*Establecer un lock simple en el mapa submissionPendings*/
-		while (!switcher->updatedSubmissions) {
-			std::this_thread::sleep_for(std::chrono::milliseconds(switcher->delayJugdment));
-		}
-
-		//Codigo para actualizar barra de submissions
-		//getJudgementsInfo(contestRealData);
+		/*Establecer un lock simple en el mapa submissionPendings, cada vez que se actualiza la cola de resultados se consume, cada vez que se actualiza la lista de envios  */
+		while (!switcher->updatedSubmissions) std::this_thread::sleep_for(std::chrono::milliseconds(switcher->delayJugdment));
 
 		map<string, submissionInfo>::iterator it = contestRealData.submissionPendings.begin();
 
 		/*Bucle para cada envio*/
-		while (it != contestRealData.submissionPendings.end() && i < MAX_VISIBLE_TEAMS_SUBMISSION) {
+		while (it != contestRealData.submissionPendings.end() && i < MAX_VISIBLE_TEAMS_SUBMISSION)
+		{
+			int slot1 = 11;//
+			int slot2 = 23;//
 
-			int slot1 = 11;
-			int slot2 = 23;
 			map<string, teamInfo>::iterator it2 = contestRealData.scoreBoard.find(it->second.idTeam);
 			string tmp2 = "";
 
-			//string tmp3 = it2->second.identificationInfo.name;
-			//std::for_each(tmp3.begin(),tmp3.end(),[](char &c) { c = ::tolower(c); });
 			tmp2 += it2->second.identificationInfo.name.substr(0,7);
 			insertSpaces(tmp2, slot1 - (int)tmp2.size());
 
-			//tmp3 = it->second.idProblem;
-			//std::for_each(tmp3.begin(),tmp3.end(),[](char &c) { c = ::tolower(c); });
-			tmp2 += it->second.idProblem; /*Quiza crear una lista de pair con id y nombre*/
-
-
-			if (slot2 - tmp2.size() <= 0) {
-				insertSpaces(tmp2, 1);
-			}
-			else
-				insertSpaces(tmp2, slot2 - (int)tmp2.size());
+			tmp2 += it->second.idProblem; 
+			if (slot2 - tmp2.size() <= 0) insertSpaces(tmp2, 1);
+			else insertSpaces(tmp2, slot2 - (int)tmp2.size());
 			
-
-			/*Sumar espacios para maquetación*/
-
 			tmp2 += it->second.result + "\n";
 			
-			i++;
 			if (it->second.result != pendingJugment) 
 			{
 				string temp = it->first;
 				it++;
 				contestRealData.submissionPendings.erase(contestRealData.submissionPendings.find(temp));
 			}
-			else 
-				it++;
+			else it++;
+			i++;
 			tmp += tmp2;
 		}
 
 		switcher->updatedSubmissions = false;
-		updateTextSubmissionContent(tmp);
-		//Espera temporal entre refrescos
+		modificaText(switcher->textSubmission, tmp);
 
-		//Si se para el programa tambien se para este thread
-		if (switcher->stop) {
-			return;
-		}
+		//Quiza añadir un timer extra para ralentizar mas las actualizaciones, siempre tendran como mínimo el delayIp
+
+		/*Si se para el programa tambien se para este thread*/
+		if (switcher->stop) break;
 	}
 
 }
 
-void switchScene(obs_source_t *transition,std::unique_lock<std::mutex> &lock)
+void SwitcherData::switchScene(obs_source_t *transition,std::unique_lock<std::mutex> &lock)
 {
 	obs_source_t *currentSource = obs_frontend_get_current_scene();
 	obs_source_t *sourceTeamviewer = obs_scene_get_source(switcher->teamViewerScene);
@@ -286,9 +253,9 @@ void SwitcherData::switchIP(unique_lock<mutex> &lock)
 
 	modificaVLC(screen, ipScreen);
 	modificaVLC(cam, ipCam);
-	modificaTextTeam(switcher->textTeam, switcher->textTeamContent);
+	modificaText(switcher->textTeam, switcher->textTeamContent);
 
-	cv.wait_for(lock, chrono::milliseconds(switcher->delayIp));
+	std::this_thread::sleep_for(std::chrono::milliseconds(switcher->delayIp));
 
 	if (usingDummy)
 	{
@@ -321,31 +288,12 @@ void SwitcherData::modificaVLC(obs_source_t* source, string ip) {
 	obs_data_release(data);
 }
 
-void updateTextRotative(obs_source_t * source) {
-
-	switcher->textRotativeContent += "| Name of the contest = "+ switcher->contestName + " | Start of the contest:"+ contestRealData.start_time + " | End of the contest:"+contestRealData.end_time+" |";
-	obs_data_t *data = obs_source_get_settings(source);
-	obs_data_set_string(data, "text", switcher->textRotativeContent.c_str());
-	obs_source_update(source, data);
-	obs_data_release(data);
-}
-
-void modificaTextTeam(obs_source_t *source, string text)
+void modificaText(obs_source_t *source, string text)
 {
-
 	obs_data_t *data = obs_source_get_settings(source);
 	obs_data_set_string(data, "text", text.c_str());
 	obs_source_update(source, data);
-	obs_data_release(data);
-	
-}
-
-void SwitcherData::updateTextSubmissionContent(string text)
-{
-	obs_data_t *data = obs_source_get_settings(switcher->textSubmission);
-	obs_data_set_string(data, "text", text.c_str());
-	obs_source_update(switcher->textSubmission, data);
-	obs_data_release(data);
+	obs_data_release(data);	
 }
 
 bool SwitcherData::sceneChangedDuringWait()
@@ -365,8 +313,7 @@ void SwitcherData::Start()
 	if (!(th && th->isRunning() && thSub && thSub->isRunning())) {
 		stop = false;
 		switcher->th = new SwitcherThread();
-		switcher->th->start(
-			(QThread::Priority)switcher->threadPriority);
+		switcher->th->start((QThread::Priority)switcher->threadPriority);
 		switcher->thSub = new SwitcherThreadSubmissions();
 		switcher->thSub->start((QThread::Priority)switcher->threadPriority);
 	}
@@ -410,7 +357,6 @@ void handleSceneChange(SwitcherData *s)
 	if (s->sceneChangedDuringWait())
 		s->cv.notify_one();
 }
-
 
 /// <summary>
 /// Funcion encargada de gestionar los eventos de obs que puedan ocurrir.

@@ -206,7 +206,7 @@ void SceneSwitcher::on_importIPs_clicked() {
 	if (directory.isEmpty())
 		return;
 	
-	switcher->ipsContestData = importUrlContest(directory.toStdString());
+	switcher->ipsContestData = importIpContest(directory.toStdString());
 	if (switcher->ipsContestData.numTeams == -1)
 	{
 		QMessageBox Msgbox;

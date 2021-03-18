@@ -10,7 +10,7 @@
 #include <obs-frontend-api.h>
 #include "importIPs.h"
 
-
+/*Constantes*/
 const int default_interval = 3000;
 const int default_delayIp = 5000;
 const int default_delayJugdement = 1000;
@@ -180,33 +180,26 @@ struct SwitcherData {
 	obs_hotkey_id stopHotkey;					//Hotkey de final del plugin
 	obs_hotkey_id toggleHotkey;					//Hotkey para alternar el estado del plugin
 
-	/*Funciones del plugin*/
+	/*Funciones de control del plugin*/
 	void Thread();							//Función principal del plugin, controlada por el thread principal.
 	void ThreadSubmissions();					//Función principal del thSub, Thread encargado de actualizar la lista de envios y correcciones
 	void Start();							//Función que inicia el funcionamiento del plugin, arranca los diversos QThreads
 	void Stop();							//Funcíón que detiene el funcionamiento del plugin, para y elimina los diversos QThreads
 
+	/*Funciones encargadas del cambio en las escenas y fuentes principales*/
+	void switchScene(obs_source_t *transition, std::unique_lock<std::mutex> &lock);
 	void switchIP(unique_lock<mutex> &lock); //Función encargada de cambiar los scene item de una escena
-
 	void modificaVLC(obs_source_t *source,string ip); //Función encargada de modificar el contenido de una VLCSource
-
-	void updateTextSubmissionContent(string text);				//Función encargada de cambiar el contenido del textSubmission
 
 	bool sceneChangedDuringWait();	//Función encargada de comprobar si se ha cambiado de escena durante una espera
 
 	obs_source_t * selectRandomTransition();		//Función encargada de devolver una transición random.
-	
-	//void setDefaultSceneTransitions(); 
-	
-	//void saveSceneTransitions(obs_data_t *obj);
+
 	void saveGeneralSettings(obs_data_t *obj);
-	void saveHotkeys(obs_data_t *obj);
-	
-//	void loadSceneTransitions(obs_data_t *obj);
+	void saveHotkeys(obs_data_t *obj);	
 	void loadGeneralSettings(obs_data_t *obj);
 	void loadHotkeys(obs_data_t *obj);
 
-	void Prune();
 	inline ~SwitcherData() { Stop(); }
 };
 

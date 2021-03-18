@@ -29,29 +29,11 @@ void crearConfiguracion(SwitcherData *switcher);
 string makeUniqueName(string name);
 
 /// <summary>
-/// Función de utilidad encargada de crear un nombre de fichero para la sceneCollection único.
-/// </summary>
-/// <param name="name">Nombre original</param>
-/// <param name="path">Ruta donde se guardan por defecto las sceneCollection</param>
-/// <returns>Nombre original, o en caso de no ser único, una versión modificada de este</returns>
-string makeUniqueFileName(string name,string path);
-
-
-/// <summary>
-/// Función de utilidad que convierte el nombre de una sceneCollection a su equivalente en fichero.
-/// </summary>
-/// <param name="name">Nombre de la sceneCollection</param>
-/// <returns>Nombre del fichero</returns>
-string makeFileName(string name);
-
-
-/// <summary>
 /// Función encargada de crear las settings de una VLC source
 /// </summary>
 /// <param name="data">, donde se añade</param>
 /// <param name="ip"> de la fuente</param>
 void make_source_settings(obs_data_t *data, string ip);
-
 
 /// <summary>
 /// Función encargada de crear las settings de una browser source

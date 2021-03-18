@@ -16,11 +16,11 @@ typedef CURLcode (*performFunction)(CURL *);
 typedef void (*cleanupFunction)(CURL *);
 typedef void (*resetFunction)(CURL *);
 
-extern initFunction f_curl_init;
-extern setOptFunction f_curl_setopt;
-extern performFunction f_curl_perform;
-extern cleanupFunction f_curl_cleanup;
-extern resetFunction f_curl_reset;
+extern initFunction f_curl_init; //Función encargada de inicializar un CURL
+extern setOptFunction f_curl_setopt; //Función encargada de establecer un opción
+extern performFunction f_curl_perform; //Función encargada realizar la lógica del CURL
+extern cleanupFunction f_curl_cleanup; //Función encargada de eliminar un CURL
+extern resetFunction f_curl_reset; //Función encargada de reiniciar un CURL (Eliminar todas sus opciones establecidas)
 
 extern QLibrary *loaded_curl_lib;
 

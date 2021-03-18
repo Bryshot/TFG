@@ -87,6 +87,7 @@ void getTeamsContestInfo(contestInfo &contest, bool startingInfo)
 	obs_data_array_t *arrayScoreboard = obs_data_get_array(dataScoreboardInfo, "rows");
 
 	size_t sizeScoreboard = obs_data_array_count(arrayScoreboard);
+
 	/*Iteramos sobre el array para obtener la información necesaria de cada elemento*/
 	for (size_t i = 0; i < sizeScoreboard; i++) {
 
@@ -166,6 +167,12 @@ void getJudgementsInfo(contestInfo& contest) {
 	       i < MAX_VISIBLE_TEAMS_SUBMISSION) {
 		string tmp = switcher->curlJudgements + it->first; 
 		string jsonJudgementsInfo = getRemoteData(tmp,true);
+		if (jsonJudgementsInfo == "[]") {
+			/*Caso especial de que no este aún el veredicto*/
+			i++;
+			it++;
+			continue;
+		}
 		string jsonFixedJudgementsInfo = vectorToObj(jsonJudgementsInfo); //Como el servidor devuelve el vector directamente, es necesario una adaptación para usar la función del obs
 		obs_data_t *dataJudgementsInfo = obs_data_create_from_json(jsonFixedJudgementsInfo.c_str());
 		obs_data_array_t *arrayJudgements = obs_data_get_array(dataJudgementsInfo, "array");
@@ -219,7 +226,6 @@ void getIdentificationTeamInfo(string id, teamInfo& info) {
 	obs_data_array_release(arrayTeamInfo);
 	obs_data_release(tamInfo);
 }
-
 
 void heuristic(double bestHeuristic, teamInfo & best, string bestId, contestInfo & contest)
 {
