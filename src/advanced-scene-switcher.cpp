@@ -130,7 +130,7 @@ void SwitcherData::Thread()
 			break;
 
 		if (switcher->swapIp) //Realiza el cambio de las vlcSources
-			switchIP(lock);
+			switchIP();
 		if (switcher->swapScene) //Realiza el cambio de escenas
 		{
 			obs_frontend_get_transitions(&switcher->transitions);
@@ -236,7 +236,7 @@ obs_source_t * SwitcherData::selectRandomTransition() {
 	return switcher->transitions.sources.array[random];
 }
 
-void SwitcherData::switchIP(unique_lock<mutex> &lock)
+void SwitcherData::switchIP()
 {
 	obs_source_t *screen;
 	obs_source_t *cam;

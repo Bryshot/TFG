@@ -188,7 +188,7 @@ struct SwitcherData {
 
 	/*Funciones encargadas del cambio en las escenas y fuentes principales*/
 	void switchScene(obs_source_t *transition, std::unique_lock<std::mutex> &lock);
-	void switchIP(unique_lock<mutex> &lock); //Función encargada de cambiar los scene item de una escena
+	void switchIP(); //Función encargada de cambiar los scene item de una escena
 	void modificaVLC(obs_source_t *source,string ip); //Función encargada de modificar el contenido de una VLCSource
 
 	bool sceneChangedDuringWait();	//Función encargada de comprobar si se ha cambiado de escena durante una espera
