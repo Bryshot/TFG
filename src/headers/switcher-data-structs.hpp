@@ -28,7 +28,6 @@ const int default_weightOfPending = 1;
 const int default_numberOfCycle = 20;
 
 const string default_contestName = "Contest";
-const string default_rotatingText = "Default rotating text";
 const string defautl_staticText = "TEAM | PROBLEM | STATUS";
 const string default_url = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
 const string default_contestServer = "https://www.domjudge.org/demoweb";
@@ -61,7 +60,7 @@ struct SwitcherData {
 	int delayJugdment = default_delayJugdement;			//Retraso entre actualizaciones de la cola de envios
 
 	/*Elementos necesarios para el control del plugin(Flags internos)*/
-	bool stop = false;						//Si se ha detenido el plugin
+	bool stop = true;						//Si se ha detenido el plugin
 	bool verbose = false;						//Si se debe escribir las acciones por la salida estandar
 	bool importedIPs = false;					//Si se han cargado las IPs del torneo
 	bool usingDummy = false;					//Si se esta usando las camTeam y screenTeam o la version dummy
@@ -72,7 +71,7 @@ struct SwitcherData {
 	bool loading = true;						//Si se esta realizando una carga 
 
 	/*Elementos necesarios para el texto rotativo */
-	string textRotativeContent = default_rotatingText;		//Contenido del texto rotativo
+	string textRotativeContent ;					//Contenido del texto rotativo
 	int sizeRotativeText = default_sizeRotativeText;		//Tamaño  del texto rotativo	
 	int speedRotativeText = default_speedRotativeText;		//Velocidad del texto rotativo	
 
@@ -100,6 +99,7 @@ struct SwitcherData {
 	string curlScoreboard;						//Url de la clasificación dentro del DomJugde
 	string curlSubmissions;						//Url de las entregas dentro del DomJugde
 	string curlJudgements;						//Url de las valoraciones dentro del DomJugde
+	string curlState;						//Url del estado del torneo dentro del DomJugde
 	string curlTeams;						//Url de los equipos dentro del DomJugde
 	
 	/*Elementos necesarios para el calculo de la heurística*/

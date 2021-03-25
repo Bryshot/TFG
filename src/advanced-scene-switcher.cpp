@@ -104,7 +104,7 @@ void SwitcherData::Thread()
 	//Obtenemos la información inicial del concurso
 	contestRealData = getContestRealTimeInfo();
 
-	switcher->textRotativeContent += "| Name of the contest = "+ switcher->contestName + " | Start of the contest:"+ contestRealData.start_time + " | End of the contest:"+contestRealData.end_time+" |";
+	switcher->textRotativeContent += "| Name of the contest = "+ switcher->contestName + " | Start of the contest:"+ contestRealData.start_time.substr(11,18) + " | End of the contest:"+contestRealData.end_time.substr(11,18)+" |";
 
 	modificaText(switcher->textRotative, switcher->textRotativeContent);
 
@@ -154,24 +154,26 @@ void SwitcherData::ThreadSubmissions() {
 		string tmp = "";
 
 		/*Establecer un lock simple en el mapa submissionPendings, cada vez que se actualiza la cola de resultados se consume, cada vez que se actualiza la lista de envios  */
-		while (!switcher->updatedSubmissions) std::this_thread::sleep_for(std::chrono::milliseconds(switcher->delayJugdment));
+		while (!switcher->updatedSubmissions||switcher->stop) std::this_thread::sleep_for(std::chrono::milliseconds(switcher->delayJugdment));
 
+		if (switcher->stop)
+			return;
 		map<string, submissionInfo>::iterator it = contestRealData.submissionPendings.begin();
 
 		/*Bucle para cada envio*/
 		while (it != contestRealData.submissionPendings.end() && i < MAX_VISIBLE_TEAMS_SUBMISSION)
 		{
-			int slot1 = 11;//
-			int slot2 = 23;//
+			int slot1 = 9;
+			int slot2 = 21;
 
 			map<string, teamInfo>::iterator it2 = contestRealData.scoreBoard.find(it->second.idTeam);
-			string tmp2 = "";
+			string tmp2;
 
-			tmp2 += it2->second.identificationInfo.name.substr(0,7);
+			tmp2 = it2->second.identificationInfo.name.substr(0,8);
 			insertSpaces(tmp2, slot1 - (int)tmp2.size());
 
-			tmp2 += it->second.idProblem; 
-			if (slot2 - tmp2.size() <= 0) insertSpaces(tmp2, 1);
+			tmp2 += it->second.idProblem.substr(0,10);
+			if (slot2 - (int)tmp2.size() < 1) insertSpaces(tmp2, 1);
 			else insertSpaces(tmp2, slot2 - (int)tmp2.size());
 			
 			tmp2 += it->second.result + "\n";

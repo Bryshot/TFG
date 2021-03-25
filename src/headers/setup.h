@@ -13,7 +13,7 @@ const int fullscreenWidth = 1920;	//Tamaño de la pantalla completa (Ancho)
 const int fullscreenHeight = 1080;	//Tamaño de la pantalla completa (Alto)
 const int camHeight = 400;		//Tamaño de la camara (Alto)
 const int camWidth = 600;		//Tamaño de la camara (Ancho)
-const string fuente = "Arial";		//Fuente de los texto
+const string fuente = "Courier New";	//Fuente de los texto
 
 /// <summary>
 /// Función encargada de obtener los parametros necesarios para crear el JSon de configuración.

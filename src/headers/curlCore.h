@@ -129,3 +129,9 @@ void getIdentificationTeamInfo(string id, teamInfo&info);
 /// <param name="contest">, donde se almacena la información dinámica</param>
 void heuristic(double bestHeuristic, teamInfo &best, string bestId,
 	       contestInfo &contest);
+
+/// <summary>
+/// Comprueba si el torneo se encuentra congelado
+/// </summary>
+/// <returns>true si el torneo esta congelado, o false en otro caso</returns>
+bool isFrozen();

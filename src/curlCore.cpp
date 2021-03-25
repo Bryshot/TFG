@@ -49,7 +49,7 @@ contestInfo getContestRealTimeInfo()
 void updateContestRealTimeInfo(contestInfo& data)
 {
 	getTeamsContestInfo(data, false);
-	if (switcher->updatedSubmissions == false) {
+	if (switcher->updatedSubmissions == false ) {// && !isFrozen()
 		getArrayInfo(data, switcher->curlSubmissions,typesInfo::Submissions);//Codigo para actualizar barra de submissions
 		getJudgementsInfo(data);
 		switcher->updatedSubmissions = true;
@@ -63,6 +63,7 @@ void setCurls() {
 	switcher->curlTeams = switcher->curlContest + "/teams?ids%5B%5D=";
 	switcher->curlSubmissions = switcher->curlContest + "/submissions";
 	switcher->curlJudgements = switcher->curlContest + "/judgements?submission_id=";
+	switcher->curlState = switcher->curlContest + "/state";
 }
 
 void getGeneralContestInfo(contestInfo& contest)
@@ -274,4 +275,12 @@ void heuristic(double bestHeuristic, teamInfo & best, string bestId, contestInfo
 			contest.scoreBoard.find(switcher->lastTeamsInStream.front())->second.timeInStream--;
 		switcher->lastTeamsInStream.pop();
 	}
+}
+
+bool isFrozen() {
+	string jsonState = getRemoteData(switcher->curlState, false);
+	obs_data_t *dataState = obs_data_create_from_json(jsonState.c_str());
+	string frozen = obs_data_get_string(dataState, "frozen");
+	if (frozen != "null") return true;
+	return false;
 }

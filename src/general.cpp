@@ -349,7 +349,6 @@ void SwitcherData::saveGeneralSettings(obs_data_t *obj)
 	obs_data_set_string(obj, "passwordContestServer", switcher->passwordContestServer.c_str());
 	obs_data_set_int(obj, "speedRotativeText", switcher->speedRotativeText);
 	obs_data_set_int(obj, "threadPriority", switcher->threadPriority);
-	obs_data_set_bool(obj, "active", !switcher->stop);
 	obs_data_set_bool(obj, "verbose", switcher->verbose);
 	obs_data_set_int(obj, "generalTabPos", switcher->tabOrder[0]);
 	obs_data_set_int(obj, "heuristicTabPos", switcher->tabOrder[1]);
@@ -377,8 +376,8 @@ void SwitcherData::loadGeneralSettings(obs_data_t *obj)
 	switcher->passwordContestServer = obs_data_get_string(obj, "passwordContestServer");
 	switcher->speedRotativeText = obs_data_get_int(obj, "speedRotativeText");
 	switcher->threadPriority = obs_data_get_int(obj, "threadPriority");
-	switcher->stop = !obs_data_get_bool(obj, "active");
 	switcher->verbose = obs_data_get_bool(obj, "verbose");
+
 	if (!switcher->loading)
 	{
 		switcher->tabOrder.clear();

@@ -178,6 +178,7 @@ void make_source_settings(obs_data_t* data ,string ip) {
 
 void make_source_settings(obs_data_t *data, string url, int height, int width)
 {
+	obs_data_set_string(data, "css","body { background-color: rgba(255, 255, 255, 1); margin: 0px auto; overflow: hidden; }");
 	obs_data_set_int(data, "height", height);
 	obs_data_set_string(data, "url", url.c_str());
 	obs_data_set_int(data, "width", width);
