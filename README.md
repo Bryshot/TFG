@@ -1,6 +1,8 @@
 # AutoProducer
 AutoProducer es un autorealizador de camaras para torneos de programación para el OBS Studio, desarrollado por Eduardo Renovales como TFG de la carrera de Ingienería Informática en la Universidad complutense de Madrid. 
 
+![ImagenFDI](https://github.com/Bryshot/TFG/blob/master/docs/Images/fdi.png)
+
 ## Requisitos
  Para que el correcto y completo funcionamiento del plugin, el torneo que se deseé retransmitir debe de tener las siguientes caracteristicas:
  - El torneo debe de llevarse a cabo por medio de la api de DomJudge. Además, para el uso completo del plugin es necesario disponer de un usuario con permisos de administrador.
