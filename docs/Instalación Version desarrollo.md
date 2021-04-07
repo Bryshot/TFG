@@ -48,8 +48,10 @@ Existen 2 modos de instalación para el plugin en versión desarrollo; la versio
 El proyecto se puede abrir desde el propio CMake o desde el explorador de archivos como cualquier otro.
 
 Imagen de la carpeta dependencias generales
+![Dependencias generales](https://github.com/Bryshot/TFG/blob/master/docs/Images/Deps.png)
 
 Imagen de la configuración en el cMake
+![Configuración de cMake](https://github.com/Bryshot/TFG/blob/master/docs/Images/cMake.png)
 
 
 ### Instalación out-of-tree (no operativo)
