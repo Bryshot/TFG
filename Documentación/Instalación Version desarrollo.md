@@ -1,4 +1,4 @@
-# Gui de instalación del plugin
+# Guia de instalación del plugin
 
 ## Pasos previos a la instalación
 
@@ -60,7 +60,7 @@ Imagen de la configuración en el cMake
 * Abrir el CMake, y rellenar los siguientes campos:
   *	En el campo de “where is the source code”, introducir la dirección del repositorio del plugin (Por ejemplo D:/AutoProducer). 
   *	En el campo de "where to build the binaries", introducir la dirección del subdirectorio “build” creado previamente (Por ejemplo D:/AutoProducer/build)
-*	Establecer las siguientes variables dentro de CMake (o establecerlas como variables de entorno de Windows, para evitar tener que volver a ponerlo si se desea copilar de nuevo el código fuente):
+* Establecer las siguientes variables dentro de CMake (o establecerlas como variables de entorno de Windows, para evitar tener que volver a ponerlo si se desea copilar de nuevo el código fuente):
   *	DepsPath, variable de tipo path, que debe apuntar a la carpeta de dependenciasGeneral. (Por ejemplo, DepsPath= D:\Dependencies\ dependenciasGeneral)
   *	QTDIR, variable de tipo path, que debe apuntar a la carpeta de dependencias de Qt5 (Por ejemplo, QTDIR= D:\Dependencies\Qt\ 5.10.1\msvc2017_64)
   *	(En caso de querer usar Browser Source) CEF_ROOT_DIR, variable de tipo path, que debe apuntar a la carpeta de dependencias de CEF (Por ejemplo, CEF_ROOT_DIR = D:\Dependencies\CEF
