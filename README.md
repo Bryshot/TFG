@@ -13,7 +13,7 @@ AutoProducer es un autorealizador de camaras para torneos de programación para 
  Teniendo instalado el obs studio, es necesario instalar [el dll](https://github.com/Bryshot/TFG/blob/master/desktop%20version/advanced-scene-switcher.dll) y [el pdb](https://github.com/Bryshot/TFG/blob/master/desktop%20version/advanced-scene-switcher.pdb) del plugin en la carpeta "C:\Program Files\obs-studio\obs-plugins\64bit"
 
  Imagen de ejemplo de la carpeta obs-plugins:
- ![Imagen de ejemplo]()
+ ![Imagen de ejemplo](https://github.com/Bryshot/TFG/blob/master/docs/Images/obs-plugins.PNG)
  
 ### Modo desarrollador
  Para instalar el plugin en modo desarrollador es necesario seguir un procedimiento complejo que se detalla en profundidad en este [documento](https://github.com/Bryshot/TFG/blob/master/docs/Instalación%20Version%20desarrollo.md).
