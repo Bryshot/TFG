@@ -2,23 +2,23 @@
 
 ## Pasos previos a la instalación
 
- 1. Descargar el código fuente del obs-studio del [repositorio en GitHub](https://github.com/obsproject/obs-studio)
- 2.	Descargar el [código fuente del plugin](https://github.com/Bryshot/TFG)
- 3. Descargar los archivos de dependencias
-   .	Dependencias de [VS2017/2019](https://obsproject.com/downloads/dependencies2017.zip)
-   .	Dependencias de [Qt5(5.10.1)](https://cdn-fastly.obsproject.com/downloads/Qt_5.10.1.7z)
-  2.	Versión de desarrollo de [FFmpeg](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z)
-  3.	Versión de desarrollo de [x264](https://code.videolan.org/videolan/x264/)
- 4.	Versión de desarrollo de[ mbedTLS ](https://github.com/ARMmbed/mbedtls)
- 5.	Versión de desarrollo de[ CEF ](https://cef-builds.spotifycdn.com/index.html)
- 6.	Versión de desarrollo de[ VLC ](https://cdn-fastly.obsproject.com/downloads/vlc.zip)
- 7.	[Descargar el CMake](https://cmake.org/download/)(3.16 o superior, preferiblemente la última versión)
- 8.	Tener instalado VS2019 (Recomendado) con la [ última versión de SDK ](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/)
+1. Descargar el código fuente del obs-studio del [repositorio en GitHub](https://github.com/obsproject/obs-studio)
+2.	Descargar el [código fuente del plugin](https://github.com/Bryshot/TFG)
+3. Descargar los archivos de dependencias
+  - Dependencias de [VS2017/2019](https://obsproject.com/downloads/dependencies2017.zip)
+  - Dependencias de [Qt5(5.10.1)](https://cdn-fastly.obsproject.com/downloads/Qt_5.10.1.7z)
+  - Versión de desarrollo de [FFmpeg](https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-essentials.7z)
+  -	Versión de desarrollo de [x264](https://code.videolan.org/videolan/x264/)
+  - Versión de desarrollo de[mbedTLS](https://github.com/ARMmbed/mbedtls)
+  - Versión de desarrollo de[CEF](https://cef-builds.spotifycdn.com/index.html)
+  - Versión de desarrollo de[VLC](https://cdn-fastly.obsproject.com/downloads/vlc.zip)
+ 4.	[Descargar el CMake](https://cmake.org/download/)(3.16 o superior, preferiblemente la última versión)
+ 5.	Tener instalado VS2019 (Recomendado) con la [ última versión de SDK ](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk/)
  
  Pasos en caso de querer usar Browser Source:
  1.	Construir el proyecto del CEF con el CMake, rellenando los campos del siguiente modo:
-  a.  En el campo de “where is the source code”, introducir la dirección de la carpeta fuente (Por ejemplo D:/Dependencias/CEF). 
-  b.  En el campo de "where to build the binaries", introducir la dirección de un subdirectorio “build”  que debemos crear dentro de la carpeta fuente(Por ejemplo D:/ Dependencias/CEF/Build)
+   - En el campo de “where is the source code”, introducir la dirección de la carpeta fuente (Por ejemplo D:/Dependencias/CEF). 
+   - En el campo de "where to build the binaries", introducir la dirección de un subdirectorio “build”  que debemos crear dentro de la carpeta fuente(Por ejemplo D:/ Dependencias/CEF/Build)
  2.	Configurar y generar dicho proyecto(Seleccionando la versión del Visual Studio adecuada y la versión de sistema operativo).
  3. Compilar dicho proyecto en modo Release y en modo Debug (Al menos el proyecto de libcef_dll_wrapper).
 
