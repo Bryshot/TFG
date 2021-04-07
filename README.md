@@ -4,12 +4,13 @@ AutoProducer es un autorealizador de camaras para torneos de programación para 
 ## Requisitos
  Para que el correcto y completo funcionamiento del plugin, el torneo que se deseé retransmitir debe de tener las siguientes caracteristicas:
  - El torneo debe de llevarse a cabo por medio de la api de DomJudge. Además, para el uso completo del plugin es necesario disponer de un usuario con permisos de administrador.
- - Se debe facilitar al plugin un archivo con la información completa de los equipos, tal y como se expone en el [archivo de instalación]
+ - Se debe facilitar al plugin un archivo con la información completa de los equipos, tal y como se expone en el [archivo de instalación]()
 
 ## Instalación
  **El plugin debe de instalarse en la version de usuario salvo en caso de querer modificar el contenido del plugin.**
 
 ### Modo usuario
+ Es necesario instalar el dll en la carpeta "C:\Program Files\obs-studio\bin\64bit"
  
 ### Modo desarrollador
  Para instalar el plugin en modo desarrollador es necesario seguir un procedimiento complejo que se detalla en profundidad en este documento.
