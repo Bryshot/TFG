@@ -51,6 +51,7 @@ Imagen de la carpeta dependencias generales
 ![Dependencias generales](https://github.com/Bryshot/TFG/blob/master/docs/Images/Deps.png)
 
 Imagen de la configuración en el cMake
+
 ![Configuración de cMake](https://github.com/Bryshot/TFG/blob/master/docs/Images/cMake.png)
 
 
