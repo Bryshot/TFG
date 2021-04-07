@@ -3,16 +3,17 @@
 ## Pasos previos a la instalación
 
  1. Descargar el código fuente del obs-studio del [repositorio en GitHub](https://github.com/obsproject/obs-studio)
- 2.	Descargar el código fuente del plugin
+ 2.	Descargar el [código fuente del plugin](https://github.com/Bryshot/TFG)
  3. Descargar los archivos de dependencias
-  1.	Dependencias de VS2017/2019
-  2.	Versión de desarrollo de FFmpeg
-  3.	Versión de desarrollo de x264 
- 4.	Versión de desarrollo de mbedTLS
- 5.	Versión de desarrollo de CEF
- 6.	Versión de desarrollo de VLC 
- 7.	Descargar el CMake (3.16 o superior, preferiblemente la última versión)
- 8.	Tener instalado VS2019 (Recomendado) con la última versión de SDK
+   .	Dependencias de [VS2017/2019](https://obsproject.com/downloads/dependencies2017.zip)
+  b.	Dependencias de [Qt5(5.10.1)]https://cdn-fastly.obsproject.com/downloads/Qt_5.10.1.7z
+  2.	Versión de desarrollo de [FFmpeg]()
+  3.	Versión de desarrollo de [x264]()
+ 4.	Versión de desarrollo de [mbedTLS]
+ 5.	Versión de desarrollo de [CEF]
+ 6.	Versión de desarrollo de [VLC] 
+ 7.	[Descargar el CMake]()(3.16 o superior, preferiblemente la última versión)
+ 8.	Tener instalado VS2019 (Recomendado) con la [última versión de SDK]
  
  Pasos en caso de querer usar Browser Source:
  1.	Construir el proyecto del CEF con el CMake, rellenando los campos del siguiente modo:
