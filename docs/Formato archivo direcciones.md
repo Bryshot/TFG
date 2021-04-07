@@ -1,4 +1,4 @@
-#Formato del archivo para importar la información de los equipos.
+# Formato del archivo para importar la información de los equipos.
 
 El formato de fichero necesario para la correcta importación de toda la información relativa a las fuentes de los equipos y la de la clasificación, es la siguiente :
 

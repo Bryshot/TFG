@@ -1,4 +1,4 @@
-#Formato del archivo JSON para importar/exportar la configuración del plugin.
+# Formato del archivo JSON para importar/exportar la configuración del plugin.
 El formato de fichero necesario para realizar una correcta importación de la configuración del plugin, así como el del fichero resultante al exportar la configuración del plugin; es la siguiente:
 
 * El archivo comenzara con una llave de apertura “{” y terminara con una llave de cierre “}”; entre estos caracteres, separados por comas, pueden aparecer los siguientes elementos:
