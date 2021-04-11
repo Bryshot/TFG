@@ -17,7 +17,6 @@ void SceneSwitcher::on_threadPriority_currentIndexChanged(int index) {
 	if (switcher->loading)
 		return;
 
-	//std::lock_guard<std::mutex> lock(switcher->m);
 	switcher->threadPriority = switcher->threadPriorities[index].value;
 }
 
@@ -27,6 +26,26 @@ void SceneSwitcher::on_checkInterval_valueChanged(int value)
 		return;
 
 	switcher->interval = value;
+}
+
+void SceneSwitcher::on_preCreatedCheckBox_stateChanged(int state) {
+
+	if (switcher->loading)
+		return;
+	else if (state == 0)
+		switcher->preCreated = false;
+	else
+		switcher->preCreated = true;
+}
+
+void SceneSwitcher::on_followVisible_stateChanged(int state)
+{
+	if (switcher->loading)
+		return;
+	else if (state == 0)
+		switcher->followVisible = false;
+	else
+		switcher->followVisible = true;
 }
 
 void SceneSwitcher::on_delayJudgments_valueChanged(int value)
@@ -110,18 +129,24 @@ void SceneSwitcher::SetStopped()
 
 void SceneSwitcher::on_toggleStartButton_clicked()
 {
-	if (switcher->th && switcher->th->isRunning()) {
+	if (switcher->th && switcher->th->isRunning())
+	{
 		switcher->Stop();
 		SetStopped();
-	} else if(switcher->importedIPs){
+	}
+	else if(switcher->importedIPs && ((switcher->created)||(switcher->preCreated)))
+	{
 		switcher->Start();
 		SetStarted();
-	}
-	else{
+	} else {
 		QMessageBox Msgbox;
-		Msgbox.setText("Import the IPs for the contest before start the plugin");
+		if (!switcher->importedIPs)
+			Msgbox.setText(
+				"Import the IPs for the contest before start the plugin");
+		else
+			Msgbox.setText(
+				"Create a valid scene_collection for the contest before start the plugin");
 		Msgbox.exec();
-		return;
 	}
 }
 
@@ -192,8 +217,7 @@ void SceneSwitcher::on_importSettings_clicked()
 	obs_data_release(obj);
 
 	QMessageBox Msgbox;
-	Msgbox.setText(
-		"AutoProducer settings imported successfully");
+	Msgbox.setText("AutoProducer settings imported successfully");
 	Msgbox.exec();
 	setupGeneralTab();
 }
@@ -320,7 +344,6 @@ int findTabIndex(QTabBar *bar, int pos)//
 	return at;
 }
 
-//Se encarga de establecer el orden de las tabs
 void SceneSwitcher::setTabOrder()
 {
 	QTabBar *bar = ui->tabWidget->tabBar();
@@ -400,8 +423,6 @@ void SwitcherData::loadGeneralSettings(obs_data_t *obj)
 
 }
 
-
-//Se encarga de cargar los valores de las variables del gui
 void SceneSwitcher::setupGeneralTab()
 {
 	ui->verboseLogging->setChecked(switcher->verbose);

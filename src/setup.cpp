@@ -2,9 +2,6 @@
 
 void crearConfiguracion( SwitcherData *switcher)
 {
-	//Marcamos el inicio de una creacion
-	switcher->created = false;
-
 	//Declaración de variables
 	obs_sceneitem_t *item; 
 	struct vec2 pos = vec2();

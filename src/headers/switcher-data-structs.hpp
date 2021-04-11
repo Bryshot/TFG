@@ -68,7 +68,9 @@ struct SwitcherData {
 	bool updatedSubmissions = false;				//Si hay cambios en la información de las entregas
 	bool swapScene = false;						//Si hay que cambiar de escena
 	bool swapIp = false;						//Si hay que cambiar las fuentes de TeamViewer
-	bool loading = true;						//Si se esta realizando una carga 
+	bool loading = true;						//Si se esta realizando una carga
+	bool preCreated = false;					//Si se permite usar scene Collections no creados directamente por el plugin.(O por alguna ejecución previa del mismo)
+	bool followVisible = true;					//Si los sceneItems dummies tienen que tener la misma forma(tamaño,escala y rotación) que las principales 
 
 	/*Elementos necesarios para el texto rotativo */
 	string textRotativeContent ;					//Contenido del texto rotativo
@@ -169,8 +171,7 @@ struct SwitcherData {
 		 "scheduled as often as possible (highest CPU load)",
 		 QThread::TimeCriticalPriority},
 	};
-	uint32_t threadPriority = QThread::NormalPriority;		//Prioridad utilizada en los QThreads del plugin
-	//uint32_t threadSubmissionPriority = QThread::HighestPriority;
+	uint32_t threadPriority = QThread::IdlePriority;		//Prioridad utilizada en los QThreads del plugin
 	
 	std::vector<int> tabOrder = {0, 1, 2}; //Orden del las tabs de la configuración del plugin
 
@@ -182,12 +183,15 @@ struct SwitcherData {
 
 	/*Funciones de control del plugin*/
 	void Thread();							//Función principal del plugin, controlada por el thread principal.
-	void ThreadSubmissions();					//Función principal del thSub, Thread encargado de actualizar la lista de envios y correcciones
+	void
+	ThreadSubmissions(); //Función principal del thSub, Thread encargado de actualizar la lista de envios y correcciones
 	void Start();							//Función que inicia el funcionamiento del plugin, arranca los diversos QThreads
-	void Stop();							//Funcíón que detiene el funcionamiento del plugin, para y elimina los diversos QThreads
+	void
+	Stop(); //Funcíón que detiene el funcionamiento del plugin, para y elimina los diversos QThreads
+
 
 	/*Funciones encargadas del cambio en las escenas y fuentes principales*/
-	void switchScene(obs_source_t *transition, std::unique_lock<std::mutex> &lock);
+	void switchScene(obs_source_t *transition);//,unique_lock<std::mutex> & lock
 	void switchIP(); //Función encargada de cambiar los scene item de una escena
 	void modificaVLC(obs_source_t *source,string ip); //Función encargada de modificar el contenido de una VLCSource
 

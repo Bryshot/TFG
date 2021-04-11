@@ -56,6 +56,12 @@ public slots:
 	//Función encargada de la lógica de modificar la variable delayJudgments por medio del gui
 	void on_delayJudgments_valueChanged(int value);
 
+	//Función encargada de la lógica de modificar la variable preCreated por medio del gui
+	void on_preCreatedCheckBox_stateChanged(int state);
+
+	//Función encargada de la lógica de modificar la variable followVisible por medio del gui
+	void on_followVisible_stateChanged(int state);
+
 	//Función encargada de la lógica de modificar la variable delayIp por medio del gui
 	void on_delayIp_valueChanged(int value);
 
@@ -115,11 +121,23 @@ private:
  * Sceneswitch helper
  ********************************************************************************/
 
+//Función encargada de modificar textTeamImage
+void modificaImage();
+
 ///Función encargada de modificar obs_source_t de tipo texto, insertando text como nuevo texto
 void modificaText(obs_source_t *source, string text);
 
 //Función encargada de insertar numSpaces espacios vacios en tmp
 void insertSpaces(string &tmp, int numSpaces);
+
+//Función encargada de replicar los cambios realizados en la vlc sources visibles en las vlc sources no visibles
+void modificaPos(obs_sceneitem_t * main, obs_sceneitem_t * dummy,bool usingDummy);
+
+//Función encargada de obtener las fuentes y escenas necesarias para el funcionamiento del plugin, cuando la scene collection actual esta pre-creada.
+void get_sources();
+
+//Función encargada de poner a false la variable created cuando se cambia de scene collection
+void set_created_false(SwitcherData *switcher);
 
 /********************************************************************************
  * Main SwitcherData
