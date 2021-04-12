@@ -248,9 +248,9 @@ void heuristic(double bestHeuristic, teamInfo & best, string bestId, contestInfo
 
 			/*Actualización de las variables de control*/
 			switcher->swapIp = true;
-			if (switcher->lastTeamsInStream.size() > 0 && switcher->lastTeamsInStream.back() == switcher->tokenIdClassification ) {
+			if (obs_scene_from_source(obs_frontend_get_current_scene()) == switcher->classificationScene) // switcher->lastTeamsInStream.size() > 0 && switcher->lastTeamsInStream.back() == switcher->tokenIdClassification 
 				switcher->swapScene = true;
-			}	
+			
 		}
 		/*Actualización de las variables para la heurística*/
 		switcher->lastTeamsInStream.push(bestId);
@@ -259,7 +259,7 @@ void heuristic(double bestHeuristic, teamInfo & best, string bestId, contestInfo
 	else//La clasificación tiene mejor puntuación que la escena mejor valorada.
 	{
 		
-		if (switcher->lastTeamsInStream.size() > 0 && switcher->lastTeamsInStream.back()!= switcher->tokenIdClassification) 
+		if (obs_scene_from_source(obs_frontend_get_current_scene()) == switcher->teamViewerScene) 
 			switcher->swapScene = true;
 		
 		switcher->lastTeamsInStream.push(switcher->tokenIdClassification);

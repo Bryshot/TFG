@@ -171,7 +171,7 @@ struct SwitcherData {
 		 "scheduled as often as possible (highest CPU load)",
 		 QThread::TimeCriticalPriority},
 	};
-	uint32_t threadPriority = QThread::IdlePriority;		//Prioridad utilizada en los QThreads del plugin
+	uint32_t threadPriority = QThread::NormalPriority;		//Prioridad utilizada en los QThreads del plugin
 	
 	std::vector<int> tabOrder = {0, 1, 2}; //Orden del las tabs de la configuración del plugin
 
