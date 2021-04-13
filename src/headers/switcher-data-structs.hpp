@@ -183,11 +183,9 @@ struct SwitcherData {
 
 	/*Funciones de control del plugin*/
 	void Thread();							//Función principal del plugin, controlada por el thread principal.
-	void
-	ThreadSubmissions(); //Función principal del thSub, Thread encargado de actualizar la lista de envios y correcciones
+	void ThreadSubmissions(); //Función principal del thSub, Thread encargado de actualizar la lista de envios y correcciones
 	void Start();							//Función que inicia el funcionamiento del plugin, arranca los diversos QThreads
-	void
-	Stop(); //Funcíón que detiene el funcionamiento del plugin, para y elimina los diversos QThreads
+	void Stop(); //Funcíón que detiene el funcionamiento del plugin, para y elimina los diversos QThreads
 
 
 	/*Funciones encargadas del cambio en las escenas y fuentes principales*/

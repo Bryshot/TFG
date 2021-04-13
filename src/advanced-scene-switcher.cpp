@@ -59,8 +59,8 @@ void SceneSwitcher::loadUI()
 static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 {
 	if (saving) {
-		switcher->Stop();
-		std::lock_guard<std::mutex> lock(switcher->m);
+		//switcher->Stop();
+		//std::lock_guard<std::mutex> lock(switcher->m);
 
 		obs_data_t *obj = obs_data_create();
 
@@ -125,12 +125,17 @@ void SwitcherData::Thread()
 		if (verbose)
 			blog(LOG_INFO, "AutoProducer sleep for %d", interval);
 
+
 		//Se actualiza la variable de control waitScene
-		waitScene = obs_frontend_get_current_scene();
+		//waitScene = obs_frontend_get_current_scene();
 
 		//Tiempo  de espera entre switch y switch
-			std::this_thread::sleep_for(std::chrono::milliseconds(interval));
+		std::this_thread::sleep_for(std::chrono::milliseconds(interval));
 
+		if (checkCurrentScene())
+			continue;
+		
+		 
 		//Comprueba si se ha detenido el programa durante el sleep.
 		if (switcher->stop) break;
 
@@ -138,8 +143,7 @@ void SwitcherData::Thread()
 		updateContestRealTimeInfo(contestRealData);
 		
 		/*Si durante el proceso de  decisión se para el plugin, se cancela el cambio*/
-		if (switcher->stop)
-			break;
+		if (switcher->stop)break;
 
 		if (switcher->swapIp) //Realiza el cambio de las vlcSources
 			switchIP();
@@ -166,7 +170,7 @@ void SwitcherData::ThreadSubmissions() {
 		string tmp = "";
 
 		/*Establecer un lock simple en el mapa submissionPendings, cada vez que se actualiza la cola de resultados se consume, cada vez que se actualiza la lista de envios  */
-		while (!switcher->updatedSubmissions||switcher->stop) std::this_thread::sleep_for(std::chrono::milliseconds(switcher->delayJugdment));
+		while (!switcher->updatedSubmissions && !switcher->stop) std::this_thread::sleep_for(std::chrono::milliseconds(switcher->delayJugdment));
 
 		if (switcher->stop)
 			return;
@@ -175,6 +179,8 @@ void SwitcherData::ThreadSubmissions() {
 		/*Bucle para cada envio*/
 		while (it != contestRealData.submissionPendings.end() && i < MAX_VISIBLE_TEAMS_SUBMISSION)
 		{
+		
+
 			int slot1 = 9;
 			int slot2 = 21;
 
@@ -446,6 +452,13 @@ void modificaPos(obs_sceneitem_t * main, obs_sceneitem_t * dummy,bool usingDummy
 	}
 }
 
+bool checkCurrentScene() {
+	obs_scene_t * tmp = obs_scene_from_source(obs_frontend_get_current_scene());
+	if (tmp != switcher->teamViewerScene && tmp != switcher->classificationScene)
+		return true;
+	return false;
+}
+
 bool SwitcherData::sceneChangedDuringWait()
 {
 	bool r = false;
@@ -474,7 +487,7 @@ void SwitcherData::Stop()
 	if (th && th->isRunning() && thSub && thSub->isRunning())
 	{
 		switcher->stop = true;
-		cv.notify_one();
+		//cv.notify_one();
 		th->wait();
 		thSub->wait();
 		delete th;
