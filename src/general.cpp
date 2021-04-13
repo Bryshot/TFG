@@ -112,8 +112,12 @@ void SceneSwitcher::on_numberOfCycle_valueChanged(int value)
 	if (switcher->loading)
 		return;
 
+	if (!switcher->lastTeamsInStream.empty() && value < switcher->cycleSize) {
+		popLastTeamInStream(switcher->cycleSize - value);	
+	}
+
 	switcher->cycleSize = value;
-}
+} 
 
 void SceneSwitcher::SetStarted()
 {

@@ -459,6 +459,16 @@ bool checkCurrentScene() {
 	return false;
 }
 
+void popLastTeamInStream(int i) {
+	for (i;i>0;i--) {
+		if (switcher->lastTeamsInStream.front() == switcher->tokenIdClassification) //Tratamiento especial de la clasificación
+			switcher->classificationTimeInStream--;
+		else //Caso general
+			contestRealData.scoreBoard.find(switcher->lastTeamsInStream.front())->second.timeInStream--;
+		switcher->lastTeamsInStream.pop();
+	}
+}
+
 bool SwitcherData::sceneChangedDuringWait()
 {
 	bool r = false;

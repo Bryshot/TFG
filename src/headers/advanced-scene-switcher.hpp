@@ -136,6 +136,9 @@ void modificaPos(obs_sceneitem_t * main, obs_sceneitem_t * dummy,bool usingDummy
 //Función encargada de comprobar que la escena actual es teamViewer o classificationView
 bool checkCurrentScene();
 
+//Función encargada de eliminar los i elementos más antiguos del vector LastTeamInStream
+void popLastTeamInStream(int i);
+
 //Función encargada de obtener las fuentes y escenas necesarias para el funcionamiento del plugin, cuando la scene collection actual esta pre-creada.
 void get_sources();
 

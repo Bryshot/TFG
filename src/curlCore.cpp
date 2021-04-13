@@ -244,7 +244,7 @@ void heuristic(double bestHeuristic, teamInfo & best, string bestId, contestInfo
 			switcher->ipCam = it1->second.ipCam;
 			switcher->ipScreen = it1->second.ipScreen;
 			switcher->textTeamImageFile = it1->second.urlLogo;
-			switcher->textTeamContent = "Team: " + best.identificationInfo.name + "\nClassification: " + std::to_string(best.rank) + "\nNumber of Problem Solved: " + std::to_string(best.score.num_solved);
+			switcher->textTeamContent = "Team: " + best.identificationInfo.name.substr(0,31) + "\nClassification: " + std::to_string(best.rank) + "\nNumber of Problem Solved: " + std::to_string(best.score.num_solved);
 
 			/*Actualización de las variables de control*/
 			switcher->swapIp = true;
