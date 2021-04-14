@@ -98,18 +98,6 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
  ********************************************************************************/
 void SwitcherData::Thread()
 {
-
-	if (!created && preCreated) {
-		get_sources();
-		if (!created) {
-			QMessageBox Msgbox;
-			Msgbox.setText(
-				"The current scene collection is not valid for the plugin");
-			Msgbox.exec();
-			return;
-		}
-	}
-
 	//Anunciamos el inicio del funcionamiento del plugin
 	blog(LOG_INFO, "AutoProducer started");
 
@@ -275,110 +263,100 @@ void set_created_false(SwitcherData *switcher)
 void get_sources()
 {
 	/*Obtenemos las escenas necesarias para el correcto funcionamiento*/
+
+	obs_scene_t * tmp1 = switcher->teamViewerScene;
+	obs_scene_t * tmp2 = switcher->classificationScene;
 	struct obs_frontend_source_list scenes = {};
 	obs_frontend_get_scenes(&scenes);
-	for (size_t i = 0; i < scenes.sources.num; i++) {
+	for (size_t i = 0; i < scenes.sources.num; i++)
+	{
 		string temp = obs_source_get_name(scenes.sources.array[i]);
-		if (temp == "TeamView") {
-			switcher->teamViewerScene =
-				obs_scene_from_source(scenes.sources.array[i]);
+		if (temp == "TeamView")
+		{
+			switcher->teamViewerScene = obs_scene_from_source(scenes.sources.array[i]);
 			obs_scene_addref(switcher->teamViewerScene);
-		} else if (temp == "ClassificationView") {
-			switcher->classificationScene =
-				obs_scene_from_source(scenes.sources.array[i]);
+		}
+		else if (temp == "ClassificationView")
+		{
+			switcher->classificationScene = obs_scene_from_source(scenes.sources.array[i]);
 			obs_scene_addref(switcher->classificationScene);
 		}
 	}
+
 	obs_frontend_source_list_free(&scenes);
 
-	/*Obtenemos los scene_items necesarios para el correcto funcionamiento del plugin*/
-	switcher->camTeamDummyItem = obs_scene_find_source(
-		switcher->teamViewerScene, "camTeamDummy");
-	switcher->camTeamItem =
-		obs_scene_find_source(switcher->teamViewerScene, "camTeam");
-	switcher->screenTeamItem =
-		obs_scene_find_source(switcher->teamViewerScene, "screenTeam");
-	switcher->screenTeamDummyItem = obs_scene_find_source(
-		switcher->teamViewerScene, "screenTeamDummy");
+	//Comprobamos que las escenas mínimas existen
+	if (switcher->teamViewerScene == tmp1 || switcher->classificationScene == tmp2) return;
 
+	/*Obtenemos los scene_items necesarios para el correcto funcionamiento del plugin*/
+	switcher->camTeamDummyItem = obs_scene_find_source(switcher->teamViewerScene, "camTeamDummy");
+	switcher->camTeamItem = obs_scene_find_source(switcher->teamViewerScene, "camTeam");
+	switcher->screenTeamItem = obs_scene_find_source(switcher->teamViewerScene, "screenTeam");
+	switcher->screenTeamDummyItem = obs_scene_find_source(switcher->teamViewerScene, "screenTeamDummy");
+
+	//Comprobamos que existen como mínimo los sources necesarias
+	if (!switcher->camTeamDummyItem || !switcher->camTeamItem ||
+	    !switcher->screenTeamItem || !switcher->screenTeamDummyItem)
+		return;
+
+	//Configuramos el programa para corresponda con usingDummy = false
 	obs_sceneitem_set_visible(switcher->screenTeamItem, true);
 	obs_sceneitem_set_visible(switcher->camTeamItem, true);
 	obs_sceneitem_set_visible(switcher->screenTeamDummyItem, false);
 	obs_sceneitem_set_visible(switcher->camTeamDummyItem, false);
+	switcher->usingDummy = false;
 
 	/*Obtenemos las sources necesarias para el correcto funcionamiento del plugin*/
-	switcher->screenTeam =
-		obs_sceneitem_get_source(switcher->screenTeamItem);
-	if (!switcher->screenTeam)
-		return;
+	switcher->screenTeam = obs_sceneitem_get_source(switcher->screenTeamItem);
 	obs_source_addref(switcher->screenTeam);
 
 	switcher->camTeam = obs_sceneitem_get_source(switcher->camTeamItem);
-	if (!switcher->camTeam)
-		return;
 	obs_source_addref(switcher->camTeam);
 
-	switcher->screenTeamDummy =
-		obs_sceneitem_get_source(switcher->screenTeamDummyItem);
-	if (!switcher->screenTeamDummy)
-		return;
+	switcher->screenTeamDummy = obs_sceneitem_get_source(switcher->screenTeamDummyItem);
 	obs_source_addref(switcher->screenTeamDummy);
 
-	switcher->camTeamDummy =
-		obs_sceneitem_get_source(switcher->camTeamDummyItem);
-	if (!switcher->camTeamDummy)
-		return;
+	switcher->camTeamDummy = obs_sceneitem_get_source(switcher->camTeamDummyItem);
 	obs_source_addref(switcher->camTeamDummy);
 
-	switcher->screenClassification = obs_sceneitem_get_source(
-		obs_scene_find_source(switcher->classificationScene,
-				      "screenClassification"));
+	switcher->screenClassification = obs_sceneitem_get_source(obs_scene_find_source(switcher->classificationScene,"screenClassification"));
 	if (!switcher->screenClassification)
 		return;
 	obs_source_addref(switcher->screenClassification);
 
-	switcher->textRotative = obs_sceneitem_get_source(obs_scene_find_source(
-		switcher->teamViewerScene, "textRotative"));
+	switcher->textRotative = obs_sceneitem_get_source(obs_scene_find_source(switcher->teamViewerScene, "textRotative"));
 	if (!switcher->textRotative)
 		return;
 	obs_source_addref(switcher->textRotative);
 
-	switcher->staticText = obs_sceneitem_get_source(
-		obs_scene_find_source(switcher->teamViewerScene, "textStatic"));
+	switcher->staticText = obs_sceneitem_get_source(obs_scene_find_source(switcher->teamViewerScene, "textStatic"));
 	if (!switcher->staticText)
 		return;
 	obs_source_addref(switcher->staticText);
 
-	switcher->textSubmission = obs_sceneitem_get_source(
-		obs_scene_find_source(switcher->teamViewerScene,
-				      "textSubmission"));
+	switcher->textSubmission = obs_sceneitem_get_source(obs_scene_find_source(switcher->teamViewerScene,"textSubmission"));
 	if (!switcher->textSubmission)
 		return;
 	obs_source_addref(switcher->textSubmission);
 
-	switcher->textTeam = obs_sceneitem_get_source(
-		obs_scene_find_source(switcher->teamViewerScene, "textTeam"));
+	switcher->textTeam = obs_sceneitem_get_source(obs_scene_find_source(switcher->teamViewerScene, "textTeam"));
 	if (!switcher->textTeam)
 		return;
 	obs_source_addref(switcher->textTeam);
 
-	switcher->textTeamImage = obs_sceneitem_get_source(
-		obs_scene_find_source(switcher->teamViewerScene, "imageTeam"));
+	switcher->textTeamImage = obs_sceneitem_get_source(obs_scene_find_source(switcher->teamViewerScene, "imageTeam"));
 	if (!switcher->textTeamImage)
 		return;
 	obs_source_addref(switcher->textTeamImage);
 
-	switcher->filter =
-		obs_source_get_filter_by_name(switcher->textRotative, "filter");
+	switcher->filter = obs_source_get_filter_by_name(switcher->textRotative, "filter");
 	if (!switcher->filter)
 		return;
 	obs_source_addref(switcher->filter);
 
 	//Cargamos los datos necesarios
-	obs_data_t *dataClassification =
-		obs_source_get_settings(switcher->screenClassification);
-	obs_data_set_string(dataClassification, "url",
-			    switcher->urlClassification.c_str());
+	obs_data_t *dataClassification = obs_source_get_settings(switcher->screenClassification);
+	obs_data_set_string(dataClassification, "url",switcher->urlClassification.c_str());
 
 	obs_source_update(switcher->screenClassification, dataClassification);
 	switcher->modificaVLC(switcher->screenTeam, switcher->ipScreen);

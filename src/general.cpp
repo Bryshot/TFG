@@ -136,21 +136,33 @@ void SceneSwitcher::SetStopped()
 
 void SceneSwitcher::on_toggleStartButton_clicked()
 {
-	if (switcher->th && switcher->th->isRunning()) {
+	if (switcher->th && switcher->th->isRunning())
+	{
 		switcher->Stop();
 		SetStopped();
-	} else if (switcher->importedIPs &&
-		   ((switcher->created) || (switcher->preCreated))) {
+	}
+	else if (switcher->importedIPs && ((switcher->created) || (switcher->preCreated)))
+	{
+		if (!switcher->created && switcher->preCreated)
+		{
+			get_sources();
+			if (!switcher->created)
+			{
+				QMessageBox Msgbox;
+				Msgbox.setText("The current_scene collection is not valid for the plugin");
+				Msgbox.exec();
+				return;
+			}
+		}
 		switcher->Start();
 		SetStarted();
-	} else {
+	} else
+	{
 		QMessageBox Msgbox;
 		if (!switcher->importedIPs)
-			Msgbox.setText(
-				"Import the IPs for the contest before start the plugin");
+			Msgbox.setText("Import the IPs for the contest before start the plugin");
 		else
-			Msgbox.setText(
-				"Create a valid scene_collection for the contest before start the plugin");
+			Msgbox.setText("Create a valid scene_collection for the contest before start the plugin");
 		Msgbox.exec();
 	}
 }
