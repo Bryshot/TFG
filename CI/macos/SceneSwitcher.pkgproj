@@ -36,7 +36,7 @@
 																		<key>GID</key>
 																		<integer>80</integer>
 																		<key>PATH</key>
-																		<string>../../../../../build/UI/frontend-plugins/SceneSwitcher/advanced-scene-switcher.so</string>
+																		<string>../../../../../build/UI/frontend-plugins/SceneSwitcher/autoProducer.so</string>
 																		<key>PATH_TYPE</key>
 																		<integer>3</integer>
 																		<key>PERMISSIONS</key>
@@ -64,7 +64,7 @@
 														<key>GID</key>
 														<integer>80</integer>
 														<key>PATH</key>
-														<string>advanced-scene-switcher</string>
+														<string>autoProducer</string>
 														<key>PATH_TYPE</key>
 														<integer>0</integer>
 														<key>PERMISSIONS</key>

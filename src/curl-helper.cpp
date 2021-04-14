@@ -26,7 +26,6 @@ bool resolveCurl()
 	f_curl_reset =
 		(resetFunction)loaded_curl_lib->resolve("curl_easy_reset");
 
-
 	if (f_curl_init && f_curl_setopt && f_curl_perform && f_curl_cleanup) {
 		blog(LOG_INFO, "curl loaded successfully");
 		return true;

@@ -13,36 +13,33 @@ bool isNumber(const string &str)
 
 IpsContest importIpContest(string path)
 {
-  IpsContest contest;
-  string buffer;
-  FicheroIPs.open(path, ios::in);
-  getline(FicheroIPs, buffer);
-  if (!isNumber(buffer))
-  {
-	  contest.numTeams = -1;
-	  return contest;
-  }
-  contest.numTeams = std::stoi(buffer); 
-  getline(FicheroIPs, buffer);
-  contest.ipClassification = buffer;
-  for (int i = 0; i < contest.numTeams; i++) {
-    IpsTeam team;
-    string name;
-    asignaString(name);
-    asignaString(team.ipScreen);
-    asignaString(team.ipCam);
-    asignaString(team.urlLogo);
-    contest.ipsTeams.insert(pair(name, team));
-  }
-  FicheroIPs.close();
-  return contest;
+	IpsContest contest;
+	string buffer;
+	FicheroIPs.open(path, ios::in);
+	getline(FicheroIPs, buffer);
+	if (!isNumber(buffer)) {
+		contest.numTeams = -1;
+		return contest;
+	}
+	contest.numTeams = std::stoi(buffer);
+	getline(FicheroIPs, buffer);
+	contest.ipClassification = buffer;
+	for (int i = 0; i < contest.numTeams; i++) {
+		IpsTeam team;
+		string name;
+		asignaString(name);
+		asignaString(team.ipScreen);
+		asignaString(team.ipCam);
+		asignaString(team.urlLogo);
+		contest.ipsTeams.insert(pair(name, team));
+	}
+	FicheroIPs.close();
+	return contest;
 }
 
-void asignaString(string & s)
+void asignaString(string &s)
 {
 	string buffer;
 	getline(FicheroIPs, buffer);
 	s = buffer;
 }
-
-

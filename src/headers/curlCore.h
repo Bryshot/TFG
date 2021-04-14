@@ -4,54 +4,54 @@
 #include <vector>
 #include "headers/switcher-data-structs.hpp"
 #include "headers/curl-helper.hpp"
-#include "headers/advanced-scene-switcher.hpp"
+#include "headers/autoProducer.hpp"
 #include <obs-frontend-api.h>
 
 using namespace std;
 
-const string pendingJugment = "PJ"; 
+const string pendingJugment = "PJ";
 
-enum class typesInfo {Submissions};//Simplificar en un futuro si no se añaden nuevos types
-
+enum class typesInfo {
+	Submissions
+}; //Simplificar en un futuro si no se añaden nuevos types
 
 /*Estructura que alberga la información personal de un equipo */
 struct idenInfo {
 	string affiliation;
 	string nationality;
 	string name;
-} ;
-
+};
 
 /*Estructura que alberga la puntuación de un equipo*/
- struct score_t {
+struct score_t {
 	int num_solved;
-	int total_time;//Puede ser interesante para el sistema heuristico (En desuso)
-	int num_pending = 0; 
-} ;
+	int total_time; //Puede ser interesante para el sistema heuristico (En desuso)
+	int num_pending = 0;
+};
 
 /*Estructura que alberga toda la información relativa a un equipo */
- struct teamInfo {
+struct teamInfo {
 	int rank;
 	score_t score;
 	int timeInStream = 0;
 	idenInfo identificationInfo;
-} ;
+};
 
 /*Estructuea que alberga la información de una entrega*/
- struct submissionInfo {
+struct submissionInfo {
 	string idProblem;
 	string idTeam;
 	string result = pendingJugment;
-} ;
+};
 
 /*Estructura que alberga toda la información del torneo*/
 struct contestInfo {
 	string name;
 	string start_time;
 	string end_time;
-	map<string,teamInfo> scoreBoard;
+	map<string, teamInfo> scoreBoard;
 	map<string, submissionInfo> submissionPendings;
-} ;
+};
 
 /// <summary>
 /// Función auxiliar que se encarga de obtener la respuesta relacionada con la url aportada (Consulta en servidor por medio de cUrl)
@@ -83,14 +83,14 @@ void setCurls();
 /// Obtiene la información general del torneo
 /// </summary>
 /// <param name="contest">, donde se almacena la información</param>
-void getGeneralContestInfo(contestInfo& contest);
+void getGeneralContestInfo(contestInfo &contest);
 
 /// <summary>
 /// Obtiene la información de los equipos
 /// </summary>
 /// <param name="contest">, donde se almacena la información</param>
 /// <param name="startingInfo">, si se debe obtener la información estática de los equipos</param>
-void getTeamsContestInfo(contestInfo& contest, bool startingInfo);
+void getTeamsContestInfo(contestInfo &contest, bool startingInfo);
 
 /// <summary>
 /// Obtiene la información de las entregas realizadas
@@ -118,7 +118,7 @@ void getArrayInfo(contestInfo &contest, string curl, typesInfo type);
 /// </summary>
 /// <param name="id">, del equipo</param>
 /// <param name="info">, donde se almacena la información</param>
-void getIdentificationTeamInfo(string id, teamInfo&info);
+void getIdentificationTeamInfo(string id, teamInfo &info);
 
 /// <summary>
 /// Realiza los calculos heuristicos

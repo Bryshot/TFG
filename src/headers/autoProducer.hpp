@@ -5,9 +5,9 @@
 #include <vector>
 #include <string>
 #ifdef BUILD_OUT_OF_TREE
-#include "../../forms/ui_advanced-scene-switcher.h"
+#include "../../forms/ui_autoProducer.h"
 #else
-#include "ui_advanced-scene-switcher.h"
+#include "ui_autoProducer.h"
 #endif
 #include "switcher-data-structs.hpp"
 #include "setup.h"
@@ -114,7 +114,6 @@ public slots:
 	void on_close_clicked();
 
 private:
-	
 };
 
 /********************************************************************************
@@ -131,7 +130,8 @@ void modificaText(obs_source_t *source, string text);
 void insertSpaces(string &tmp, int numSpaces);
 
 //Función encargada de replicar los cambios realizados en la vlc sources visibles en las vlc sources no visibles
-void modificaPos(obs_sceneitem_t * main, obs_sceneitem_t * dummy,bool usingDummy);
+void modificaPos(obs_sceneitem_t *main, obs_sceneitem_t *dummy,
+		 bool usingDummy);
 
 //Función encargada de comprobar que la escena actual es teamViewer o classificationView
 bool checkCurrentScene();

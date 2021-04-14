@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(advanced-scene-switcher)
+project(autoProducer)
 
 if(BUILD_OUT_OF_TREE)
 	# out of tree builds
@@ -30,9 +30,9 @@ if(BUILD_OUT_OF_TREE)
 		include_directories(${X11_INCLUDE_DIR})
 	endif()
 
-	set(advanced-scene-switcher_HEADERS
-		${advanced-scene-switcher_HEADERS}
-		src/headers/advanced-scene-switcher.hpp
+	set(autoProducer_HEADERS
+		${autoProducer_HEADERS}
+		src/headers/autoProducer.hpp
 		src/headers/switcher-data-structs.hpp
 		src/headers/curl-helper.hpp
 		src/headers/setup.h
@@ -40,10 +40,10 @@ if(BUILD_OUT_OF_TREE)
 		src/headers/curlCore.h
 		)
 
-	set(advanced-scene-switcher_SOURCES
-		${advanced-scene-switcher_SOURCES}
-		src/advanced-scene-switcher.cpp
-		src/advanced-scene-switcher-module.c
+	set(autoProducer_SOURCES
+		${autoProducer_SOURCES}
+		src/autoProducer.cpp
+		src/autoProducer-module.c
 		src/hotkey.cpp
 		src/general.cpp
 		src/setup.cpp
@@ -52,19 +52,19 @@ if(BUILD_OUT_OF_TREE)
 		src/curlCore.cpp
 		)
 
-	set(advanced-scene-switcher_UI
-		${advanced-scene-switcher_UI}
-		forms/advanced-scene-switcher.ui
+	set(autoProducer_UI
+		${autoProducer_UI}
+		forms/autoProducer.ui
 		)
 
-	qt5_wrap_ui(advanced-scene-switcher_UI_HEADERS
-		${advanced-scene-switcher_UI}
-		${advanced-scene-switcher_PLATFORM_UI})
+	qt5_wrap_ui(autoProducer_UI_HEADERS
+		${autoProducer_UI}
+		${autoProducer_PLATFORM_UI})
 
-	add_library(advanced-scene-switcher MODULE
-		${advanced-scene-switcher_HEADERS}
-		${advanced-scene-switcher_SOURCES}
-		${advanced-scene-switcher_UI_HEADERS}
+	add_library(autoProducer MODULE
+		${autoProducer_HEADERS}
+		${autoProducer_SOURCES}
+		${autoProducer_UI_HEADERS}
 		)
 
 	include_directories(
@@ -74,7 +74,7 @@ if(BUILD_OUT_OF_TREE)
 		${Qt5Widgets_INCLUDES}
 		${LIBCURL_INCLUDE_DIRS})
 
-	target_link_libraries(advanced-scene-switcher
+	target_link_libraries(autoProducer
 		${LIBOBS_LIB}
 		${LIBOBS_FRONTEND_API_LIB}
 		Qt5::Core
@@ -94,13 +94,13 @@ if(BUILD_OUT_OF_TREE)
 
 		find_package(w32-pthreads REQUIRED)
 
-		target_link_libraries(advanced-scene-switcher
+		target_link_libraries(autoProducer
 				w32-pthreads)
 	endif()
 
 	# OSX
 	if(APPLE)
-		set_target_properties(advanced-scene-switcher PROPERTIES PREFIX "")
+		set_target_properties(autoProducer PROPERTIES PREFIX "")
 
 	endif()
 
@@ -114,12 +114,12 @@ if(BUILD_OUT_OF_TREE)
 			set(ARCH_NAME "i686")
 		endif()
 
-		set_target_properties(advanced-scene-switcher PROPERTIES PREFIX "")
+		set_target_properties(autoProducer PROPERTIES PREFIX "")
 
-		install(TARGETS advanced-scene-switcher
+		install(TARGETS autoProducer
 				LIBRARY DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/obs-plugins)
 		install(FILES ${ASS_TRANSLATION_FILES}
-				DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/advanced-scene-switcher/locale")
+				DESTINATION "${CMAKE_INSTALL_PREFIX}/share/obs/obs-plugins/autoProducer/locale")
 	endif()
 else ()
 	# in-tree build
@@ -134,9 +134,9 @@ else ()
 		include_directories(${X11_INCLUDE_DIR})
 	endif()
 
-	set(advanced-scene-switcher_HEADERS
-		${advanced-scene-switcher_HEADERS}
-		src/headers/advanced-scene-switcher.hpp
+	set(autoProducer_HEADERS
+		${autoProducer_HEADERS}
+		src/headers/autoProducer.hpp
 		src/headers/switcher-data-structs.hpp
 		src/headers/curl-helper.hpp
 		src/headers/setup.h
@@ -144,10 +144,10 @@ else ()
 		src/headers/curlCore.h
 		)
 
-	set(advanced-scene-switcher_SOURCES
-		${advanced-scene-switcher_SOURCES}
-		src/advanced-scene-switcher.cpp
-		src/advanced-scene-switcher-module.c
+	set(autoProducer_SOURCES
+		${autoProducer_SOURCES}
+		src/autoProducer.cpp
+		src/autoProducer-module.c
 		src/hotkey.cpp
 		src/general.cpp
 		src/setup.cpp
@@ -156,26 +156,26 @@ else ()
 		src/curlCore.cpp
 		)
 
-	set(advanced-scene-switcher_UI
-		${advanced-scene-switcher_UI}
-		forms/advanced-scene-switcher.ui
+	set(autoProducer_UI
+		${autoProducer_UI}
+		forms/autoProducer.ui
 		)
 
 
-	qt5_wrap_ui(advanced-scene-switcher_UI_HEADERS
-		${advanced-scene-switcher_UI}
-		${advanced-scene-switcher_PLATFORM_UI})
+	qt5_wrap_ui(autoProducer_UI_HEADERS
+		${autoProducer_UI}
+		${autoProducer_PLATFORM_UI})
 
-	add_library(advanced-scene-switcher MODULE
-		${advanced-scene-switcher_HEADERS}
-		${advanced-scene-switcher_SOURCES}
-		${advanced-scene-switcher_UI_HEADERS}
+	add_library(autoProducer MODULE
+		${autoProducer_HEADERS}
+		${autoProducer_SOURCES}
+		${autoProducer_UI_HEADERS}
 		)
 
-	target_link_libraries(advanced-scene-switcher
+	target_link_libraries(autoProducer
 		obs-frontend-api
 		Qt5::Widgets
 		libobs)
 
-	install_obs_plugin(advanced-scene-switcher data)
+	install_obs_plugin(autoProducer data)
 endif()
