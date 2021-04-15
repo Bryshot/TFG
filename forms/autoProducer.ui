@@ -293,7 +293,7 @@
          <item>
           <widget class="QLabel" name="label_16">
            <property name="text">
-            <string>Replicate changes to vcl sources (Replicate visible sources)</string>
+            <string>Replicate changes to VLC sources (Replicate visible sources)</string>
            </property>
           </widget>
          </item>

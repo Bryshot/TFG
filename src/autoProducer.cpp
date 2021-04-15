@@ -500,7 +500,7 @@ void popLastTeamInStream(int i)
 	}
 }
 
-bool SwitcherData::sceneChangedDuringWait()
+/*bool SwitcherData::sceneChangedDuringWait()
 {
 	bool r = false;
 	obs_source_t *currentSource = obs_frontend_get_current_scene();
@@ -510,7 +510,7 @@ bool SwitcherData::sceneChangedDuringWait()
 	if (waitScene && currentSource != waitScene)
 		r = true;
 	return r;
-}
+}*/
 
 void SwitcherData::Start()
 {
@@ -555,13 +555,13 @@ extern "C" void FreeSceneSwitcher()
 	switcher = nullptr;
 }
 
-void handleSceneChange(SwitcherData *s)
+/*void handleSceneChange(SwitcherData *s)
 {
 	std::lock_guard<std::mutex> lock(s->m);
 	//stop waiting if scene was manually changed
 	if (s->sceneChangedDuringWait())
 		s->cv.notify_one();
-}
+}*/
 
 /// <summary>
 /// Funcion encargada de gestionar los eventos de obs_frontend que puedan ocurrir.
@@ -574,9 +574,9 @@ static void OBSEvent(enum obs_frontend_event event, void *switcher)
 	case OBS_FRONTEND_EVENT_EXIT:
 		FreeSceneSwitcher();
 		break;
-	case OBS_FRONTEND_EVENT_SCENE_CHANGED:
+	/*case OBS_FRONTEND_EVENT_SCENE_CHANGED:
 		handleSceneChange((SwitcherData *)switcher);
-		break;
+		break;*/
 	case OBS_FRONTEND_EVENT_SCENE_COLLECTION_CHANGED:
 		set_created_false((SwitcherData *)switcher);
 		break;
