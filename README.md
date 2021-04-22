@@ -4,9 +4,10 @@ AutoProducer es un autorealizador de camaras para torneos de programación para 
 ![ImagenFDI](https://github.com/Bryshot/TFG/blob/master/docs/Images/fdi.png)
 
 ## Requisitos
- Para que el correcto y completo funcionamiento del plugin, el torneo que se deseé retransmitir debe de tener las siguientes caracteristicas:
+ Para el correcto y completo funcionamiento del plugin, el torneo que se deseé retransmitir debe de tener las siguientes caracteristicas:
  - El torneo debe de llevarse a cabo por medio de la api de DomJudge. Además, para el uso completo del plugin es necesario disponer de un usuario con permisos de administrador.
  - Se debe facilitar al plugin un archivo con la información completa de los equipos, tal y como se expone en el [archivo de instalación](https://github.com/Bryshot/TFG/blob/master/docs/Formato%20archivo%20direcciones.md)
+ - Se debe tener instalado VLC.
 
 ## Configuración
 El plugin permite realizar diversas configuraciones, las cuales se pueden realizar desde la propia interfaz del plugin o importandola, en cuyo caso, se debe respetar el [formato requerido](https://github.com/Bryshot/TFG/blob/master/docs/Formato%20archivo%20configuración.md).
