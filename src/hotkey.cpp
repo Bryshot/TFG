@@ -1,7 +1,7 @@
 #include <obs-module.h>
 #include <fstream>
 #include <regex>
-#include "headers/autoProducer.hpp"
+#include "headers/autoProducerContest.hpp"
 
 void startHotkeyFunc(void *data, obs_hotkey_id id, obs_hotkey_t *hotkey,
 		     bool pressed)
@@ -47,14 +47,14 @@ void startStopToggleHotkeyFunc(void *data, obs_hotkey_id id,
 void registerHotkeys()
 {
 	switcher->startHotkey = obs_hotkey_register_frontend(
-		"startSwitcherHotkey", "Start the AutoProducer",
+		"startSwitcherHotkey", "Start the autoProducerContest",
 		startHotkeyFunc, NULL);
 	switcher->stopHotkey = obs_hotkey_register_frontend(
-		"stopSwitcherHotkey", "Stop the AutoProducer",
+		"stopSwitcherHotkey", "Stop the autoProducerContest",
 		stopHotkeyFunc, NULL);
 	switcher->toggleHotkey = obs_hotkey_register_frontend(
 		"startStopToggleSwitcherHotkey",
-		"Toggle Start/Stop for the AutoProducer",
+		"Toggle Start/Stop for the autoProducerContest",
 		startStopToggleHotkeyFunc, NULL);
 
 	switcher->hotkeysRegistered = true;

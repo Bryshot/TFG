@@ -15,7 +15,7 @@
 #include <util/util.hpp>
 
 #include "headers/switcher-data-structs.hpp"
-#include "headers/autoProducer.hpp"
+#include "headers/autoProducerContest.hpp"
 #include "headers/curl-helper.hpp"
 #include "headers/curlCore.h"
 #include <QMessageBox>
@@ -66,14 +66,14 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 		switcher->saveGeneralSettings(obj);
 		switcher->saveHotkeys(obj);
 
-		obs_data_set_obj(save_data, "autoProducer", obj);
+		obs_data_set_obj(save_data, "autoProducerContest", obj);
 
 		obs_data_release(obj);
 	} else {
 		switcher->m.lock();
 
 		obs_data_t *obj =
-			obs_data_get_obj(save_data, "autoProducer");
+			obs_data_get_obj(save_data, "autoProducerContest");
 
 		if (!obj)
 			obj = obs_data_create();
@@ -99,7 +99,7 @@ static void SaveSceneSwitcher(obs_data_t *save_data, bool saving, void *)
 void SwitcherData::Thread()
 {
 	//Anunciamos el inicio del funcionamiento del plugin
-	blog(LOG_INFO, "AutoProducer started");
+	blog(LOG_INFO, "autoProducerContest started");
 
 	//std::unique_lock<std::mutex> lock(m);
 
@@ -118,7 +118,7 @@ void SwitcherData::Thread()
 	while (true) {
 
 		if (verbose)
-			blog(LOG_INFO, "AutoProducer sleep for %d", interval);
+			blog(LOG_INFO, "autoProducerContest sleep for %d", interval);
 
 		//Se actualiza la variable de control waitScene
 		//waitScene = obs_frontend_get_current_scene();
@@ -151,7 +151,7 @@ void SwitcherData::Thread()
 		}
 	}
 
-	blog(LOG_INFO, "AutoProducer stopped");
+	blog(LOG_INFO, "autoProducerContest stopped");
 }
 
 /********************************************************************************
@@ -243,7 +243,7 @@ void SwitcherData::switchScene(obs_source_t *transition)
 	//lock.lock();
 
 	if (switcher->verbose)
-		blog(LOG_INFO, "AutoProducer switched scene");
+		blog(LOG_INFO, "autoProducerContest switched scene");
 	switcher->swapScene = false;
 	obs_source_release(currentSource);
 }
@@ -588,7 +588,7 @@ static void OBSEvent(enum obs_frontend_event event, void *switcher)
 extern "C" void InitSceneSwitcher()
 {
 	QAction *action = (QAction *)obs_frontend_add_tools_menu_qaction(
-		"AutoProducer");
+		"autoProducerContest");
 
 	switcher = new SwitcherData;
 

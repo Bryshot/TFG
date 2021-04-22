@@ -136,7 +136,7 @@
            <item row="0" column="0">
             <widget class="QLabel" name="label_5">
              <property name="text">
-              <string>         AutoProducer is:</string>
+              <string>         autoProducerContest is:</string>
              </property>
             </widget>
            </item>
@@ -434,7 +434,7 @@
        <item>
         <widget class="QLabel" name="label_13">
          <property name="text">
-          <string>(You can set a Hotkey to start and stop the scene switcher under Settings / Hotkeys / Toggle Start Stop for the AutoProducer)</string>
+          <string>(You can set a Hotkey to start and stop the scene switcher under Settings / Hotkeys / Toggle Start Stop for the autoProducerContest)</string>
          </property>
         </widget>
        </item>

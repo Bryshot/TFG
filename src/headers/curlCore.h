@@ -4,7 +4,7 @@
 #include <vector>
 #include "headers/switcher-data-structs.hpp"
 #include "headers/curl-helper.hpp"
-#include "headers/autoProducer.hpp"
+#include "headers/autoProducerContest.hpp"
 #include <obs-frontend-api.h>
 
 using namespace std;

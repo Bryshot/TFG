@@ -3,7 +3,7 @@
 #include <QTextStream>
 #include <QMessageBox>
 
-#include "headers/autoProducer.hpp"
+#include "headers/autoProducerContest.hpp"
 #include "headers/importIPs.h"
 #include "headers/curl-helper.hpp"
 
@@ -183,7 +183,7 @@ void SceneSwitcher::on_verboseLogging_stateChanged(int state)
 void SceneSwitcher::on_exportSettings_clicked()
 {
 	QString directory = QFileDialog::getSaveFileName(
-		this, tr("Export AutoProducer settings to file ..."),
+		this, tr("Export autoProducerContest settings to file ..."),
 		QDir::currentPath(), tr("Text files (*.txt)"));
 	if (directory.isEmpty())
 		return;
@@ -207,7 +207,7 @@ void SceneSwitcher::on_importSettings_clicked()
 	std::lock_guard<std::mutex> lock(switcher->m);
 
 	QString directory = QFileDialog::getOpenFileName(
-		this, tr("Import AutoProducer settings from file ..."),
+		this, tr("Import autoProducerContest settings from file ..."),
 		QDir::currentPath(), tr("Text files (*.txt)"));
 	if (directory.isEmpty())
 		return;
@@ -221,7 +221,7 @@ void SceneSwitcher::on_importSettings_clicked()
 
 	if (!obj) {
 		QMessageBox Msgbox;
-		Msgbox.setText("AutoProducer failed to import settings");
+		Msgbox.setText("autoProducerContest failed to import settings");
 		Msgbox.exec();
 		return;
 	}
@@ -232,7 +232,7 @@ void SceneSwitcher::on_importSettings_clicked()
 	obs_data_release(obj);
 
 	QMessageBox Msgbox;
-	Msgbox.setText("AutoProducer settings imported successfully");
+	Msgbox.setText("autoProducerContest settings imported successfully");
 	Msgbox.exec();
 	setupGeneralTab();
 }
@@ -241,7 +241,7 @@ void SceneSwitcher::on_importIPs_clicked()
 {
 
 	QString directory = QFileDialog::getOpenFileName(
-		this, tr("Import AutoProducer settings from file ..."),
+		this, tr("Import autoProducerContest settings from file ..."),
 		QDir::currentPath(), tr("Text files (*.txt)"));
 	if (directory.isEmpty())
 		return;
@@ -249,12 +249,12 @@ void SceneSwitcher::on_importIPs_clicked()
 	switcher->ipsContestData = importIpContest(directory.toStdString());
 	if (switcher->ipsContestData.numTeams == -1) {
 		QMessageBox Msgbox;
-		Msgbox.setText("AutoProducer failed to import urls");
+		Msgbox.setText("autoProducerContest failed to import urls");
 		Msgbox.exec();
 		return;
 	}
 	QMessageBox Msgbox;
-	Msgbox.setText("AutoProducer urls imported successfully");
+	Msgbox.setText("autoProducerContest urls imported successfully");
 	Msgbox.exec();
 
 	map<string, IpsTeam>::iterator it =
@@ -364,7 +364,7 @@ int findTabIndex(QTabBar *bar, int pos) //
 		}
 	}
 	if (at == -1)
-		blog(LOG_INFO, "AutoProducer failed to find tab %s",
+		blog(LOG_INFO, "autoProducerContest failed to find tab %s",
 		     tabName.toUtf8().constData());
 
 	return at;

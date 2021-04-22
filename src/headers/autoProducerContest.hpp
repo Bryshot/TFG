@@ -5,9 +5,9 @@
 #include <vector>
 #include <string>
 #ifdef BUILD_OUT_OF_TREE
-#include "../../forms/ui_autoProducer.h"
+#include "../../forms/ui_autoProducerContest.h"
 #else
-#include "ui_autoProducer.h"
+#include "ui_autoProducerContest.h"
 #endif
 #include "switcher-data-structs.hpp"
 #include "setup.h"
