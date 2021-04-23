@@ -46,7 +46,6 @@ struct submissionInfo {
 
 /*Estructura que alberga toda la información del torneo*/
 struct contestInfo {
-	string name;
 	string start_time;
 	string end_time;
 	map<string, teamInfo> scoreBoard;

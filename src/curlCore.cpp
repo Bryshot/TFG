@@ -77,7 +77,6 @@ void getGeneralContestInfo(contestInfo &contest)
 	string jsonContestInfo = getRemoteData(switcher->curlContest, false);
 	obs_data_t *dataContestInfo =
 		obs_data_create_from_json(jsonContestInfo.c_str());
-	contest.name = obs_data_get_string(dataContestInfo, "name");
 	contest.start_time = obs_data_get_string(dataContestInfo, "start_time");
 	contest.end_time = obs_data_get_string(dataContestInfo, "end_time");
 	obs_data_release(dataContestInfo);
