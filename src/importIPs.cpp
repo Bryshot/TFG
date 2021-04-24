@@ -19,6 +19,7 @@ IpsContest importIpContest(string path)
 	getline(FicheroIPs, buffer);
 	if (!isNumber(buffer)) {
 		contest.numTeams = -1;
+		FicheroIPs.close();
 		return contest;
 	}
 	contest.numTeams = std::stoi(buffer);

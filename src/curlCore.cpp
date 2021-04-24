@@ -52,9 +52,7 @@ void updateContestRealTimeInfo(contestInfo &data)
 {
 	getTeamsContestInfo(data, false);
 	if (switcher->updatedSubmissions == false && !isFrozen()) {  //Para testear el plugin con la demoweb, hace falta quitar el Frozen porque siempre es true
-		getArrayInfo(
-			data, switcher->curlSubmissions,
-			typesInfo::Submissions); //Codigo para actualizar barra de submissions
+		getArrayInfo(data, switcher->curlSubmissions,typesInfo::Submissions); //Codigo para actualizar barra de submissions
 		getJudgementsInfo(data);
 		switcher->updatedSubmissions = true;
 	}
@@ -117,7 +115,7 @@ void getTeamsContestInfo(contestInfo &contest, bool startingInfo)
 		/*Obtenemos la información relativa a la puntuación del equipo*/
 		obs_data_t *score = obs_data_get_obj(team, "score");
 		info.score.num_solved = obs_data_get_int(score, "num_solved");
-		info.score.total_time = obs_data_get_int(score, "total_time");
+		//info.score.total_time = obs_data_get_int(score, "total_time");
 		obs_data_release(score);
 
 		obs_data_array_t *problemsTeam =
@@ -262,7 +260,7 @@ void heuristic(double bestHeuristic, teamInfo &best, string bestId,
 
 	//La mejor escena tiene mejor puntuación que la clasificación
 	if (bestHeuristic >=
-	    (switcher->rankWeight - (switcher->classificationTimeInStream *
+	    (switcher->rankWeight*2 - (switcher->classificationTimeInStream *
 				     switcher->timeInStreamWeight))) {
 		/*Si el mejor no es el actual, se realizan los cambios*/
 		if (switcher->lastTeamsInStream.size() == 0 ||

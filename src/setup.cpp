@@ -25,29 +25,25 @@ void crearConfiguracion(SwitcherData *switcher)
 	//Camara principal
 	obs_data_t *settingsCam = obs_data_create();
 	make_source_settings(settingsCam, switcher->ipCam);
-	switcher->camTeam =
-		obs_source_create("vlc_source", "camTeam", settingsCam, NULL);
+	switcher->camTeam = obs_source_create("vlc_source", "camTeam", settingsCam, NULL);
 	obs_data_release(settingsCam);
 
 	//Escritorio principal
 	obs_data_t *settingsScreen = obs_data_create();
 	make_source_settings(settingsScreen, switcher->ipScreen);
-	switcher->screenTeam = obs_source_create("vlc_source", "screenTeam",
-						 settingsScreen, NULL);
+	switcher->screenTeam = obs_source_create("vlc_source", "screenTeam",settingsScreen, NULL);
 	obs_data_release(settingsScreen);
 
 	//Camara secundaria
 	obs_data_t *settingsCamDummy = obs_data_create();
 	make_source_settings(settingsCamDummy, "");
-	switcher->camTeamDummy = obs_source_create("vlc_source", "camTeamDummy",
-						   settingsCamDummy, NULL);
+	switcher->camTeamDummy = obs_source_create("vlc_source", "camTeamDummy",settingsCamDummy, NULL);
 	obs_data_release(settingsCamDummy);
 
 	//Escritorio secundario
 	obs_data_t *settingsScreenDummy = obs_data_create();
 	make_source_settings(settingsScreenDummy, "");
-	switcher->screenTeamDummy = obs_source_create(
-		"vlc_source", "screenTeamDummy", settingsScreenDummy, NULL);
+	switcher->screenTeamDummy = obs_source_create("vlc_source", "screenTeamDummy", settingsScreenDummy, NULL);
 	obs_data_release(settingsScreenDummy);
 
 	//Clasificación

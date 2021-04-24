@@ -25,7 +25,7 @@ struct idenInfo {
 /*Estructura que alberga la puntuación de un equipo*/
 struct score_t {
 	int num_solved;
-	int total_time; //Puede ser interesante para el sistema heuristico (En desuso)
+	//int total_time; //Puede ser interesante para el sistema heuristico (En desuso)
 	int num_pending = 0;
 };
 
