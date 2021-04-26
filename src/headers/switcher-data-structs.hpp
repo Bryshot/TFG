@@ -28,11 +28,11 @@ const int default_weightOfPending = 1;
 const int default_numberOfCycle = 20;
 
 const string default_contestName = "Contest";
-const string defautl_staticText = "TEAM | PROBLEM | STATUS";
-const string default_url = "www.youtube.com/embed/4sJ1YMkXm28?autoplay=1";
+const string defautl_staticText = "TEAM | PROBLEM | STATUS ";
+const string default_url = "www.youtube.com/embed/2Fd8DeIvuU8?autoplay=1";
 const string default_contestServer = "https://www.domjudge.org/demoweb";
 
-const int MAX_VISIBLE_TEAMS_SUBMISSION = 20;
+const int MAX_VISIBLE_TEAMS_SUBMISSION = 22;
 const int MAX_VISIBLE_CHARACTERS_SUBMISSION_TEXT = 20;
 
 class SwitcherThread;
@@ -153,24 +153,20 @@ struct SwitcherData {
 		default_url; //Variable que almacena el valor inicial de screenClassification
 
 	//Fuentes necesarias para la realización del torneo
-	obs_source_t *screenTeam;      //Source que almacena la screenTeam
-	obs_source_t *camTeam;         //Source que almacena la camTeam
-	obs_source_t *screenTeamDummy; //Source que almacena la screenTeamDummy
-	obs_source_t *camTeamDummy;    //Source que almacena la camTeamDummy
-	obs_source_t *
-		screenClassification; //Source que almacena la screenClassification
-	obs_source_t *textRotative;   //Source que almacena el textRotative
-	obs_source_t *staticText;     //Source que almacena el staticText
-	obs_source_t *textSubmission; //Source que almacena el textSubmision
-	obs_source_t *textTeam;       //Source que almacena el textTeam
-	obs_source_t *textTeamImage;  //Source que almacena el textTeamImage
-	obs_source_t *
-		filter; //Source que almacena el filtro de rotación del textRotative
-	obs_scene_t *teamViewerScene; //Scene  que almacena la escena TeamViewer
-	obs_scene_t *
-		classificationScene; //Scene  que almacena la escena Classification
-	struct obs_frontend_source_list transitions =
-		{}; //Lista de sources que almacena las transition
+	obs_source_t *screenTeam;			 //Source que almacena la screenTeam
+	obs_source_t *camTeam;				 //Source que almacena la camTeam
+	obs_source_t *screenTeamDummy;			 //Source que almacena la screenTeamDummy
+	obs_source_t *camTeamDummy;			 //Source que almacena la camTeamDummy
+	obs_source_t *screenClassification;		 //Source que almacena la screenClassification
+	obs_source_t *textRotative;			 //Source que almacena el textRotative
+	obs_source_t *staticText;			 //Source que almacena el staticText
+	obs_source_t *textSubmission;			 //Source que almacena el textSubmision
+	obs_source_t *textTeam;				 //Source que almacena el textTeam
+	obs_source_t *textTeamImage;			 //Source que almacena el textTeamImage
+	obs_source_t *filter;				 //Source que almacena el filtro de rotación del textRotative
+	obs_scene_t *teamViewerScene;			 //Scene  que almacena la escena TeamViewer
+	obs_scene_t *classificationScene;		 //Scene  que almacena la escena Classification
+	struct obs_frontend_source_list transitions ={}; //Lista de sources que almacena las transition
 
 	/*Scene items necesarios para la realización del torneo */
 	obs_sceneitem_t

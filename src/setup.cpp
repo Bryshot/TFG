@@ -70,7 +70,7 @@ void crearConfiguracion(SwitcherData *switcher)
 	obs_data_t *settingsStaticText = obs_data_create();
 	make_text_settings(settingsStaticText, switcher->textStaticContent,
 			   switcher->textStaticHeight,
-			   switcher->textStaticWidth, 28, 0, 4, "top");
+			   switcher->textStaticWidth, 28, 100, 4, "top");
 	switcher->staticText = obs_source_create("text_gdiplus", "textStatic",
 						 settingsStaticText, NULL);
 	obs_data_release(settingsStaticText);
@@ -80,7 +80,7 @@ void crearConfiguracion(SwitcherData *switcher)
 	make_text_settings(settingsTextSubmission,
 			   switcher->textSubmissionContent,
 			   switcher->textSubmissionHeight,
-			   switcher->textSubmissionWidth, 28, 0, 0, "top");
+			   switcher->textSubmissionWidth, 28, 100, 0, "top");
 	switcher->textSubmission = obs_source_create(
 		"text_gdiplus", "textSubmission", settingsTextSubmission, NULL);
 	obs_data_release(settingsTextSubmission);
@@ -128,12 +128,17 @@ void crearConfiguracion(SwitcherData *switcher)
 			     switcher->textRotative);
 	obs_sceneitem_set_pos(item, &pos);
 
-	vec2_set(&pos, 0.0, 331.0);
+	vec2_set(&pos, 0.0, 336.0);
 	item = obs_scene_add(switcher->teamViewerScene, switcher->staticText);
+	obs_sceneitem_set_pos(item, &pos);
+	item = obs_scene_add(switcher->classificationScene, switcher->staticText);
 	obs_sceneitem_set_pos(item, &pos);
 
 	vec2_set(&pos, 0.0, 365.0);
 	item = obs_scene_add(switcher->teamViewerScene,
+			     switcher->textSubmission);
+	obs_sceneitem_set_pos(item, &pos);
+	item = obs_scene_add(switcher->classificationScene,
 			     switcher->textSubmission);
 	obs_sceneitem_set_pos(item, &pos);
 

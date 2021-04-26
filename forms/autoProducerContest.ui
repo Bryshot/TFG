@@ -827,7 +827,7 @@
          <item>
           <widget class="QLabel" name="label_11">
            <property name="text">
-            <string>              Heuristic cycle number:</string>
+            <string>              Heuristic cycle size:</string>
            </property>
           </widget>
          </item>

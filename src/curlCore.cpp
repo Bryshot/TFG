@@ -51,7 +51,7 @@ contestInfo getContestRealTimeInfo()
 void updateContestRealTimeInfo(contestInfo &data)
 {
 	getTeamsContestInfo(data, false);
-	if (switcher->updatedSubmissions == false && !isFrozen()) {  //Para testear el plugin con la demoweb, hace falta quitar el Frozen porque siempre es true
+	if (switcher->updatedSubmissions == false ) {  //Para testear el plugin con la demoweb, hace falta quitar el Frozen porque siempre es true //&& !isFrozen()
 		getArrayInfo(data, switcher->curlSubmissions,typesInfo::Submissions); //Codigo para actualizar barra de submissions
 		getJudgementsInfo(data);
 		switcher->updatedSubmissions = true;
