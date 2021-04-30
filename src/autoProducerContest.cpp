@@ -571,7 +571,7 @@ extern "C" void FreeSceneSwitcher()
 static void OBSEvent(enum obs_frontend_event event, void *switcher)
 {
 	switch (event) {
-	case OBS_FRONTEND_EVENT_EXIT:
+	case OBS_FRONTEND_EVENT_EXIT:	
 		FreeSceneSwitcher();
 		break;
 	/*case OBS_FRONTEND_EVENT_SCENE_CHANGED:

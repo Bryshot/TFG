@@ -1,4 +1,4 @@
-# Guia de instalación del plugin
+# Guía de instalación del plugin
 
 ## Pasos previos a la instalación
 
