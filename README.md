@@ -16,7 +16,7 @@ El plugin permite realizar diversas configuraciones, las cuales se pueden realiz
  **El plugin debe de instalarse en la version de usuario salvo en caso de querer modificar el contenido del plugin.**
 
 ### Modo usuario
- Teniendo instalado el obs studio, es necesario instalar [el dll](https://github.com/Bryshot/TFG/blob/master/desktop%20version/autoProducerContest.dll) del plugin en la carpeta "C:\Program Files\obs-studio\obs-plugins\64bit"
+ Teniendo instalado el obs studio, es necesario instalar [el dll](https://github.com/Bryshot/TFG/blob/master/desktopVersion/autoProducerContest.dll) del plugin en la carpeta "C:\Program Files\obs-studio\obs-plugins\64bit"
 
  Imagen de ejemplo de la carpeta obs-plugins:
  ![Imagen de ejemplo](https://github.com/Bryshot/TFG/blob/master/docs/Images/obs-plugins.PNG)
