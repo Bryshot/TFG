@@ -23,7 +23,7 @@ string getRemoteData(std::string &url, bool admin) //quiza es string url
 			string tmp = switcher->userContestServer + ":" +
 				     switcher->passwordContestServer;
 			f_curl_setopt(switcher->curl, CURLOPT_USERPWD,
-				      tmp.c_str()); //Quiza es si c_str
+				      tmp.c_str()); 
 		}
 
 		f_curl_perform(switcher->curl);
@@ -52,16 +52,19 @@ void updateContestRealTimeInfo(contestInfo &data)
 {
 	getTeamsContestInfo(data, false);
 	if (switcher->updatedSubmissions == false ) {  //Para testear el plugin con la demoweb, hace falta quitar el Frozen porque siempre es true //&& !isFrozen()
+
 		getArrayInfo(data, switcher->curlSubmissions,typesInfo::Submissions); //Codigo para actualizar barra de submissions
-		getJudgementsInfo(data);
-		switcher->updatedSubmissions = true;
+		if (!data.submissionPendings.empty()) {
+			getJudgementsInfo(data);
+			switcher->updatedSubmissions = true;
+		}
 	}
 }
 
 void setCurls()
 {
 	switcher->curlContest = switcher->contestServerWebsite +
-				"/api/v4/contests/" + switcher->contestName;
+				"/api/v4/contests/" + switcher->contestName; 
 	switcher->curlScoreboard = switcher->curlContest + "/scoreboard";
 	switcher->curlTeams = switcher->curlContest + "/teams?ids%5B%5D=";
 	switcher->curlSubmissions = switcher->curlContest + "/submissions";
@@ -210,21 +213,23 @@ void getJudgementsInfo(contestInfo &contest)
 void getArrayInfo(contestInfo &contest, string curl, typesInfo type)
 {
 	string jsonInfo = getRemoteData(curl, false);
-	string jsonFixedInfo = vectorToObj(
-		jsonInfo); //Como el servidor devuelve el vector directamente, es necesario una adaptación para usar la función del obs
+
+	if (jsonInfo == "[]")
+		return;
+	string jsonFixedInfo = vectorToObj(jsonInfo); //Como el servidor devuelve el vector directamente, es necesario una adaptación para usar la función del obs
 	obs_data_t *dataInfo = obs_data_create_from_json(jsonFixedInfo.c_str());
 	obs_data_array_t *array = obs_data_get_array(dataInfo, "array");
 
 	size_t size = obs_data_array_count(array);
+	size_t i = 0;
 	int tmp = switcher->numSubmissionsPrevious;
-	for (size_t i = switcher->numSubmissionsPrevious;
-	     i < size && i < tmp + MAX_VISIBLE_TEAMS_SUBMISSION; i++) {
-		obs_data_t *element = obs_data_array_item(array, i);
+	for (i; i + tmp < size && i < MAX_VISIBLE_TEAMS_SUBMISSION; i++) {
 
-		if (type == typesInfo::Submissions)
+		if (type == typesInfo::Submissions) {
+			obs_data_t *element = obs_data_array_item(array, i+tmp);
 			getSubmissionsInfo(contest, element);
-
-		obs_data_release(element);
+			obs_data_release(element);
+		}
 	}
 	obs_data_array_release(array);
 	obs_data_release(dataInfo);

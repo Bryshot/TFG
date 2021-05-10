@@ -213,7 +213,7 @@ void SwitcherData::ThreadSubmissions()
 
 		switcher->updatedSubmissions = false;
 		modificaText(switcher->textSubmission, tmp);
-
+		
 		/*Si se para el programa tambien se para este thread*/
 		if (switcher->stop)
 			break;
@@ -389,8 +389,6 @@ void SwitcherData::switchIP()
 
 	modificaVLC(screen, ipScreen);
 	modificaVLC(cam, ipCam);
-	modificaText(switcher->textTeam, switcher->textTeamContent);
-	modificaImage();
 
 	if (switcher->followVisible) {
 		modificaPos(camTeamItem, camTeamDummyItem, usingDummy);
@@ -411,6 +409,10 @@ void SwitcherData::switchIP()
 		obs_sceneitem_set_visible(screenTeamItem, false);
 		obs_sceneitem_set_visible(camTeamItem, false);
 	}
+
+	if (!switcher->swapScene) obs_frontend_set_current_scene(obs_scene_get_source(switcher->teamViewerScene));
+	modificaText(switcher->textTeam, switcher->textTeamContent);
+	modificaImage();
 	usingDummy = !usingDummy;
 	swapIp = false;
 }
@@ -423,9 +425,9 @@ void SwitcherData::modificaVLC(obs_source_t *source, string ip)
 	obs_data_t *d = obs_data_array_item(array, 0);
 
 	obs_data_set_string(d, "value", ip.c_str());
+	obs_source_update(source, data);
 	obs_data_release(d);
 	obs_data_array_release(array);
-	obs_source_update(source, data);
 	obs_data_release(data);
 }
 
