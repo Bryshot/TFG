@@ -199,7 +199,7 @@ void SwitcherData::ThreadSubmissions()
 
 			tmp2 += it->second.result + "\n";
 
-			if (it->second.result != pendingJugment) {
+			if (it->second.result != pendingJugment && it->second.result != "") {
 				string temp = it->first;
 				it++;
 				contestRealData.submissionPendings.erase(
