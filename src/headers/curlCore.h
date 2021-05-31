@@ -92,6 +92,12 @@ void getGeneralContestInfo(contestInfo &contest);
 void getTeamsContestInfo(contestInfo &contest, bool startingInfo);
 
 /// <summary>
+/// Obtiene la información necesaria para el funcionamiento de la lista de envios y veredictos
+/// </summary>
+/// <param name="data"></param>
+void updateSubmissions(contestInfo &data);
+
+/// <summary>
 /// Obtiene la información de las entregas realizadas
 /// </summary>
 /// <param name="contest">, donde se almacena la información</param>

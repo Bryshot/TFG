@@ -126,6 +126,10 @@ void SwitcherData::Thread()
 		//Tiempo  de espera entre switch y switch
 		std::this_thread::sleep_for(
 			std::chrono::milliseconds(interval));
+		if (checkCurrentScene()) {
+			updateSubmissions(contestRealData);
+			continue;
+		}
 
 
 		//Comprueba si se ha detenido el programa durante el sleep.
@@ -135,9 +139,7 @@ void SwitcherData::Thread()
 		//Actualización de la información del torneo y realiza el calculo heurístico
 		updateContestRealTimeInfo(contestRealData);
 
-		if (checkCurrentScene())
-			continue;
-
+		
 		/*Si durante el proceso de  decisión se para el plugin, se cancela el cambio*/
 		if (switcher->stop)
 			break;
