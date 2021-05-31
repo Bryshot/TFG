@@ -56,7 +56,7 @@ void updateContestRealTimeInfo(contestInfo &data)
 
 void updateSubmissions(contestInfo& data) {
 	if (switcher->updatedSubmissions ==
-	    false) { //Para testear el plugin con la demoweb, hace falta quitar el Frozen porque siempre es true //&& !isFrozen()
+	    false && !isFrozen()) { //Para testear el plugin con la demoweb, hace falta quitar el Frozen porque siempre es true //
 
 		getArrayInfo(
 			data, switcher->curlSubmissions,
