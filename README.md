@@ -1,5 +1,5 @@
-# AutoProducer
-AutoProducer es un autorealizador de camaras para torneos de programación para el OBS Studio, desarrollado por Eduardo Renovales como TFG de la carrera de Ingienería Informática en la Universidad complutense de Madrid. 
+# AutoProducer Contest
+AutoProducer Contest es un autorealizador de camaras para torneos de programación para el OBS Studio, desarrollado por Eduardo Renovales como TFG de la carrera de Ingienería Informática en la Universidad complutense de Madrid. 
 
 ![ImagenFDI](https://github.com/Bryshot/TFG/blob/master/docs/Images/fdi.png)
 
